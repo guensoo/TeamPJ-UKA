@@ -1,6 +1,6 @@
 import {Link, useNavigate}from 'react-router-dom'
 import {Card,CardContent,CardMedia,CardActionArea,Typography, Alert} from '@mui/material'
-export const CardComponent = ({img,title,description,url='',row=false}) => {
+export const CardComponent = ({img,title,detail,url='',row=false,list}) => {
 
     const navigate = useNavigate();
 
@@ -9,7 +9,7 @@ export const CardComponent = ({img,title,description,url='',row=false}) => {
             // 카드(세로)
         <Card sx={{ flex:'0 0 18%'}} raised={true} >
             <CardActionArea onClick={()=>{
-                navigate('/about/select' + url)
+                navigate('/about/select',{state:list})
                 window.scrollTo(0,0)
                 }}           
                 >
@@ -23,7 +23,7 @@ export const CardComponent = ({img,title,description,url='',row=false}) => {
                 {title}
                 </Typography>
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    {description}
+                    {detail}
                 </Typography>
                 </CardContent>
             </CardActionArea>
@@ -36,7 +36,7 @@ export const CardComponent = ({img,title,description,url='',row=false}) => {
         <Card sx={{ display:'flex' }} raised={true}>
             <CardActionArea
                 onClick={() => {
-                navigate('/about/select' + url);
+                navigate('/about/select',{state:list});
                 window.scrollTo(0, 0);
                 }}
                 sx={{ display: 'flex', flexDirection: 'row' }} // 가로 정렬
@@ -51,7 +51,7 @@ export const CardComponent = ({img,title,description,url='',row=false}) => {
                         {title}
                     </Typography>
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                        {description}
+                        특징 : {detail}
                     </Typography>
                 </CardContent>
             </CardActionArea>

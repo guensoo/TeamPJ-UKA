@@ -1,12 +1,14 @@
 /* global naver */
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const NAVER_MAP_CLIENT_ID = process.env.REACT_APP_ALL_NAVER_MAP_Client_ID;
 
-const NaverMap = ({ centers = [] }) => {
+const NaverMap = ({ centers = [],onMapReady }) => {
     const mapRef = useRef(null);
     const mapInstance = useRef(null);
     const markersRef = useRef([]);
+    // 지도 로딩 되었는지 확인 상태
+    const [isMapReady, setIsMapReady] = useState(false);
 
     // 지도 로딩
     useEffect(() => {
@@ -15,6 +17,9 @@ const NaverMap = ({ centers = [] }) => {
                 center: new window.naver.maps.LatLng(37.566826, 126.9786567),
                 zoom: 8,
             });
+
+            setIsMapReady(true); //지도 준비 완료.
+            onMapReady?.();
 
             // Geocoder 모듈 로딩
             window.naver.maps.onJSContentLoaded = () => {

@@ -24,8 +24,8 @@ public class RequestDataDTO {
 	private String name;
 	
 	private String time;
-	private String lostLocation;
-	private String contactNumber;
+	private String local;
+	private String phone;
 	private String detail;
 	
 	private Long user_no;
@@ -43,8 +43,8 @@ public class RequestDataDTO {
 				.name(name)
 				
 				.time(time)
-				.lostLocation(lostLocation)
-				.contactNumber(contactNumber)
+				.local(local)
+				.phone(phone)
 				.detail(detail)
 				.build();
 	}

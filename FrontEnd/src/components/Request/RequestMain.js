@@ -22,6 +22,7 @@ export const RequestMain = () => {
             }
         }
         requestApi();
+        console.log(card)
     },[])
 
     // 데이터 없을때 표시할 화면
@@ -34,12 +35,8 @@ export const RequestMain = () => {
             </div>
         )
     }
-
-
     return(
         <div className="RMcontainer">
-            
-        
             <Button 
                 variant="contained"
                 className="DBButton"
@@ -69,10 +66,12 @@ export const RequestMain = () => {
                                 age={list.age}
                                 sex={list.sex}
                                 name={list.name}
-                                local={list.lostLocation}
+                                local={list.local}
                                 time={list.time}
-                                phone={list.contactNumver}
-                                descripsion={list.detail}
+                                phone={list.phone}
+                                detail={list.detail}
+                                no={list.no}
+                                list={list}
                             /> 
                             {/* 받은값 확인하기. */}
                             {/* {console.log(list)} */}

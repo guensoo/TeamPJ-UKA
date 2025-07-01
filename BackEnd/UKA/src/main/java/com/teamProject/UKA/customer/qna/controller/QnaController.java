@@ -2,10 +2,9 @@ package com.teamProject.UKA.customer.qna.controller;
 
 import java.util.List;
 
-import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,10 +74,20 @@ public class QnaController {
             }
         }
 
-        // **QnA + 댓글 리스트 DTO로 반환**
+        // QnA + 댓글 리스트 DTO로 반환
         return ResponseEntity.ok(qnaService.getQnaWithComments(no));
     }
 
+    // 조회수 증가용 엔드포인트
+    @PatchMapping("/{no}/increase-view")
+    public ResponseEntity<?> increaseViewCount(@PathVariable("no") Long no) {
+        try {
+            qnaService.increaseViewCount(no);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 
 
     // 게시글 수정

@@ -50,11 +50,11 @@ public class RequestDataEntity {
 	@Column(name = "time")
 	private String time;
 
-	@Column(name = "lost_location")
-	private String lostLocation;
+	@Column(name = "local")
+	private String local;
 
-	@Column(name = "contact_number")
-	private String contactNumber;
+	@Column(name = "phone")
+	private String phone;
 
 	@Column(name = "detail")
 	private String detail;
@@ -79,8 +79,8 @@ public class RequestDataEntity {
 				.name(name)
 				
 				.time(time)
-				.lostLocation(lostLocation)
-				.contactNumber(contactNumber)
+				.local(local)
+				.phone(phone)
 				.detail(detail)
 				.build();
 	}

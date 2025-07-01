@@ -1,153 +1,171 @@
-import { useParams, useNavigate, useLocation  } from 'react-router-dom';
-import { useEffect, useState, useRef } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { useAlert } from '../Context/AlertContext';
 import {
-    deleteQnaAnswer,
-    updateQnaAnswer, fetchQnaDetail,
-    fetchQnaList, reportQna,
-    restoreQna,
-    deleteQna,
-    createQnaComment
+  deleteQnaAnswer,
+  updateQnaAnswer,
+  fetchQnaDetail,
+  fetchQnaList,
+  reportQna,
+  restoreQna,
+  deleteQna,
+  createQnaComment,
+  editQnaComment,
+  deleteQnaComment,
+  likeQna,
+  increaseViewCount,
 } from '../../../api/CustomerApiData';
 import './QnADetail.css';
 import { MapQnaRaw } from '../Mappers/QnaMapper';
 import isAdminCheck from '../../Common/isAdminCheck';
+import {
+  handleLikeAction,
+  handleCommentSubmit,
+  handleEditSave,
+  handleDeleteComment,
+} from './QnAActions';
+import QnAComment from './QnAComment';
 
 const QnADetail = () => {
+    // --- React Router 훅 ---
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
+    const password = location.state?.password ?? null;
+
+    // --- 상태 관리 ---
     const [qna, setQna] = useState(null);
     const [qnaList, setQnaList] = useState([]);
     const [prev, setPrev] = useState(null);
     const [next, setNext] = useState(null);
     const [commentInput, setCommentInput] = useState('');
     const [answerEditMode, setAnswerEditMode] = useState(false);
-    const [answerInput, setAnswerInput] = useState(qna?.answer || "");
-    const isAdmin = isAdminCheck();
-    const user = JSON.parse(localStorage.getItem('user'));
-    const isOwner = user?.nickname === qna?.author;
-
-    console.log('[디버깅] isAdmin:', isAdmin, '| isOwner:', isOwner, '| user:', user, '| author:', qna?.author);
-
-    // 신고
+    const [answerInput, setAnswerInput] = useState('');
     const [isReported, setIsReported] = useState(false);
-    
-    // 추천
     const [isLiked, setIsLiked] = useState(false);
     const [likes, setLikes] = useState(0);
 
-    const { showAlert } = useAlert();
+    // --- 사용자 & 권한 ---
+    const user = JSON.parse(localStorage.getItem('user'));
+    const isAdmin = isAdminCheck();
+    const isOwner = user?.nickname === qna?.author;
 
+    // --- 알림 함수 ---
+    const { showAlert } = useAlert();
     const { confirm, success, error, warning } = useAlert();
 
-    const location = useLocation();
-    const password = location.state?.password ?? null;
-
-    // QnA 상세 가져오기 + 매핑
-    useEffect(() => {
+  // --- fetchData 함수 선언: useEffect 밖에 두어 props로 전달 가능하게 함 ---
     const fetchData = async () => {
         try {
-        // 상세 데이터
         const rawDetail = await fetchQnaDetail(id, password);
         const mappedDetail = MapQnaRaw(rawDetail);
         setQna(mappedDetail);
+        setIsReported(mappedDetail.isReported === 'Y');
 
-        // 리스트 데이터
         const rawList = await fetchQnaList();
         const mappedList = rawList.map(MapQnaRaw);
         setQnaList(mappedList);
 
-        // 상세 데이터가 준비되면 답변 초기화
-        setAnswerInput(mappedDetail.answer || "");
+        setAnswerInput(mappedDetail.answer || '');
+
+        const idx = mappedList.findIndex(item => String(item.id) === String(id));
+        setPrev(idx > 0 ? mappedList[idx - 1] : null);
+        setNext(idx >= 0 && idx < mappedList.length - 1 ? mappedList[idx + 1] : null);
+
+        setIsLiked(!!localStorage.getItem(`qna_liked_${id}`));
+        setLikes(mappedDetail.likes || 0);
+        console.log('QNA DETAIL API RAW:', rawDetail);
         } catch (err) {
         await error('QnA 데이터를 불러오지 못했습니다.');
         navigate('/customer/qna');
         }
     };
 
-    fetchData();
-    }, [id, password, error, navigate]);
+  // QnA 상세 + 리스트 가져오기
+    useEffect(() => {
+    const lastViewTimeKey = `qna_last_view_time_${id}`;
+    const now = Date.now();
+    const lastViewTime = localStorage.getItem(lastViewTimeKey);
 
-  // 날짜 변환
+    fetchData(); // 데이터 먼저 로드
+
+    // 조회수 증가 로직
+    // 1초 이상 지난 경우에만 조회수 증가
+    if (!lastViewTime || now - lastViewTime > 1000) {
+        (async () => {
+        try {
+            await increaseViewCount(id); // 조회수 API 호출
+            await fetchData();            // 최신 데이터 다시 로드
+            localStorage.setItem(lastViewTimeKey, now); // 시간 저장
+        } catch (error) {
+            console.error('조회수 증가 중 에러:', error);
+        }
+        })();
+    }
+    }, [id, password]);
+
+  // 날짜 변환 함수
   const formatDate = (dateString) => {
     if (!dateString) return '';
     const [date, time] = dateString.split('T');
     const [yyyy, mm, dd] = date.split('-');
-  	const hhmm = time ? time.slice(0, 5) : '';
     return `${yyyy.slice(2)}.${mm}.${dd}`;
   };
 
-
-  const handleLike = async () => {
-    if (isLiked) {
-      alert('이미 추천하셨습니다.');
-      return;
-    }
-
-    // [2] 서버 추천 요청 (API 붙이기 전이면 주석)
-    try {
-      // 실제로는 아래 axios.post 활성화
-      // await axios.post(`/api/qna/${qna.id}/like`);
-      // setLikes(likes + 1);
-
-      // (실습용) 그냥 바로 갱신
-      setLikes(likes + 1);
-
-      // 로컬에도 기록
-      localStorage.setItem(`qna_liked_${qna.id}`, 'true');
-      setIsLiked(true);
-    } catch (e) {
-      // 서버 에러: 이미 추천한 경우(409), 기타는 오류 안내
-      if (e.response && e.response.status === 409) {
-        alert('이미 추천하셨습니다.');
-        setIsLiked(true);
-      } else {
-        alert('추천 처리 중 오류가 발생했습니다.');
-      }
-    }
+  // 추천 버튼 핸들러
+  const handleLike = () => {
+    handleLikeAction({
+      qna,
+      user,
+      isLiked,
+      setQna,
+      setLikes,
+      setIsLiked,
+      showAlert,
+    });
   };
 
   if (!qna) return <p>게시글을 찾을 수 없습니다.</p>;
 
     // 복원, 삭제, 완전삭제 함수들은 원하는 대로 정의
-  const handleRestore = async () => {
-    const result = await showAlert({
-		title: '복원하시겠습니까?',
-		imageUrl: process.env.PUBLIC_URL + '/img/what.jpg',
-		imageWidth: 300,
-		imageHeight: 300,
-		imageAlt: '에?',
-		icon: 'warning',
-		showCancelButton: true,
-		confirmButtonText: '네',
-		cancelButtonText: '아니오',
-    });
-	// 취소 시
-    if (!result || !result.isConfirmed) return;
+    const handleRestore = async () => {
+        const result = await showAlert({
+            title: '복원하시겠습니까?',
+            imageUrl: process.env.PUBLIC_URL + '/img/what.jpg',
+            imageWidth: 300,
+            imageHeight: 300,
+            imageAlt: '에?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '네',
+            cancelButtonText: '아니오',
+        });
+        // 취소 시
+        if (!result || !result.isConfirmed) return;
 
-    await restoreQna(qna.id);
-    const response = await restoreQna(qna.id);
-    console.log("복원 결과:", response);
-	// QnA 리스트에서 복원 처리 (isReported: false, reportCount: 0)
-    setQna(prev => ({
-        ...prev,
-        isReported: "N", // 또는 false, 백엔드와 일관성 유지
-        reportCount: 0
-    }));
+        await restoreQna(qna.id);
+        const response = await restoreQna(qna.id);
+        console.log("복원 결과:", response);
+        // QnA 리스트에서 복원 처리 (isReported: false, reportCount: 0)
+        setQna(prev => ({
+            ...prev,
+            isReported: "N", // 또는 false, 백엔드와 일관성 유지
+            reportCount: 0
+        }));
 
-    // 실제 복원 로직 (API 호출 등)
-    await showAlert({
-		title: '복원되었습니다.',
-		imageUrl: process.env.PUBLIC_URL + '/img/helmetGood.png',
-		imageWidth: 300,
-		imageHeight: 300,
-		imageAlt: '좋았쓰(헬멧)',
-		icon: 'success',
-		timer: 1200,
-		showConfirmButton: false
-	});
-        navigate(`/customer/qna`);
-  };
+        // 실제 복원 로직 (API 호출 등)
+        await showAlert({
+            title: '복원되었습니다.',
+            imageUrl: process.env.PUBLIC_URL + '/img/helmetGood.png',
+            imageWidth: 300,
+            imageHeight: 300,
+            imageAlt: '좋았쓰(헬멧)',
+            icon: 'success',
+            timer: 1200,
+            showConfirmButton: false
+        });
+            navigate(`/customer/qna`);
+    };
 
     // 이전/다음글 네비
     const handleSecretNavigate = async (post) => {
@@ -247,171 +265,171 @@ const QnADetail = () => {
     };
 
     // 신고 핸들러
-const handleReport = async () => {
-    const result = await showAlert({
-        title: '신고하시겠습니까?',
-        text: '해당 게시글을 신고합니다.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: '예',
-        cancelButtonText: '아니오',
-    });
-
-    if (!result || !result.isConfirmed) return;
-
-    try {
-        // 👇 axios로 신고 API 요청만 보냄(관리자/일반 구분 필요없음)
-        await reportQna(qna.id);
-
-        await showAlert({
-            title: '신고하였습니다.',
-            icon: 'success',
-            timer: 1500,
-            showConfirmButton: false,
+    const handleReport = async () => {
+        const result = await showAlert({
+            title: '신고하시겠습니까?',
+            text: '해당 게시글을 신고합니다.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '예',
+            cancelButtonText: '아니오',
         });
 
-        // 👉 신고가 성공했으면, 상태를 최신으로 갱신(옵션)
-        const updated = await fetchQnaDetail(qna.id);
-                setQna(MapQnaRaw(updated));
-    } catch (e) {
-        // 서버에서 이미 신고된 경우 등 처리(메시지 커스텀)
-        await showAlert({
-            title: e?.response?.data?.message || '이미 신고했거나 오류가 발생했습니다.',
-            icon: 'error',
-        });
-    }
-};
-
-
-    const handleCommentSubmit = async (e) => {
-        e.preventDefault();
-        if (!commentInput.trim()) return;
+        if (!result || !result.isConfirmed) return;
 
         try {
-            await createQnaComment(qna.qnaNo, {        // ✅ 수정: qnaNo로 변경
-                qnaId: qna.qnaId,                         // 화면용이므로 그대로 사용
-                qnaCommentWriter: isAdmin ? '관리자' : user.nickname,
-                qnaCommentContent: commentInput
+            if (isAdmin) {
+                for (let i = 0; i < 5; i++) {
+                    await reportQna(qna.id, user.userId);
+                }
+                await showAlert({
+                    title: '신고하였습니다.',
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false,
+                    imageUrl: process.env.PUBLIC_URL + '/img/you.png',
+                    imageWidth: 300,
+                    imageHeight: 300,
+                    imageAlt: '너고소',
                 });
-
-                const updated = await fetchQnaDetail(qna.qnaNo); // ✅ 조회도 qnaNo로
-                setQna(MapQnaRaw(updated));
-                setCommentInput('');
-        } catch (error) {
-            showAlert && showAlert({
-            title: '댓글 등록 실패',
-            text: error?.message || '서버 오류',
-            icon: 'error'
-            });
+                setIsReported(true); // 신고 상태 업데이트
+            } else {
+                await reportQna(qna.id, user.userId);
+                setIsReported(true); // ★ 신고 성공 시 상태 true 로 변경
+                await showAlert({
+                    title: '신고하였습니다.',
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false,
+                });
+            }
+            // 신고 후 상태 최신화
+            const updated = await fetchQnaDetail(qna.id);
+            setQna(MapQnaRaw(updated));
+        } catch (e) {
+            if (e.response?.status === 409) {
+                // 이미 신고한 경우 에러 발생 시에도 상태 true 처리
+                setIsReported(true);
+                await showAlert({
+                    title: '이미 신고한 게시글입니다.',
+                    icon: 'info',
+                });
+            } else {
+                await showAlert({
+                    title: e?.response?.data?.message || '이미 신고했거나 오류가 발생했습니다.',
+                    icon: 'error',
+                });
+            }
         }
     };
 
-  if (!qna) return <p>게시글을 찾을 수 없습니다.</p>;
+    if (!qna) return <p>게시글을 찾을 수 없습니다.</p>;
 
-// 관리자 답변 수정(수정 모드로 전환)
-const handleEditAnswer = () => {
-  setAnswerEditMode(true);
-  setAnswerInput(qna?.answer || "");
-};
+    // 관리자 답변 수정(수정 모드로 전환)
+    const handleEditAnswer = () => {
+    setAnswerEditMode(true);
+    setAnswerInput(qna?.answer || "");
+    };
 
-// 답변 저장(수정) 함수
-const handleSaveAnswer = async () => {
-  if (!answerInput.trim()) {
-    showAlert && showAlert({
-      title: '답변 내용을 입력해주세요!',
-      imageUrl: process.env.PUBLIC_URL + '/img/what.jpg',
-      imageWidth: 300,
-      imageHeight: 300,
-      imageAlt: '에?',
-      icon: 'warning',
-      timer: 1300,
-      showConfirmButton: false,
+    // 답변 저장(수정) 함수
+    const handleSaveAnswer = async () => {
+    console.log("답변 저장 시점 qna.id:", qna.id, "qna.qnaNo:", qna.qnaNo);
+    if (!answerInput.trim()) {
+        showAlert && showAlert({
+        title: '답변 내용을 입력해주세요!',
+        imageUrl: process.env.PUBLIC_URL + '/img/what.jpg',
+        imageWidth: 300,
+        imageHeight: 300,
+        imageAlt: '에?',
+        icon: 'warning',
+        timer: 1300,
+        showConfirmButton: false,
+        });
+        return;
+    }
+
+    const result = await showAlert({
+        title: '답변을 저장하시겠습니까?',
+        imageUrl: process.env.PUBLIC_URL + '/img/code.jpg',
+        imageWidth: 300,
+        imageHeight: 250,
+        imageAlt: '코딩',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: '네, 저장합니다',
+        cancelButtonText: '아니오',
     });
-    return;
-  }
+    if (!result || !result.isConfirmed) return;
 
-  const result = await showAlert({
-    title: '답변을 저장하시겠습니까?',
-    imageUrl: process.env.PUBLIC_URL + '/img/code.jpg',
-    imageWidth: 300,
-    imageHeight: 250,
-    imageAlt: '코딩',
-    icon: 'question',
-    showCancelButton: true,
-    confirmButtonText: '네, 저장합니다',
-    cancelButtonText: '아니오',
-  });
-  if (!result || !result.isConfirmed) return;
+    try {
+        await updateQnaAnswer(qna.id, answerInput, user.nickname);
 
-  try {
-    await updateQnaAnswer(qna.id, answerInput, user.nickname);
+        // 서버 저장 후, 상세를 다시 받아서 상태 갱신
+        const updated = await fetchQnaDetail(qna.id);
+        setQna(MapQnaRaw(updated));
+        setAnswerEditMode(false);
 
-    // 서버 저장 후, 상세를 다시 받아서 상태 갱신
-    const updated = await fetchQnaDetail(qna.id);
-    setQna(MapQnaRaw(updated));
-    setAnswerEditMode(false);
+        showAlert && showAlert({
+        title: '저장되었습니다!',
+        imageUrl: process.env.PUBLIC_URL + '/img/helmetGood.png',
+        imageWidth: 300,
+        imageHeight: 300,
+        imageAlt: '좋았쓰(헬멧)',
+        icon: 'success',
+        timer: 1300,
+        showConfirmButton: false,
+        });
+    } catch (e) {
+        showAlert && showAlert({
+        title: '답변 저장 실패',
+        text: e?.message || '서버 오류',
+        icon: 'error'
+        });
+    }
+    };
 
-    showAlert && showAlert({
-      title: '저장되었습니다!',
-      imageUrl: process.env.PUBLIC_URL + '/img/helmetGood.png',
-      imageWidth: 300,
-      imageHeight: 300,
-      imageAlt: '좋았쓰(헬멧)',
-      icon: 'success',
-      timer: 1300,
-      showConfirmButton: false,
+    // 관리자 답변 삭제
+    const handleDeleteAnswer = async () => {
+    const result = await showAlert({
+        title: '정말 답변을 삭제하시겠습니까?',
+        imageUrl: process.env.PUBLIC_URL + '/img/what.jpg',
+        imageWidth: 300,
+        imageHeight: 300,
+        imageAlt: '에?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '네, 삭제합니다',
+        cancelButtonText: '아니오',
     });
-  } catch (e) {
-    showAlert && showAlert({
-      title: '답변 저장 실패',
-      text: e?.message || '서버 오류',
-      icon: 'error'
-    });
-  }
-};
+    if (!result || !result.isConfirmed) return;
 
-// 관리자 답변 삭제
-const handleDeleteAnswer = async () => {
-  const result = await showAlert({
-    title: '정말 답변을 삭제하시겠습니까?',
-    imageUrl: process.env.PUBLIC_URL + '/img/what.jpg',
-    imageWidth: 300,
-    imageHeight: 300,
-    imageAlt: '에?',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: '네, 삭제합니다',
-    cancelButtonText: '아니오',
-  });
-  if (!result || !result.isConfirmed) return;
+    try {
+        // ★ 서버에 PATCH로 빈값(삭제)
+        await updateQnaAnswer(qna.id, '', '');
 
-  try {
-    // ★ 서버에 PATCH로 빈값(삭제)
-    await updateQnaAnswer(qna.id, '', '');
+        // 서버 반영 후, 상세를 다시 받아와서 상태 갱신
+        const updated = await fetchQnaDetail(qna.id);
+        setQna(MapQnaRaw(updated));
+        setAnswerEditMode(false);
 
-    // 서버 반영 후, 상세를 다시 받아와서 상태 갱신
-    const updated = await fetchQnaDetail(qna.id);
-    setQna(MapQnaRaw(updated));
-    setAnswerEditMode(false);
-
-    showAlert && showAlert({
-      title: '삭제되었습니다!',
-      imageUrl: process.env.PUBLIC_URL + '/img/helmetGood.png',
-      imageWidth: 300,
-      imageHeight: 300,
-      imageAlt: '좋았쓰(헬멧)',
-      icon: 'success',
-      timer: 1200,
-      showConfirmButton: false,
-    });
-  } catch (e) {
-    showAlert && showAlert({
-      title: '답변 삭제 실패',
-      text: e?.message || '서버 오류',
-      icon: 'error'
-    });
-  }
-};
+        showAlert && showAlert({
+        title: '삭제되었습니다!',
+        imageUrl: process.env.PUBLIC_URL + '/img/helmetGood.png',
+        imageWidth: 300,
+        imageHeight: 300,
+        imageAlt: '좋았쓰(헬멧)',
+        icon: 'success',
+        timer: 1200,
+        showConfirmButton: false,
+        });
+    } catch (e) {
+        showAlert && showAlert({
+        title: '답변 삭제 실패',
+        text: e?.message || '서버 오류',
+        icon: 'error'
+        });
+    }
+    };
     if (!qna) return <p>게시글을 찾을 수 없습니다.</p>;
 
     return (
@@ -538,17 +556,22 @@ const handleDeleteAnswer = async () => {
             <button
                 className="qna-detail-recommend-btn"
                 onClick={handleLike}
-                disabled={isLiked}
                 style={{
                     background: isLiked ? "#ddd" : "",
-                    // color: isLiked ? "#aaa" : "#b19cd9",
-                    cursor: isLiked ? "not-allowed" : "pointer"
+                    cursor: isLiked ? "pointer" : "pointer"
                 }}
             >
-            추천 {likes}
+                {isLiked ? "추천 취소" : "추천"}
             </button>
             <span style={{ color: '#bbb', fontWeight: 700 }}>|</span>
-            <button className="qna-detail-report-btn" onClick={handleReport}>신고</button>
+            <button className="qna-detail-report-btn"
+            style={{
+                background: isReported ? "#ddd" : "",
+                cursor: isReported ? "not-allowed" : "pointer"
+            }}
+            
+            disabled={isReported}
+            onClick={handleReport}>신고</button>
         </div>
 
             
@@ -562,53 +585,32 @@ const handleDeleteAnswer = async () => {
             <button className="qna-action-btn" onClick={() => navigate('/customer/qna')}>← 목록</button>
         </div>
 
-    {/* 7. 댓글 */}
-    <div style={{ margin: "35px 0 0 0" }}>
-        <h4 style={{ marginBottom: 12, fontWeight: 700, fontSize: 17 }}>
-            댓글 <span style={{ color: '#b19cd9' }}>({qna.comments ? qna.comments.length : 0})</span>
-        </h4>
-
-        <div style={{ marginLeft: 3 }}>
-            {/* qna.comments가 없거나 0개일 때 */}
-            {(!qna.comments || qna.comments.length === 0) && (
-            console.log("QnA 댓글 데이터: ", qna),
-            <div style={{ color: "#aaa" }}>등록된 댓글이 없습니다.</div>
-            )}
-
-            {/* qna.comments가 있을 때 */}
-            {qna.comments && qna.comments.map(c => (
-            <div key={c.qnaCommentId} style={{
-                marginBottom: 10,
-                fontSize: 15,
-                padding: '12px 0',
-                borderBottom: '1px solid #f1f1f1'
-            }}>
-                <b>{c.qnaCommentWriter}</b>
-                <span style={{ color: "#bbb", fontSize: 13, marginLeft: 8 }}>
-                {formatDate(c.qnaCommentCreatedAt)}
-                </span>
-                <div style={{ marginLeft: 2 }}>{c.qnaCommentContent}</div>
-            </div>
-            ))}
-        </div>
-
-        <form style={{ display: "flex", gap: 8, marginBottom: 18, marginTop: 12 }} onSubmit={handleCommentSubmit}>
-            <input
-            type="text"
-            placeholder="댓글을 입력하세요"
-            value={commentInput}
-            onChange={e => setCommentInput(e.target.value)}
-            style={{
-                flex: 1,
-                border: "1px solid #b19cd9",
-                borderRadius: 7,
-                fontSize: 16,
-                padding: "8px 14px"
-            }}
-            />
-            <button type="submit" className="qna-detail-recommend-btn">등록</button>
-        </form>
-    </div>
+    {/* 7. 댓글: 분리된 QnAComment 컴포넌트 사용 (fetchData 넘기기!) */}
+      <QnAComment
+        comments={qna.comments}
+        user={user}
+        isAdmin={isAdmin}
+        onRegister={async (input, resetInput) => {
+          await handleCommentSubmit({
+            e: { preventDefault: () => {} }, // 이미 QnAComment에서 처리했다고 가정
+            qna,
+            commentInput: input,
+            user,
+            isAdmin,
+            setQna,
+            setCommentInput: resetInput,
+            showAlert,
+            MapQnaRaw,
+          });
+          await fetchData(); // 댓글 등록 후 전체 새로고침
+        }}
+        handleEditSave={async (commentId, newContent) => {
+          await handleEditSave(commentId, newContent, fetchData, () => {});
+        }}
+        handleDeleteComment={async (commentId) => {
+          await handleDeleteComment(commentId, fetchData, showAlert);
+        }}
+      />
 
         
         {/* 8. 이전/다음글 네비 */}

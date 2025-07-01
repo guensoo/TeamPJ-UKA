@@ -218,6 +218,7 @@
 .DBmap{
     display: flex;
     height: 100%;
+    align-items: center;
 }
 
 /* 본문 아래쪽 */

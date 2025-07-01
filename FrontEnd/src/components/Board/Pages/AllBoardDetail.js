@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import './BoardDetail.css';
 import Swal from 'sweetalert2';
 import { useAdmin } from '../../../api/AdminContext';
-import axios from 'axios';
 import { fetchPostById, deletePost, updatePost, toggleLikes, toggleReport } from '../../../api/BoardApi';
+import { createComment, createReply, fetchCommentsByBoard, fetchRepliesByComment } from '../../../api/BoardCommentApi';
 
 const mockComments = [
     { id: 1, author: 'guest1', content: '저도 궁금해요.', date: '25.06.14', parentId: null },
@@ -12,7 +12,6 @@ const mockComments = [
 ];
 
 const AllBoardDetail = () => {
-    console.log("detail 들어왓니 ")
     const { id } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
@@ -32,7 +31,7 @@ const AllBoardDetail = () => {
     };
 
     //댓글
-    const [comments, setComments] = useState(mockComments);
+    const [comments, setComments] = useState([]);
     const [commentInput, setCommentInput] = useState('');
     // 댓글 수정 상태 관리: 수정 중인 댓글 id, 수정할 텍스트
     const [editCommentId, setEditCommentId] = useState(null);
@@ -51,6 +50,7 @@ const AllBoardDetail = () => {
 
     const filteredList = location.state?.filteredList || null;
 
+    //게시글 ID 조회
     useEffect(() => {
         const getPostsById = async () => {
             try {
@@ -69,6 +69,40 @@ const AllBoardDetail = () => {
         getPostsById();
     },[id, navigate])
 
+    //삭제 버튼
+    const handleDelete = async () => {
+        const confirm = await Swal.fire({
+            title: '삭제하시겠습니까?',
+            text: '삭제된 게시글은 복구할 수 없습니다.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d63031',
+            cancelButtonColor: '#636e72',
+            confirmButtonText: '삭제',
+            cancelButtonText: '취소',
+        });
+
+        if (confirm.isConfirmed) {
+            try {
+                await deletePost(post.id);
+                Swal.fire('삭제 완료', '게시글이 삭제되었습니다.', 'success');
+                navigate('/board/all');
+            } catch (error) {
+                Swal.fire('삭제 실패', '게시글 삭제 중 오류가 발생했습니다.', 'error');
+            }
+        }
+    }
+
+    //이전글, 다음글
+    const handleNavigate = (post) => {
+        navigate(`/board/all/detail/${post.id}`, {
+            state: {
+                filteredList: filteredList
+            }
+        });
+    }
+
+    // 검색결과 이전글/다음글 세팅
     useEffect(() => {
         if(!post) return;
 
@@ -86,10 +120,23 @@ const AllBoardDetail = () => {
 
     },[post, filteredList])
 
-    // 댓글 LocalStorage에 저장
+    // 댓글 목록 조회
     useEffect(() => {
-        localStorage.setItem(`comments-${id}`, JSON.stringify(comments));
-    }, [comments, id]);
+        const getComments = async () => {
+            try {
+                const data = await fetchCommentsByBoard(id);
+                setComments(data);
+            } catch (error) {
+                console.error('댓글 목록 조회 실패', error);
+            }
+        };
+        getComments();
+    }, [id]);
+
+    // 댓글 LocalStorage에 저장
+    // useEffect(() => {
+    //     localStorage.setItem(`comments-${id}`, JSON.stringify(comments));
+    // }, [comments, id]);
 
     // 댓글 수정
     const EditComment = (comment) => {
@@ -133,41 +180,8 @@ const AllBoardDetail = () => {
         return <p>게시글을 찾을 수 없습니다.</p>;
     }
 
-    //이전글, 다음글
-    const handleNavigate = (post) => {
-        navigate(`/board/all/detail/${post.id}`, {
-            state: {
-                filteredList: filteredList
-            }
-        });
-    }
-
-    //삭제 버튼
-    const handleDelete = async () => {
-        const confirm = await Swal.fire({
-            title: '삭제하시겠습니까?',
-            text: '삭제된 게시글은 복구할 수 없습니다.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d63031',
-            cancelButtonColor: '#636e72',
-            confirmButtonText: '삭제',
-            cancelButtonText: '취소',
-        });
-
-        if (confirm.isConfirmed) {
-            try {
-                await deletePost(post.id);
-                Swal.fire('삭제 완료', '게시글이 삭제되었습니다.', 'success');
-                navigate('/board/all');
-            } catch (error) {
-                Swal.fire('삭제 실패', '게시글 삭제 중 오류가 발생했습니다.', 'error');
-            }
-        }
-    }
-
-    // 댓글 추가
-    const handleCommentSubmit = (e) => {
+    // 댓글 작성
+    const handleCommentSubmit = async (e) => {
         e.preventDefault();
         if (commentInput.trim()) {
             setComments([
@@ -399,10 +413,7 @@ const AllBoardDetail = () => {
         });
     };
 
-    //임시라 고쳐야함
     const handleLikesButton = async () => {
-        console.log("id:",post.id)
-        console.log('increment value:', !isLiked);
         try {
             const updatedPost = await toggleLikes(post.id, !isLiked);
             setPost(updatedPost);
@@ -412,7 +423,6 @@ const AllBoardDetail = () => {
         }
     };
 
-    //임시라 고쳐야함
     const handleReportButton = async () => {
         try {
             const updatedPost = await toggleReport(post.id, !isReported);
@@ -444,8 +454,8 @@ const AllBoardDetail = () => {
             <hr/>
 
             {/* 본문 */}
-            <div className='board-detail-content'>
-                <p style={{minHeight: 250, fontSize:18}}>{post.content}</p>
+            <div className="board-detail-content" dangerouslySetInnerHTML={{ __html: post.content }}>
+                {/* <p style={{minHeight: 250, fontSize:18}}>{post.content}</p> */}
             </div>
 
             {/* 버튼 */}

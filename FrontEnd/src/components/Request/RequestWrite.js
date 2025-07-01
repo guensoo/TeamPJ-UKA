@@ -29,7 +29,7 @@ export const RequestWrite = () => {
         date:'',
         local:'',
         phone:'',
-        descripsion:'',
+        detail:'',
     });
 
     // 고객센터에 만들어진 alert 가져오기
@@ -115,7 +115,7 @@ export const RequestWrite = () => {
                 // user_seq : localStorage.getItem('userId'),
                 img : imageUrl,          //이미지 파일 Url
                 sex : formData.sex==='on',    // 성별
-                detail:formData.descripsion,      // 특징
+                detail:formData.detail,      // 특징
                 age:formData.age,                // 나이
                 lostLocation: formData.local,      // 실종 장소
                 lostTime: formData.date,          // 실종 시간  
@@ -280,8 +280,8 @@ export const RequestWrite = () => {
                                     <label className="RWlabel">특징:</label>
                                     <textarea
                                         name="characteristics"
-                                        value={formData.descripsion}
-                                        onChange={e=>{setFormData(prev=>({...prev,descripsion:e.target.value}))}}
+                                        value={formData.detail}
+                                        onChange={e=>{setFormData(prev=>({...prev,detail:e.target.value}))}}
                                         className="RWtextarea"
                                         placeholder="외모나 특이사항을 입력하세요"
                                         rows={3}

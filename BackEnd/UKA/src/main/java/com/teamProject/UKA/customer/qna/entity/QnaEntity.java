@@ -64,9 +64,15 @@ public class QnaEntity {
     @Column(name = "qna_updated_at")
     private LocalDateTime qnaUpdatedAt;
     
-    @Column(name = "qna_report_count")
+    @Column(name = "qna_report_count", nullable = false)
     private Integer qnaReportCount = 0;
 
+    @Column(name = "qna_like_count", nullable = false)
+    private Integer qnaLikeCount = 0;
+
+    @Column(name = "qna_views", nullable = false)
+    private Integer qnaViews = 0;
+    
     @PrePersist
     protected void onCreate() {
         this.qnaCreatedAt = LocalDateTime.now();
@@ -74,6 +80,9 @@ public class QnaEntity {
         if (this.qnaIsSecret == null) this.qnaIsSecret = "N";
         if (this.qnaIsReported == null) this.qnaIsReported = "N";
         if (this.qnaIsAnswered == null) this.qnaIsAnswered = "N";
+        if (qnaLikeCount == null) qnaLikeCount = 0;
+        if (qnaReportCount == null) qnaReportCount = 0;
+        if (qnaViews == null) qnaViews = 0;
     }
 
     @PreUpdate

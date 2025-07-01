@@ -55,6 +55,21 @@ public class QnaService {
 	public Optional<QnaEntity> findByQnaNo(Long qnaNo) {
 		return qnaRepository.findByQnaNo(qnaNo);
 	}
+	
+	// 조회수 올라가는 세팅
+	@Transactional
+	public void increaseViewCount(Long qnaNo) {
+	    QnaEntity qna = qnaRepository.findByQnaNo(qnaNo)
+	        .orElseThrow(() -> new RuntimeException("QnA not found"));
+
+	    if (qna.getQnaViews() == null) {
+	        qna.setQnaViews(1);
+	    } else {
+	        qna.setQnaViews(qna.getQnaViews() + 1);
+	    }
+	    qnaRepository.save(qna);
+	    System.out.println("조회수 증가: " + qna.getQnaId() + " 현재 조회수: " + qna.getQnaViews());
+	}
 
 	// QnA 수정
 	@Transactional

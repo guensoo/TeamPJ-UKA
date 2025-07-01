@@ -23,6 +23,8 @@ public class QnaResponseDTO {
     private LocalDateTime qnaCreatedAt;
     private LocalDateTime qnaUpdatedAt;
     private Integer qnaReportCount;
+    private Integer qnaLikeCount;
+    private Integer qnaViews;
     
     // 댓글 리스트 필드 추가
     private List<QnaCommentResponseDTO> comments;
@@ -43,6 +45,8 @@ public class QnaResponseDTO {
         dto.setQnaCreatedAt(entity.getQnaCreatedAt());
         dto.setQnaUpdatedAt(entity.getQnaUpdatedAt());
         dto.setQnaReportCount(entity.getQnaReportCount());
+        dto.setQnaLikeCount(entity.getQnaLikeCount());
+        dto.setQnaViews(entity.getQnaViews());
         return dto;
     }
     

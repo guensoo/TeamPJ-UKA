@@ -71,7 +71,6 @@ public class BoardController {
     @PutMapping("/{id}")
     public ResponseEntity<BoardResponseDTO> updateBoard(
     		@PathVariable("id") String id, @RequestBody BoardRequestDTO requestDTO){
-    	
     	BoardResponseDTO responseDTO = service.updateBoard(id, requestDTO);
     	
     	return ResponseEntity.ok(responseDTO);

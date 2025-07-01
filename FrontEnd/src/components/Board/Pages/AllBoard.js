@@ -113,7 +113,6 @@ const AllBoard = () => {
 
 	//타이틀 클릭시
     const handleTitleClick = (post) => {
-        console.log("post : ", post);
         navigate(`/board/all/detail/${post.id}`, { state: { filteredList: isSearching ? filteredPosts : displayedPosts, } });
     };
 

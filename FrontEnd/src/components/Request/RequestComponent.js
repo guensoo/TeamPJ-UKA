@@ -2,17 +2,21 @@ import { useNavigate } from 'react-router-dom';
 import defimg from '../../assets/default.jpg';
 import { Card, CardContent, CardMedia, Typography, Button, TextField, MenuItem } from '@mui/material';
 import { useState } from 'react';
+import { useAlert } from '../Customers/Context/AlertContext';
 
 export const RequestComponent = ({
   img = `${defimg}`, kind = '종류', sex = '성별', age = '나이',
-  name = '이름', local = '지역', time = '시간', phone = '연락처',
-  descripsion = '특징', url = '', row = false
+  name = '이름', local = '지역', time = '시간', phone,
+  detail = '특징', url = '', row = false, no,list
 }) => {
 
   const navigate = useNavigate();
+  // 고객센터에 만들어진 alert 가져오기
+  const { showAlert } = useAlert();
+  // 수정모드 상태관리
   const [isEditing, setIsEditing] = useState(false);
   const [editedValues, setEditedValues] = useState({
-    kind, sex, age, name, local, time, phone, descripsion
+    kind, sex, age, name, local, time, phone, detail,no
   });
 
   const handleChange = (e) => {
@@ -23,15 +27,71 @@ export const RequestComponent = ({
     }));
   };
 
+  // 수정모드 시작
   const handleUpdate = () => {
-    setIsEditing(true);
+    try {
+      // 여기서 아이디 검사 해야할듯 (작성자와 접속자 비교 해서 처리)
+    } catch (error) {
+      console.log("권한없음")
+    }
+
+    try {
+      setEditedValues(prev=>({...prev,no:no,img:list.img}))
+      setIsEditing(true);
+    } catch (error) {
+      console.log('수정 실패')
+    } 
   };
 
-  const handleSave = () => {
+  // [PUT]
+  const handleSave = async() => {
     setIsEditing(false);
     console.log('수정된 값:', editedValues);
-    // 여기에 axios 등으로 서버 저장 가능
+    // 여기서 서버 저장
+    try {
+        const result = await fetch('http://localhost:8888/request',{
+          method:'PUT',
+          headers:{
+            'Content-Type':'application/json'
+          },
+          body: JSON.stringify(editedValues)
+        })
+        await showAlert({title:'수정이 완료 되었습니다.'})
+        // 새로고침
+    } catch (error) {
+      console.log("수정하기 연결 실패",error)
+    }
   };
+
+  //[Delete]
+  const handleDelete = async() => {
+    try {
+      // 여기서 아이디 검사 해야할듯 (작성자와 접속자 비교 해서 처리)
+    } catch (error) {
+      console.log("권한없음")
+    }
+
+    try {
+      const result = await showAlert({
+          title:'정말 삭제하시겠습니까?',
+          showCancelButton : true,
+          confirmButtonText: '네',
+          cancelButtonText:'아니요',
+      })
+
+      // '네' 버튼 눌렀을 시
+      if(result.isConfirmed){
+        const result =  await fetch(`http://localhost:8888/request/${list.no}`,{
+          method:'DELETE'
+        })
+        await showAlert({title:'삭제가 완료 되었습니다.'})
+        // 새로고침
+        navigate(0);
+      }  
+    } catch (error) {
+      console.log("삭제 실패")
+    } 
+  }
 
   return (
     <Card sx={{ flex: '0 0 90%', display: 'flex', flexDirection: 'row' }} raised={true}>
@@ -47,7 +107,7 @@ export const RequestComponent = ({
       <div style={{ display: 'flex', flexDirection: 'column'}}>
         {/* 상단 바 */}
         {isEditing ? (
-          <div style={{ display: 'flex', gap: '20px', backgroundColor: 'red', color: 'white', padding: '10px 15px',width:'92%' }}>
+          <div style={{ display: 'flex', gap: '20px',  color: 'white', padding: '10px 15px',width:'92%'}}>
             <TextField label="종류" name="kind" value={editedValues.kind} onChange={handleChange} size="small" />
             <TextField
               select
@@ -74,7 +134,7 @@ export const RequestComponent = ({
           </Typography>
         )}
 
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '655px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '700px' }}>
           <CardContent
             sx={{ width: '92%', display: 'flex', flexDirection: 'column', justifyContent: 'center', height:'260px'}}
           >
@@ -85,8 +145,8 @@ export const RequestComponent = ({
                 <TextField label="연락수단" name="phone" value={editedValues.phone} onChange={handleChange} />
                 <TextField
                   label="특징"
-                  name="descripsion"
-                  value={editedValues.descripsion}
+                  name="detail"
+                  value={editedValues.detail}
                   onChange={handleChange}
                   multiline
                 />
@@ -108,18 +168,18 @@ export const RequestComponent = ({
                   variant="h5"
                   component="div"
                 >
-                  <b>특징</b>: {editedValues.descripsion}
+                  <b>특징</b>: {editedValues.detail}
                 </Typography>
               </div>
             )}
-
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', gap: '10px',marginTop:'20px' }}>
+            {/* 버튼 쪽 */}
+            <div style={{ position:'relative', left:'20px',top:'20px',display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', gap: '10px' }}>
               {isEditing ? (
                 <Button variant="contained" color="primary" onClick={handleSave}>저장</Button>
               ) : (
                 <Button variant="outlined" color="primary" onClick={handleUpdate}>수정</Button>
               )}
-              <Button sx={{ marginRight: '20px' }} variant="outlined" color="primary" onClick={() => { }}>
+              <Button sx={{ marginRight: '20px' }} variant="outlined" color="primary" onClick={handleDelete}>
                 삭제
               </Button>
             </div>

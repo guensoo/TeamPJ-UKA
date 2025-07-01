@@ -60,11 +60,11 @@ public class RequestService {
 			entity.setImg(dto.getImg());
 			entity.setAge(dto.getAge());
 			entity.setDetail(dto.getDetail());
-			entity.setContactNumber(dto.getContactNumber());
+			entity.setPhone(dto.getPhone());
 			entity.setSex(dto.isSex());
 			entity.setKind(dto.getKind());
 			entity.setTime(dto.getTime());
-			entity.setLostLocation(dto.getLostLocation());
+			entity.setLocal(dto.getLocal());
 			entity.setName(dto.getName());
 			//내부 데이터이므로 사용안함			
 			//entity.setFind(dto.isFind());

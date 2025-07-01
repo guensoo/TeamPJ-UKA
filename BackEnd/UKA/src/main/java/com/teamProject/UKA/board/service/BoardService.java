@@ -85,6 +85,7 @@ public class BoardService {
 		board.setCategory(requestDTO.getCategory());
 		board.setTitle(requestDTO.getTitle());
 		board.setAuthor(requestDTO.getAuthor());
+		board.setContent(requestDTO.getContent());
 		
 		return new BoardResponseDTO(board);
 	}

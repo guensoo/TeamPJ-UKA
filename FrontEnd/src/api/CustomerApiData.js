@@ -106,17 +106,6 @@ export const deleteQna = async (qnaId) => {
     }
 };
 
-// QnA 신고
-export const reportQna = async (qnaId) => {
-    try {
-        const res = await axios.patch(`http://localhost:8888/customer/qna/${qnaId}/report`);
-        return res.data;
-    } catch (error) {
-        console.error('reportQna API 에러:', error.response ? error.response.data : error.message);
-        throw error;
-    }
-};
-
 // QnA 복원
 export const restoreQna = async (qnaId) => {
     try {
@@ -179,12 +168,17 @@ export const createQnaComment = async (qnaId, data) => {
 };
 
 // QnA 댓글 수정
-export const editQnaComment = async (commentId, data) => {
+export const editQnaComment = async (commentId, newContent) => {
     try {
-        const res = await axios.put(`http://localhost:8888/customer/qna/comments/${commentId}`, data);
+        const res = await axios.put(
+            `http://localhost:8888/customer/qna/comments/${commentId}`,
+            { qnaCommentContent: newContent }
+        );
         return res.data;
     } catch (error) {
+        // 에러 로깅 (서버 응답 있으면 메시지, 없으면 그냥 메시지)
         console.error('editQnaComment API 에러:', error.response ? error.response.data : error.message);
+        // 필요시 에러 메시지 가공해서 throw 가능
         throw error;
     }
 };
@@ -198,4 +192,57 @@ export const deleteQnaComment = async (commentId) => {
         console.error('deleteQnaComment API 에러:', error.response ? error.response.data : error.message);
         throw error;
     }
+};
+
+// QnA 조회수 증가
+export const increaseViewCount = async (qnaNo) => {
+  try {
+    const res = await axios.patch(`http://localhost:8888/customer/qna/${qnaNo}/increase-view`);
+    return res.data;
+  } catch (error) {
+    console.error('increaseViewCount API 에러:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
+
+// 추천 기능
+export const likeQna = async (qnaId, userId) => {
+    console.log('likeQna 호출:', qnaId, userId); // 디버깅용 로그
+  try {
+    const res = await axios.post(
+      `http://localhost:8888/customer/qna/${qnaId}/like`,
+      { userId } // ← 여기에 같이 담아서 보냄
+    );
+    return res.data;
+  } catch (error) {
+    console.error('likeQna API 에러:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
+
+// 추천 취소 API 호출 (DELETE 메서드, userId는 요청 본문에 포함)
+export const unlikeQna = async (qnaId, userId) => {
+  try {
+    const res = await axios.delete(`http://localhost:8888/customer/qna/${qnaId}/like`, {
+      data: { userId }  // DELETE 요청 시 axios는 data를 이렇게 넘김
+    });
+    return res.data;
+  } catch (error) {
+    console.error('unlikeQna API 에러:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
+
+// 신고 기능
+export const reportQna = async (qnaId, userId) => {
+  try {
+    const res = await axios.post(
+      `http://localhost:8888/customer/qna/${qnaId}/report`,
+      { userId } // ← 마찬가지로 userId 담아서
+    );
+    return res.data;
+  } catch (error) {
+    console.error('reportQna API 에러:', error.response ? error.response.data : error.message);
+    throw error;
+  }
 };

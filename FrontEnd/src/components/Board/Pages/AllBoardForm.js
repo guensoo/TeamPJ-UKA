@@ -75,7 +75,7 @@ const AllBoardForm = () => {
             return;
         }
 
-        const content = editorRef.current?.getInstance().getMarkdown();
+        const content = editorRef.current?.getInstance().getHTML();
 
         const newPost = {
             category: category,  // 반드시 Category enum 이름과 일치해야 함

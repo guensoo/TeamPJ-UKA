@@ -1,45 +1,46 @@
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import './DetailSelect.css'
 import { useEffect } from 'react';
 
-
-const data = {
-          "desertionNo" : "448567202500980",
-          "happenDt" : "20250613",
-          "happenPlace" : "진해구 명동방파제",
-          "kindFullNm" : "[개] 믹스견",
-          "upKindCd" : "417000",
-          "upKindNm" : "개",
-          "kindCd" : "000114",
-          "kindNm" : "믹스견",
-          "colorCd" : "흰색",
-          "age" : "2023(년생)",
-          "weight" : "15(Kg)",
-          "noticeNo" : "경남-창원1-2025-00377",
-          "noticeSdt" : "20250613",
-          "noticeEdt" : "20250623",
-          "popfile1" : "http://openapi.animal.go.kr/openapi/service/rest/fileDownloadSrvc/files/shelter/2025/06/202506130706422.jpg",
-          "popfile2" : "http://openapi.animal.go.kr/openapi/service/rest/fileDownloadSrvc/files/shelter/2025/06/202506130706903.jpg",
-          "processState" : "보호중",
-          "sexCd" : "M",
-          "neuterYn" : "N",
-          "specialMark" : "진트리버처럼 생긴 순딩순딩 똥꼬발랄한 아이~키트검사 지알디아양성. 원충약투여.",
-          "careRegNo" : "348527200900001",
-          "careNm" : "창원동물보호센터",
-          "careTel" : "055-225-5701",
-          "careAddr" : "경상남도 창원시 성산구 공단로474번길 117 (상복동) 창원동물보호센터",
-          "careOwnerNm" : "창원시장",
-          "orgNm" : "경상남도 창원시 의창성산구",
-          "updTm" : "2025-06-13 07:40:54.0"
-        }
+// {
+//           "desertionNo" : "448567202500980",
+//           "happenDt" : "20250613",
+//           "happenPlace" : "진해구 명동방파제",
+//           "kindFullNm" : "[개] 믹스견",
+//           "upKindCd" : "417000",
+//           "upKindNm" : "개",
+//           "kindCd" : "000114",
+//           "kindNm" : "믹스견",
+//           "colorCd" : "흰색",
+//           "age" : "2023(년생)",
+//           "weight" : "15(Kg)",
+//           "noticeNo" : "경남-창원1-2025-00377",
+//           "noticeSdt" : "20250613",
+//           "noticeEdt" : "20250623",
+//           "popfile1" : "http://openapi.animal.go.kr/openapi/service/rest/fileDownloadSrvc/files/shelter/2025/06/202506130706422.jpg",
+//           "popfile2" : "http://openapi.animal.go.kr/openapi/service/rest/fileDownloadSrvc/files/shelter/2025/06/202506130706903.jpg",
+//           "processState" : "보호중",
+//           "sexCd" : "M",
+//           "neuterYn" : "N",
+//           "specialMark" : "진트리버처럼 생긴 순딩순딩 똥꼬발랄한 아이~키트검사 지알디아양성. 원충약투여.",
+//           "careRegNo" : "348527200900001",
+//           "careNm" : "창원동물보호센터",
+//           "careTel" : "055-225-5701",
+//           "careAddr" : "경상남도 창원시 성산구 공단로474번길 117 (상복동) 창원동물보호센터",
+//           "careOwnerNm" : "창원시장",
+//           "orgNm" : "경상남도 창원시 의창성산구",
+//           "updTm" : "2025-06-13 07:40:54.0"
+//         }
 
 
 export const DetailSelect = () => {
+  const data = useLocation().state;
+  console.log(data)
 
   // Params를 사용해서 선택한 정보 전달
   const {id} = useParams();
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   // 백엔드에서 id(혹은 더 자세한 정보)로 조회해서 단건 정보 받아올 예정.
   useEffect(()=>{

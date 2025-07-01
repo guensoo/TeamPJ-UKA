@@ -15,6 +15,7 @@ import NaverMap from "../Map/NaverMap.js";
 import SiDoData from "../Map/koreaSiDoData";
 import SiGunGooData from "../Map/KoreaSiGunGooData";
 import { fetchSavedAnimals } from "../../api/AnimalApiData.js";
+import Loading from "../Common/Loading.js";
 
 
 export const DetailBody = () => {
@@ -26,8 +27,11 @@ export const DetailBody = () => {
     const [allData, setAllData] = useState([]);
     const [targetAddress, setTargetAddress] = useState('');
     const [targetCenters, setTargetCenters] = useState([]);
+    // 지도 준비 상태 
+    const [mapLoad, setMapLoad] = useState(false);
 
 
+    // 동물 데이터 로딩
     useEffect(() => {
         async function loadData() {
             try {
@@ -39,6 +43,7 @@ export const DetailBody = () => {
         }
         loadData();
     }, []);
+
 
 
     const [kind,setKind] = useState('')
@@ -89,6 +94,8 @@ export const DetailBody = () => {
         </Button>
     ));
     
+    //본데이터
+    const [cardDate,setCardDate] = useState([]);
     //카드 더미
     const cardData = Array(32).fill(0).map((_, i) => ({
         id: i,
@@ -99,7 +106,7 @@ export const DetailBody = () => {
 
     // 페이지 
     const startIdx = (currentPage - 1) * itemsPerPage;
-    const currentItems = cardData.slice(startIdx, startIdx + itemsPerPage);
+    const currentItems = targetCenters?.slice(startIdx, startIdx + itemsPerPage);
     const totalPages = Math.ceil(cardData.length / itemsPerPage);
 
     //보드에서 가져온 페이지 버튼
@@ -199,6 +206,7 @@ export const DetailBody = () => {
                                 item => item.orgNm.startsWith(siDoName)
                             );
                         }
+                        setShow(!show)
                         setTargetCenters(filteredCenters);
                         console.log("마커 표시할 센터 목록:", filteredCenters);
                     }}
@@ -212,7 +220,8 @@ export const DetailBody = () => {
             <div className="DBtop">
                 {/* 여기에 지도 들어갈 것 같아요. */}
                 <div className="DBmap">
-                    <NaverMap centers={targetCenters} />
+                    {!mapLoad&&<Loading />}
+                    <NaverMap centers={targetCenters} onMapReady={()=>setMapLoad(true)} />
                 </div>
             </div>{/* end top */}
 
@@ -344,11 +353,8 @@ export const DetailBody = () => {
 
                 {/* 상세정보 하나 들어가는 박스 */}
                 {show&&<><Box className="DBdetail-box">
-                    {/* 상세정보하나 */}
-
-                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
-
-                    {currentItems.map((item) => (
+                    {/* 상세정보 */}
+                    {/* {currentItems.map((item) => (
                         <CardComponent
                             key={item.id}
                             row={isRow}
@@ -356,26 +362,18 @@ export const DetailBody = () => {
                             description={item.description}
                             title={item.title}
                         />
-                        ))}
-                    {/* <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
-                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
-                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    ))} */}
+                    {targetCenters.map((item) => (
+                        <CardComponent
+                            key={item.id}
+                            row={isRow}
+                            img={item.popfile1}
+                            detail={item.description}
+                            title={item.title}
+                            list={item}
+                        />
+                    ))}
 
-                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
-                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
-                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
-                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
-
-                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
-                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
-                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
-                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
-
-                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
-                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
-                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
-                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/> */}
-                    
 
                 </Box>
                 <div className="DBpagination">
