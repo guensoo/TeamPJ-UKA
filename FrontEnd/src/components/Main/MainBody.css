@@ -1,0 +1,27 @@
+/* 전체 div */
+.dashboard-container {
+    width: 100%;
+    min-width: 1075px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    font-family: 'Noto Sans KR', sans-serif;
+    margin-top: 20px;
+    background-color: #ffffff;
+    color: #000000;
+}
+
+/* 왼쪽 패널, 오른쪽 패널 간격 */
+.dashboard-main {
+    display: flex;
+    flex: 1;
+    gap: 20px;
+}
+
+.dog-runner {
+    width: 160px;
+    height: auto;
+    margin-bottom: 16px;
+    image-rendering: pixelated;
+    transition: opacity 0.2s ease-in-out;
+}

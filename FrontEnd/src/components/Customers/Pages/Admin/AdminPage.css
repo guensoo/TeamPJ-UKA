@@ -1,0 +1,107 @@
+/* 🗂️ 전체 관리자 컨테이너 */
+.admin-container {
+  display: flex;
+  min-height: 80vh;
+  width: 1200px;
+  font-family: 'Pretendard', sans-serif;
+}
+
+/* 📑 왼쪽 탭 영역 */
+.admin-sidebar {
+  width: 220px;
+  border-right: 1px solid #ccc;
+  padding: 1rem;
+  background-color: #f9f9f9;
+}
+
+.admin-sidebar h3 {
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.admin-sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.admin-sidebar li {
+  margin-bottom: 10px;
+  padding : 10px;
+}
+
+.admin-sidebar button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background-color: #00aaff;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.admin-sidebar button:hover {
+  background-color: #0094dd;
+}
+
+/* 📄 오른쪽 콘텐츠 */
+.admin-main {
+  flex: 1;
+  padding: 1.5rem;
+}
+
+/* 📝 신고글 목록 */
+.admin-post {
+  border: 1px solid #ccc;
+  border-left: 6px solid red;
+  background-color: #fff5f5;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.admin-post-title {
+  font-weight: bold;
+  color: red;
+  font-size: 16px;
+}
+
+.admin-post-author {
+  color: #666;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+/* ✅ 버튼 그룹 */
+.admin-action-buttons {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.admin-action-buttons button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.restore-btn {
+  background-color: #00aa55;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #cc0000;
+  color: white;
+}
+
+.admin-post-title:hover {
+  color: #007bff;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0; /* 왼쪽 들여쓰기 제거 */
+}

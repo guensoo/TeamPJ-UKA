@@ -1,0 +1,136 @@
+.customer-mini-tab-bar {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  justify-content: center;
+  background-color: #f1f1f1;
+  padding: 10px 0;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  border-bottom: 1px solid #ccc;
+}
+
+.customer-mini-tab-bar a {
+  text-decoration: none;
+  /* font-weight: 600; */
+  color: #000000;
+  padding: 6px 12px;
+  position: relative;
+  font-size: 18px;
+}
+
+.customer-mini-tab-bar a:hover {
+  color: #00aaff;
+}
+
+.customer-mini-tab-bar a.active {
+  color: #00aaff;
+  font-weight: bold;
+}
+
+.customer-mini-tab-bar a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0%;
+  height: 2px;
+  background-color: #00aaff;
+  transition: width 0.3s ease-in-out;
+}
+
+.customer-mini-tab-bar a:hover::after,
+.customer-mini-tab-bar a.active::after {
+  width: 100%;
+}
+
+.customer-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg,
+                #00aaff 0%,
+                #b6adfd 30%,
+                #8469e6 70%,
+                #00aaff 100%); opacity: 0.6;
+  color: white;
+  margin-top: 10px;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-bottom: 0px;
+  border-radius: 12px 12px 0 0;
+  max-width: 1100px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.customer-header-left {
+  flex: 1;
+  text-align: left;
+}
+
+.customer-header-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.customer-header-center form {
+    display: flex;
+    align-items: center;
+}
+
+.customer-header-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.customer-search-input {
+  padding: 10px 14px;
+  font-size: 16px;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  border: none;
+  width: 280px;
+  height: 50px;
+  box-sizing: border-box;
+  display: flex;
+}
+
+.customer-search-button {
+  padding: 10px 12px;
+  background-color: #ffffff;
+  border: none;
+  color: white;
+  font-size: 18px;
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  height: 50px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.customer-search-button:hover {
+  background-color: #e0f7ff;
+}
+
+.customer-chat-button {
+  padding: 10px 16px;
+  font-size: 16px;
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.customer-chat-button:hover {
+  background-color: #e0f7ff;
+}

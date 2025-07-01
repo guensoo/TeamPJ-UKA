@@ -1,0 +1,184 @@
+/* 🔷 전체 컨테이너 */
+.chat-container {
+    position: relative;
+    padding: 20px;
+    min-width: 1350px;
+}
+
+.chat-header {
+    margin-bottom: 20px;
+}
+
+.chat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* 🔹 notice 항목 박스 */
+.notice-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background-color: white;
+    border: 2px solid #00aaff;
+    border-radius: 12px;
+    padding: 16px 24px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    min-width: 1350px;
+}
+
+/* 🔹 chat 항목 박스 */
+.chat-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background-color: white;
+    border: 2px solid #00aaff;
+    border-radius: 12px;
+    padding: 16px 24px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    min-width: 1350px;
+}
+
+/* 📢 공지 */
+.notice-wrapper {
+    width: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.notice-icon {
+    font-size: 18px;
+    color: #00aaff;
+}
+
+/* 🔒 자물쇠 */
+.lock-wrapper {
+    width: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.lock-icon {
+    font-size: 18px;
+    color: #00aaff;
+}
+
+.lock-placeholder {
+    visibility: hidden;
+}
+
+
+/* 👤 작성자 */
+.chat-author {
+    font-size: 14px;
+    color: #555;
+    white-space: nowrap;
+}
+
+.chat-write-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 32px;
+    margin-bottom: 20px;
+}
+
+/* 🖊 글쓰기 버튼 */
+.chat-write-button {
+    background-color: #00aaff;
+    color: white;
+    border: none;
+    border-radius: 24px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.chat-write-button:hover {
+    background-color: #0094dd;
+}
+
+/* 📝 제목 전체 영역: 텍스트 정렬만 담당 (hover X) */
+.chat-title-link {
+    flex: 1;
+    font-size: 18px;
+    font-weight: bold;
+    color: inherit;
+}
+
+/* 📝 제목 (클릭 가능) */
+.chat-title-text {
+    color: black;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+/* hover 효과 */
+.chat-title-text:hover {
+    color: #00aaff; /* 조금 더 진한 파란색으로 */
+    text-decoration: underline;
+}
+
+/* 비밀번호 박스 */
+.chat-password-box {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+    padding: 12px 24px;
+    border-left: 4px solid #00aaff;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.chat-password-box input {
+    width: 160px;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.chat-password-box button {
+    padding: 8px 16px;
+    font-size: 15px;
+    background-color: #00aaff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.chat-password-box button:hover {
+    background-color: #0094dd;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    margin: 0 4px;
+    padding: 6px 12px;
+    border: none;
+    background-color: #eee;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.pagination button.active {
+    background-color: #00aaff;
+    color: white;
+    font-weight: bold;
+}

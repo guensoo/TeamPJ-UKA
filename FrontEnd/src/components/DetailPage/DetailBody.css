@@ -1,0 +1,293 @@
+/* 흰색 텍스트 */
+.DBtext{
+  color: white;
+  font-size: 26px;
+  padding : 10px;
+}
+
+/* 메인컨테이너 */
+.DBcontainer {
+    border-radius: 10px;
+
+    min-width: 1075px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+    /* 보드에서 가져온 헤더 */
+    .DBboard-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+    color: white;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: 0px;
+    border-radius: 12px 12px 0 0;
+    min-width: 850px;
+    box-sizing: border-box;
+    position: relative;
+    }
+    
+    .DBmini-tab-bar {
+    width: 100%;
+    min-width: 850px;
+    display: flex;
+    justify-content: center;
+    background-color: #f1f1f1;
+    padding: 10px 0;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    border-bottom: 1px solid #ccc;
+    }
+
+    .DBmini-tab-bar a {
+    text-decoration: none;
+    font-weight: 600;
+    color: #000000;
+    padding: 6px 12px;
+    position: relative;
+    font-size: 18px;
+    }
+
+    .DBmini-tab-bar a:hover {
+    color: #00aaff;
+    }
+
+    .DBmini-tab-bar a.active {
+    color: #00aaff;
+    font-weight: bold;
+    }
+
+    .DBmini-tab-bar a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0%;
+    height: 2px;
+    background-color: #00aaff;
+    transition: width 0.3s ease-in-out;
+    }
+
+    .DBmini-tab-bar a:hover::after,
+    .DBmini-tab-bar a.active::after {
+    width: 100%;
+    }
+
+
+    .DBboard-header-left {
+    flex: 1;
+    text-align: left;
+    }
+
+    .DBboard-header-center {
+    flex: 3;
+    display: flex;
+    justify-content: center;
+    }
+
+    .DBboard-header-right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    }
+
+    .DBboard-search-select {
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    }
+
+    .DBboard-search-input {
+    padding: 10px 14px;
+    font-size: 16px;
+    border: none;
+    width: 500px;
+    box-sizing: border-box;
+    }
+
+    .DBboard-search-button {
+    padding: 10px 12px;
+    background-color: #ffffff;
+    border: none;
+    color: white;
+    font-size: 18px;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+    }
+
+    .DBboard-search-button:hover {
+    background-color: #e0f7ff;
+    }
+
+    .DBboard-chat-button {
+    padding: 10px 16px;
+    font-size: 16px;
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    }
+
+    .DBboard-chat-button:hover {
+    background-color: #e0f7ff;
+    }
+
+    .DBboard-header-center select{
+        flex:1;
+    }
+
+
+/* 본문 위쪽 */
+.DBtop{
+    border: 1px solid #cceeff;
+    border-radius: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+
+    height:600px;
+    
+    /* flex:0 0 50%; */
+    flex-direction: column;
+}
+
+
+
+/* 위쪽 지역 선택 콤보 박스 */
+.DBcombobox{
+    border: 1px solid #cceeff;
+    border-radius: 10px;
+    background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  
+    padding : 20px 40px;
+    gap:50px;
+}
+
+/* 콤보박스 안 select */
+.DBcombobox select{
+    text-align: center;
+    font-size: 24px;
+    margin:5px;
+    width: 100%;
+    text-align: left;
+    padding:5px 10px;
+    border-radius: 8px;
+    flex:2;
+}
+
+/* 콤보박스 이미지 */
+.DBdialogimg{
+    width: 50px;       
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 20px;
+}
+
+/* 콤보박스 안 '검색하기' 버튼 */
+.DBButton{
+    width: 150px;
+    font-size: 26px;
+    padding : 10px;
+}
+
+.DBButton span{
+    color: white;
+}
+
+/* 지도 들어가는 div */
+.DBmap{
+    display: flex;
+    height: 100%;
+}
+
+/* 본문 아래쪽 */
+.DBbottom{
+    border: 1px solid #cceeff;
+    border-radius: 10px;
+
+    display: flex;
+    flex : 0 0 50%;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+
+/* 페이징 드롭다운 */
+.DBdropdown{
+    display: flex;
+    justify-content: end;
+    padding : 20px;
+}
+.DBbottom select{
+    text-align: center;
+    font-size: 19px;
+}
+
+.DBrowbutton{
+    cursor: pointer;
+    border: 1px solid #cceeff;
+    text-align: center;
+    font-size: 24px;
+}
+
+
+
+/* 상세정보 담는 박스 */
+.DBdetail-box{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin:20px;
+    gap:30px;
+}
+/* 개별 css는 CardComponent에 있음. */
+
+
+/* 보드에서 가져온 페이지 네이션 */
+.DBpagination {
+    display: flex;
+    margin-bottom: 20px;
+    justify-content: center;
+    gap: 6px;
+    font-size: 14px;
+}
+
+.DBpagination button {
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
+}
+
+.DBpagination .active {
+    background-color: #b19cd9;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+.DBpagination button:disabled {
+    background-color: #eee;
+    color: #999;
+    cursor: not-allowed;
+}

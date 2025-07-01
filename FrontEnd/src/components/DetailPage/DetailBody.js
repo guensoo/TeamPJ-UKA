@@ -1,0 +1,435 @@
+import { forwardRef, useEffect, useState } from "react"
+import img from "../../assets/test1.jpg"
+import { animal } from "./DetailBodyData";
+import './DetailBody.css'
+import { CardComponent } from "./CardComponent";
+import { Box, Button, Dialog, DialogActions, DialogTitle, ListItem, ListItemButton, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import AppsIcon from '@mui/icons-material/Apps';
+import DatePicker from 'react-datepicker';
+// css검사해보니 모든 클래스들이 react-datepicker로 시작해서 사용해도 괜찮을듯.
+import 'react-datepicker/dist/react-datepicker.css';
+
+//전달받음.
+import NaverMap from "../Map/NaverMap.js";
+import SiDoData from "../Map/koreaSiDoData";
+import SiGunGooData from "../Map/KoreaSiGunGooData";
+import { fetchSavedAnimals } from "../../api/AnimalApiData.js";
+
+
+export const DetailBody = () => {
+
+    //콤보박스 시군구+센터이름
+    const [siDo, setSiDo] = useState('');
+    const [gunGu, setGunGu] = useState('');
+    const [center, setCenter] = useState('');
+    const [allData, setAllData] = useState([]);
+    const [targetAddress, setTargetAddress] = useState('');
+    const [targetCenters, setTargetCenters] = useState([]);
+
+
+    useEffect(() => {
+        async function loadData() {
+            try {
+                const result = await fetchSavedAnimals();
+                setAllData(result);
+            } catch (e) {
+                setAllData([]);
+            }
+        }
+        loadData();
+    }, []);
+
+
+    const [kind,setKind] = useState('')
+    // 품종 값 선택
+    const [selectedBreed,setSeletedBreed] = useState('')
+    // 달력 값 선택
+    const [selectedDate, setSelectedDate] = useState("");
+    // 품종 모달창 열기 옵션
+    const [open,setOpen] = useState(false);
+
+
+    //하단 정보 보여주기 옵션들
+    const [isRow,setIsRow] = useState(false);
+    const [show,setShow] = useState(false);
+
+
+    // 페이징 상태
+    const [currentPage,setCurrentPage] = useState(1);
+    const itemsPerPage = 11;
+    
+
+    const gunList = siDo ? SiGunGooData.filter(item => item.uprCd === siDo) : [];
+    const siDoName = siDo ? SiDoData.find(x => x.orgCd === siDo)?.orgdownNm : "";
+    const gunGuName = gunGu ? SiGunGooData.find(x => x.orgCd === gunGu)?.orgdownNm : "";
+    const centerOptions = getFilteredCentersByOrgNm(allData, siDoName, gunGuName);
+    const selectedCenterData = center ? allData.find(item => item.careRegNo === center) : null;
+
+
+    // 유틸 함수-센터명
+    function getFilteredCentersByOrgNm(allData, siDoName, gunGuName) {
+    if (!Array.isArray(allData) || !siDoName || !gunGuName) return [];
+    const targetNm = `${siDoName} ${gunGuName}`;
+    const unique = {};
+    allData
+        .filter(item => item.orgNm === targetNm)
+        .forEach(item => {
+            if (!unique[item.careRegNo]) unique[item.careRegNo] = item.careNm;
+        });
+    return Object.entries(unique).map(([careRegNo, careNm]) => ({
+        careRegNo, careNm
+    }));
+}
+
+    //공고날짜 커스텀 버튼
+    const CustomButton = forwardRef(({ value, onClick }, ref) => (
+        <Button variant="contained" onClick={onClick} ref={ref}>
+            {selectedDate===""?"공고 날짜":value+' ~'}
+        </Button>
+    ));
+    
+    //카드 더미
+    const cardData = Array(32).fill(0).map((_, i) => ({
+        id: i,
+        title: `제목 ${i + 1}`,
+        description: '간략한 정보',
+        img: img,
+    }));
+
+    // 페이지 
+    const startIdx = (currentPage - 1) * itemsPerPage;
+    const currentItems = cardData.slice(startIdx, startIdx + itemsPerPage);
+    const totalPages = Math.ceil(cardData.length / itemsPerPage);
+
+    //보드에서 가져온 페이지 버튼
+    const getPageNumbers = () => {
+        const maxButtons = 5; //페이지 바에서 최대 보여주는 버튼 개수
+		const groupIndex = Math.floor((currentPage - 1) / maxButtons)
+		const start = groupIndex * maxButtons + 1;
+        const end = Math.min( totalPages, start + maxButtons - 1);
+
+        return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+    };
+
+
+
+    return(
+        <div className="DBcontainer">
+
+            {/* 헤더 */}
+            <div className="DBcombobox">
+                {/* 시 */}
+                <div>
+                    <select
+                        id="siDo"
+                        value={siDo}
+                        onChange={e => {
+                            setSiDo(e.target.value);
+                            setGunGu("");
+                            setCenter("");
+                            setTargetAddress("");
+                        }}
+                    >
+                        <option value="">시/도 선택</option>
+                        {SiDoData.map(siItem => (
+                            <option key={siItem.orgCd} value={siItem.orgCd}>
+                                {siItem.orgdownNm}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                {/* 군 */}
+                <div>
+                    <select
+                        id="gunGu"
+                        value={gunGu}
+                        onChange={e => {
+                            setGunGu(e.target.value);
+                            setCenter('');
+                            setTargetAddress('');
+                        }}
+                        disabled={!siDo}
+                    >
+                        <option value="">군/구 선택</option>
+                        {gunList.map(item => (
+                            <option key={item.orgCd} value={item.orgCd}>
+                                {item.orgdownNm}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                {/* 센터 */}
+                <div>
+                    <select
+                        id="center"
+                        value={center}
+                        onChange={e => setCenter(e.target.value)}
+                        disabled={!gunGu}
+                    >
+                        <option value="">센터 선택</option>
+                        {centerOptions.map(item => (
+                            <option key={item.careRegNo} value={item.careRegNo}>
+                                {item.careNm}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                
+                {/* 센터 선택, 마커 생성 버튼 */}
+                <Button
+                    variant="contained"
+                    className="DBButton"
+                    color="info"
+                    sx={{ marginLeft: '20px'}}
+                    onClick={() => {
+                        let filteredCenters = [];
+                        if (selectedCenterData) {
+                            // 센터 선택 시 1개 센터만 마커 표시
+                            filteredCenters = [selectedCenterData];
+                        } else if (siDoName && gunGuName) {
+                            // 시군구 선택 시 그 지역 내 모든 센터 표시
+                            filteredCenters = allData.filter(
+                                item => item.orgNm === `${siDoName} ${gunGuName}`
+                            );
+                        } else if (siDoName) {
+                            // 시/도 선택 시 그 시도 내 모든 센터 표시
+                            filteredCenters = allData.filter(
+                                item => item.orgNm.startsWith(siDoName)
+                            );
+                        }
+                        setTargetCenters(filteredCenters);
+                        console.log("마커 표시할 센터 목록:", filteredCenters);
+                    }}
+                ><span>
+                    검색하기</span>
+                </Button>
+            </div>
+
+
+            {/* 상단 div */}
+            <div className="DBtop">
+                {/* 여기에 지도 들어갈 것 같아요. */}
+                <div className="DBmap">
+                    <NaverMap centers={targetCenters} />
+                </div>
+            </div>{/* end top */}
+
+            
+
+            {/* 보드에서 가져온 헤더 */}
+  
+                    <div className="DBboard-header-container">
+                        <div className="DBboard-header-left">
+                            <h1 className="DBboard-title">상세검색</h1>
+                        </div>
+                        <div className="DBboard-header-center">
+                            <select>
+                                <option value="" disabled selected hidden>보호상태</option>
+                                <option >공고중</option>
+                                <option >임시보호중</option>
+                            </select>
+                            
+                            {/* 달력 */}
+                            <DatePicker
+                                showIcon
+                                closeOnScroll={true}
+                                selected={selectedDate}
+                                dateFormat="YYYY/MM/dd"
+                                customInput={
+                                <CustomButton
+                                    variant="contained"
+                                >{selectedDate}</CustomButton>
+                                }
+                                onChange={(date)=>setSelectedDate(date)}
+                            />
+
+                            <select>
+                                <option value="" disabled selected hidden>털색</option>
+                                <option >갈색</option>
+                                <option >검은색</option>
+                                <option >흰색</option>
+                                <option >회색</option>
+                            </select>
+
+                            <select onChange={(e)=>{setKind(e.target.value)}}>
+                                <option value="" disabled selected hidden>종류</option>
+                                <option value="dog">개</option>
+                                <option value="cat" >고양이</option>
+                            </select>
+
+                            <Button variant="contained" onClick={()=>{setOpen(true)}}>
+                                {selectedBreed===''?'품종':selectedBreed}
+                            </Button>
+                            <Dialog
+                                onClose={()=>{setOpen(!open)}}
+                                open={open}
+                            >
+                                <DialogTitle
+                                    sx={{background:'#cceeff'}}
+                                >품종을 선택하세요</DialogTitle>
+                                    {animal[kind === 'cat' ? 'cat' : 'dog'].map((animal, index) => (
+                                        <ListItemButton key={index} 
+                                        onClick={()=>{
+                                            setSeletedBreed(Object.keys(animal)[0])
+                                            setOpen(false);
+                                        }}>
+                                            <ListItem disablePadding sx={{border:'1px solid #cceeff'}}>
+                                                {<img className="DBdialogimg" src={`/img/${kind}_picture/${Object.values(animal)[0]}.jpg`} alt="고양이 이미지" />}
+                                                {Object.keys(animal)[0]}
+                                            </ListItem>
+                                    </ListItemButton>
+                                    ))}                        
+                            </Dialog>
+
+                            <select >
+                                <option value="" disabled selected hidden>성별</option>
+                                <option >수컷</option>
+                                <option >암컷</option>
+                            </select>
+                        </div>
+                            
+                            {/* 상세검색 오른쪽 */}
+                        <div className="DBboard-header-right">
+                            <Button 
+                                variant="contained"
+                                className="DBButton"
+                                color="primary"
+                                fullWidth
+                                sx={{marginLeft:10}}
+                                onClick={()=>{
+                                    setShow(!show)
+                                }}>검색하기
+                            </Button>
+                        </div>   
+                    </div>
+
+
+
+
+
+{/* ================================================================================================ */}
+            {/* 지역선택하면 값을 받아서 렌더링하게 설정할것(지금은 일단 보임.) */}
+            <div className="DBbottom">
+                {/* 렌더링 방식 정하는 드롭다운. */}
+                <div className="DBdropdown">
+                    
+                    {/* 토글 버튼 두개 */}
+                    <ToggleButtonGroup
+                        value={isRow}
+                        exclusive
+                        onChange={(event,newRow)=>{
+                            if(newRow !== null){
+                                setIsRow(newRow)
+                                console.log('newRow',newRow)
+                                console.log('isRow',isRow)
+                            }
+                            
+                        }}
+                    >
+                        <ToggleButton value={false}>
+                            <AppsIcon/>
+                        </ToggleButton>
+
+                        <ToggleButton value={true}>
+                            <FormatListBulletedIcon/>
+                        </ToggleButton>
+                        
+                    </ToggleButtonGroup>
+
+                    
+                </div>
+
+
+                {/* 상세정보 하나 들어가는 박스 */}
+                {show&&<><Box className="DBdetail-box">
+                    {/* 상세정보하나 */}
+
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+
+                    {currentItems.map((item) => (
+                        <CardComponent
+                            key={item.id}
+                            row={isRow}
+                            img={item.img}
+                            description={item.description}
+                            title={item.title}
+                        />
+                        ))}
+                    {/* <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/> */}
+                    
+
+                </Box>
+                <div className="DBpagination">
+                    <button
+                        onClick={() => {
+                            const prevGroupStart = Math.ceil((currentPage - 1) / 5 - 1) * 5;
+                            //ex) currentPage = 14 -> ceil((14-1)/5-1) = 2 , 2*5 = 10page
+                            const prevGroupPage = Math.max(prevGroupStart, 1); //둘중에 최댓값의 페이지로 이동
+                            setCurrentPage(prevGroupPage);
+                        }}
+                        disabled={currentPage === 1}
+                    >
+                    «
+                    </button>
+                    <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>‹</button>
+                    {getPageNumbers().map(page => (
+                    <button
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        className={currentPage === page ? 'active' : ''}
+                    >
+                        {page}
+                    </button>
+                    ))}
+                    <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>›</button>
+                    <button
+                        onClick={() => {
+                            const nextGroupStart = Math.floor((currentPage - 1) / 5 + 1) * 5 + 1;
+                            //ex) currentPage = 14 -> floor((14-1)/5+1) = 3, 3*5+1 = 16page
+                            const nextGroupPage = Math.min(nextGroupStart, totalPages); //둘중에 최솟값의 페이지의로 이동
+                            setCurrentPage(nextGroupPage);
+                        }}
+                        disabled={currentPage === totalPages}
+                    >
+                    »
+                    </button>
+                </div></>}
+
+            </div>{/* end bottom */}
+            
+                {/* 통합검색  */}
+                {show&&<nav className="DBmini-tab-bar">
+                    <div className="DBboard-header-center">
+                        <input
+                            className="DBboard-search-input"
+                            type="text"
+                            placeholder="통합검색"
+                        />
+                        <button className="DBboard-search-button">
+                        🔍
+                        </button>
+                    </div>
+                </nav>}
+
+        </div>
+    )
+}

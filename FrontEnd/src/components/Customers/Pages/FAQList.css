@@ -1,0 +1,132 @@
+.faq-container{
+  /* margin-top: 32px; */
+  padding-top: 32px;
+  padding-bottom: 10px;
+}
+
+.faq-item {
+  margin: 0;
+  overflow: hidden;
+  min-width: 800px;
+}
+
+.faq-question {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  margin-bottom: 0;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;  
+  cursor: pointer;
+}
+
+.faq-question-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.faq-answer {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-top: none;
+  padding: 16px 16px 16px 25px;
+  /* padding-left: 32px; */
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  /* text-align: center; */
+  justify-content: space-between; 
+}
+
+.faq-label {
+  font-weight: bold;
+  font-size: 30px;
+  color: #00aaff;
+  flex-shrink: 0;
+}
+
+.faq-text {
+  font-size: 16px;
+  line-height: 1.6;
+  /* 줄바꿈 \n로 하기 */
+  white-space: pre-line;
+}
+
+.faq-question .faq-text {
+  font-size: 16px;
+  align-items: baseline;
+  /* font-weight: bold; */
+}
+
+.faq-answer .faq-text {
+  font-size: 14px;
+  /* font-weight: bold; */
+  color: #333;
+  align-items: center;
+  justify-content: center;
+}
+
+.faq-toggle-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #888;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.faq-answer-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.faq-admin-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-btn, .delete-btn {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px 6px 10px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.18s, box-shadow 0.18s;
+  box-shadow: 0 2px 8px rgba(44,62,80,0.04);
+}
+
+.edit-btn {
+  background: #f2f6fa;
+  color: #2257bb;
+  border: 1.5px solid #8eaee2;
+}
+.edit-btn:hover {
+  background: #ddeafd;
+  color: #133577;
+}
+
+.delete-btn {
+  background: #fff4f4;
+  color: #d32f2f;
+  border: 1.5px solid #ffb2b2;
+  margin-left: 2px;
+}
+.delete-btn:hover {
+  background: #ffd6d6;
+  color: #aa1919;
+}
+
+/* 검색 하이라이트 */
+.highlight {
+    background: #fff176;
+    color: #222;
+    font-weight: bold;
+    border-radius: 3px;
+    padding: 0 2px;
+}

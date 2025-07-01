@@ -1,0 +1,22 @@
+.app-bg {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    padding: 20px;
+    position: relative;
+}
+
+.container {
+    flex: 1; /* 남는 영역을 다 차지 */
+    width: 100%;
+    max-width: 1000px;
+    max-width: 1100px;
+    margin: 0 auto;
+    min-width: 320px;
+    min-width: 800px;
+    box-sizing: border-box;
+}
+
+.main-footer {
+    width: 100%;
+}

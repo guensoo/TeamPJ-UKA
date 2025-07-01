@@ -1,0 +1,60 @@
+/* 로딩화면 */
+.RMloading{
+    min-width: 1070px;
+    border-radius: 10px;
+    border: 1px solid #cceeff;
+    margin-top: 20px;
+    height: 450px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    min-width: 1070px;
+}.RMloading div{
+    margin-top: 20px;
+}
+
+
+/* ================================== */
+
+/* 메인컨테이너 */
+.RMcontainer {
+    border-radius: 10px;
+    min-width: 1070px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+/* 본문 위쪽 */
+.RMtop{
+    border: 1px solid #cceeff;
+    border-radius: 10px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 20px;
+    /* padding:20px; */
+}
+
+.RMone{
+    display: flex;
+    justify-content: center;
+}
+
+.RMhr{
+    display: flex;
+    border-bottom: 1px solid #cceeff;
+    flex:1;
+    margin:20px 0;
+  
+}
+
+.RMbottom{
+    border: 1px solid #cceeff;
+    
+    border-radius: 10px;
+    width: 100px;
+    height: 1px;
+}

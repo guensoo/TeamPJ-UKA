@@ -1,0 +1,255 @@
+.customer-container {
+    max-width: 100%;
+    margin: auto;
+    padding: 20px;
+    min-width: 800px;
+}
+
+.customer-title {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 20px;
+} 
+
+.customer-controls {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.customer-search {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 18px 0 16px 0;
+}
+.customer-search-btn {
+  background: #b19cd9;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 700;
+  padding: 8px 18px;
+  margin-left: 6px;
+  transition: filter 0.2s;
+}
+.customer-write-btn {
+    background-color: #fff;
+    color: #5d70ca;
+    padding: 8px 16px;
+    border: 1px solid #5d70ca;
+    border-radius: 6px;
+    cursor: pointer;
+}
+/* .customer-write-btn:hover,
+.customer-search-btn:hover {
+  background-color: #5d70ca;
+  transform: translateY(-2px);
+} */
+.customer-table-container{
+  width: 100%;
+}
+.customer-table{
+  width: 100%;
+}
+.customer-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+.customer-table th{
+  padding: 10px;
+  height: 22px;
+}
+.customer-table td {
+    border: none;
+    border-top: 1px solid #ddd;
+    /* text-align: center; */
+}
+
+.customer-table tr:hover td {
+  background: #faf7ff;
+}
+
+.title-cell {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #222;
+  font-weight: normal;
+  text-decoration: none;
+  transition: color 0.15s;
+  padding: 10px;
+  height: 22px;
+}
+
+.title-cell:hover {
+  text-decoration: underline;
+}
+
+.title-cell.reported {
+  color: #ff2e2e;
+  font-weight: bold;
+  text-decoration: line-through;
+}
+
+.title-cell.reported:hover {
+  text-decoration: underline line-through;
+}
+
+/* 각 열의 너비 설정 */
+/* 번호 */
+.customer-table th:nth-child(1) {
+    width: 70px;
+}
+
+.customer-table td:nth-child(1){
+    text-align: center;
+}
+
+/* 제목 */
+.customer-table th:nth-child(2) {
+    width: auto;
+}
+
+.customer-table td:nth-child(2){
+    text-align: left;
+}
+/* 작성자 */
+.customer-table th:nth-child(3),
+.customer-table td:nth-child(3) {
+    width: 80px;
+}
+
+.customer-table th:nth-child(4),
+.customer-table td:nth-child(4) { /* 답변 */
+    width: 60px;
+    text-align: center;
+}
+
+.customer-table th:nth-child(5), /* 상태 */
+.customer-table td:nth-child(5) {
+    width: 50px;
+}
+
+.customer-table th:nth-child(6), /* 작성일 */
+.customer-table td:nth-child(6) {
+    width: 90px;
+    text-align: center;
+}
+
+/* 패스워드 */
+.customer-password-row td {
+  background: #f7f1fd;
+  padding: 18px 0;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+.customer-password-input {
+  padding: 8px 16px;
+  font-size: 16px;
+  border: 1px solid #b19cd9;
+  border-radius: 7px;
+  margin-right: 14px;
+}
+.customer-password-btn {
+  padding: 8px 22px;
+  font-size: 16px;
+  background-color: #b19cd9;
+  color: white;
+  border: none;
+  border-radius: 7px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(177,156,217,0.13);
+}
+.customer-password-btn:hover {
+  background-color: #a082c6;
+}
+
+
+.customer-table th {
+    background-color: #f3f3f3;
+}
+
+/* 게시글 마지막 밑줄 */
+.customer-table tbody tr:last-child td {
+    border-bottom: 1px solid #ddd;
+}
+
+/* .customer-table td.notice-tab {
+    color: red;
+    font-weight: bold;
+} */
+
+/* .customer-table td.notice-title {
+    color: red;
+    font-weight: bold;
+    text-align: left;
+    padding-left: 16px;
+    cursor: pointer;
+} */
+
+/* .customer-table td.notice-cell {
+    font-weight: bold;
+} */
+
+
+
+/* .customer-table tr:hover {
+    background-color: #f9f9f9;
+} */
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    font-size: 14px;
+}
+
+.pagination button {
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
+}
+
+.pagination .active {
+    background-color: #00aaff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+.pagination button:disabled {
+    background-color: #eee;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.customer-qna-search {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.customer-qna-search input {
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 280px;
+    height: 18px;
+}
+
+.customer-qna-search-btn {
+    background-color: #fff;
+    color: #5d70ca;
+    padding: 8px 16px;
+    border: 1px solid #5d70ca;
+    border-radius: 6px;
+    cursor: pointer;
+    height: 36px;
+}

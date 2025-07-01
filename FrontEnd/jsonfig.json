@@ -1,0 +1,8 @@
+{
+    "compilerOptions" : {
+        "modeule" : "CommonJS",
+        "target" : "ES6",
+        "jsx" : "react-jsx",
+        "checkJs" : true
+    }
+}

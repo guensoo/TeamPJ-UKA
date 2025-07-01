@@ -1,0 +1,65 @@
+.chat-navigation {
+  margin-top: 30px;
+  border-top: 1px solid #ccc;
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chat-nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #fdfdfd;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.chat-nav-item:hover {
+  background-color: #f1f1f1;
+  border-color: #00aaff;
+}
+
+.chat-nav-label {
+  font-weight: bold;
+  min-width: 80px;
+  color: #444;
+}
+
+.chat-nav-title {
+  color: #333;
+  transition: color 0.3s;
+}
+
+.chat-nav-item:hover .qna-nav-title {
+  color: #007acc; /* 호버 시 제목 색상 변경 */
+}
+
+.chat-button-group {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.chat-button {
+  background-color: white;
+  color: black;
+  padding: 10px 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.chat-button:hover {
+  background-color: #e0f7ff;
+  /* color: #00aaff; */
+  border-color: #00aaff;
+}

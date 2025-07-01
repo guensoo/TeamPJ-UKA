@@ -1,0 +1,179 @@
+.qna-detail-wrapper {
+  min-width: 800px;
+  margin: 38px auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(44,62,80,.09);
+  padding: 32px 36px 36px 36px;
+}
+
+.qna-detail-title-row {
+  display: flex;
+  align-items: center;
+  /* margin-bottom: 10px; */
+}
+.qna-detail-title {
+  font-size: 25px;
+  font-weight: bold;
+  color: #222;
+  letter-spacing: -1px;
+  word-break: keep-all;
+}
+.qna-detail-meta, .qna-detail-meta2 {
+  font-size: 15px;
+  color: #777;
+  margin-bottom: 4px;
+}
+.qna-detail-content {
+  margin: 28px 0;
+  font-size: 17px;
+  color: #2b2b2b;
+  min-height: 120px;
+  border-bottom: 1px solid #ececec;
+  padding-bottom: 18px;
+}
+.qna-detail-answer {
+  background: #f9f9f9;
+  padding: 18px 22px;
+  margin: 14px 0 26px 0;
+  border-left: 4px solid #00aaff;
+  border-radius: 8px;
+}
+.qna-detail-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+.qna-action-btn {
+  background-color: white;
+  color: black;
+  padding: 10px 18px;
+  border: 1px solid #bfbfbf;
+  border-radius: 7px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.qna-action-btn:hover {
+  background-color: #e0f7ff;
+  border-color: #00aaff;
+}
+.qna-detail-buttons {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 18px;
+  gap: 6px;
+}
+.qna-detail-recommend-btn,
+.qna-detail-report-btn {
+  background: #fff;
+  border: 1px solid #b19cd9;
+  color: #b19cd9;
+  font-weight: 700;
+  border-radius: 7px;
+  padding: 7px 20px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.qna-detail-recommend-btn:hover,
+.qna-detail-report-btn:hover {
+  background: #b19cd9;
+  color: #fff;
+}
+/* 이전/다음글 네비게이션 텍스트 */
+.qna-nav-title,
+.nav-reported,
+.nav-secret {
+  transition: color 0.2s;
+}
+
+/* 일반제목 호버 */
+.qna-nav-title:hover {
+  color: #00aaff;
+  text-decoration: underline;
+}
+
+/* 신고글 호버 */
+.nav-reported:hover {
+  color: #ff2121;
+  text-decoration: underline;
+}
+
+/* 비밀글 호버 */
+.nav-secret:hover {
+  color: #7a5fd1;
+  text-decoration: underline;
+}
+
+/* qna 작성 */
+
+.qna-form{
+  min-width: 800px;
+  margin: 38px auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(44,62,80,.09);
+  padding: 32px 36px 36px 36px;
+}
+
+.qna-form-title{
+  margin-bottom: 20px;
+}
+
+.qna-form-title input{
+  min-width: 800px;
+  /* width: 90%; */
+  border-radius: 4px;
+  padding: 15px;
+}
+
+.qna-form form {
+  display: flex;
+  flex-direction: column;
+}
+
+.customer-write-button {
+  align-self: flex-end;   /* 우측 정렬 */
+  margin-top: 40px;      /* wysiwyg랑 띄우기 */
+  min-width: 120px;
+  padding: 11px 26px;
+  border-radius: 8px;
+  background: #00aaff;
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  font-size: 16px;
+  transition: background 0.18s;
+  cursor: pointer;
+}
+.customer-write-button:hover {
+  background: #0090dd;
+}
+
+.ql-container {
+  border-radius: 8px;
+  font-size: 16px;
+  background: #fff;
+  min-height: 160px;
+  border: 1px solid #dcdcdc;
+}
+.ql-editor {
+  min-height: 140px;
+  font-family: 'Noto Sans KR', 'sans-serif';
+  color: #222;
+  padding: 14px;
+}
+/* 툴바는 이렇게 */
+.ql-toolbar {
+  border-radius: 8px 8px 0 0;
+  border: 1px solid #dcdcdc;
+  background: #fafbfc;
+}
+
+/* 복원버튼 */
+.customer-restore-btn{
+    border: 1px solid black;
+}

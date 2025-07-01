@@ -1,0 +1,164 @@
+/* 입력창 전체 컨테이너 */
+.RWcontainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f5f5f5;
+  padding: 20px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  border-radius: 10px;
+}
+
+.RWcard {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+  
+}
+
+.RWcardContent {
+  display: flex;
+  min-height: 300px;
+  border-radius: 10px;
+}
+
+/* 안보이는 인풋 */
+.RWimageinput{
+  display: none;
+}
+
+/* 카드 왼쪽(사진) */
+.RWleftSection {
+  flex: 0 0 200px;
+  background-color: #cceeff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 20px;
+  position: relative;
+  
+  cursor: pointer;
+}
+
+/* 사진 위 안내 문구 */
+.RWinfo{
+  display: flex;
+  margin-bottom: 20px;
+  color: white;
+}
+
+/* 카드 오른쪽(내용) */
+.RWrightSection {
+  flex: 1;
+  padding: 30px 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+}
+
+.RWinputRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  min-height: 40px;
+}
+
+/* 인풋 왼쪽 설명 */
+.RWlabel {
+  min-width: 80px;
+  font-weight: 500;
+  color: #333;
+  font-size: 14px;
+  padding-top: 10px;
+  flex-shrink: 0;
+}
+
+/* input 스타일 2개 */
+.RWinput {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+  background-color: white;
+}
+.RWinput_main{
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  width: 50px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+  background-color: white;
+}
+
+/* 특징칸 */
+.RWtextarea {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+  background-color: white;
+  resize: vertical;
+  font-family: inherit;
+}
+
+/* 빨간줄 */
+.RWbottomBar {
+  height: 50px;
+  padding : 10px 20px;
+  background-color: #ff0000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 빨간줄 내부 */
+.RWbottomBarText {
+  color: white;
+  font-size: 18px;
+  letter-spacing: 2px;
+}
+
+
+
+ 
+ /* ========================================================================= */
+ /* 메인컨테이너  */
+.RWmaincontainer {
+    border-radius: 10px;
+    min-width: 1020px;
+
+    display: flex;
+    margin-top: 20px;
+    flex-direction: column;
+}
+
+/* 본문 위쪽 */
+.RWtop{
+    border: 1px solid #cceeff;
+    border-radius: 10px;
+    margin-top: 20px;
+    padding: 20px;
+    min-width: 1040px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.RWbottom{
+  display: flex;
+  flex-direction: column;
+}

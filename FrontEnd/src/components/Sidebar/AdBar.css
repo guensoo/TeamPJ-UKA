@@ -1,0 +1,66 @@
+.left-ad-bar-stack {
+    position: fixed;
+    left: 36px;                   /* 화면 왼쪽에서 36px 띄움 */
+    top: 130px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    z-index: 98;                  /* 오른쪽 배너보다 z-index 낮추거나 높임 */
+}
+
+.left-ad-bar-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.left-ad-bar {
+    width: 180px;
+    height: 220px;
+    background: #fff;
+    border-radius: 16px;
+    border: 1.5px solid #d4e5ff;
+    box-shadow: 0 4px 16px rgba(0,100,255,0.09);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-bottom: 18px;
+    text-align: center;
+}
+
+.left-ad-img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 16px 16px 0 0;
+    display: block;
+}
+
+.left-ad-btn {
+    display: block;
+    margin: 18px auto 0 auto;
+    width: 90%;
+    background: #2788ef;
+    color: #fff;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 15px;
+    text-align: center;
+    padding: 12px 0;
+    text-decoration: none;
+    transition: background 0.15s;
+}
+.left-ad-btn:hover {
+    background: #1767c6;
+}
+
+@media (max-width: 1045px) {
+    .left-ad-bar-stack {
+        display: none;
+    }
+    .container {
+        margin-left: 0;
+    }
+}

@@ -1,0 +1,192 @@
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-bottom: 2px solid #00aaff;
+    border-radius: 0 0 12px 12px;
+}
+.header-left-section {
+    cursor : pointer;
+}
+
+.header-left-section .logo {
+    height: 72px;
+    transition: transform 0.2s ease-in-out;
+    margin-left: 16px;
+}
+
+.header-left-section .logo:hover {
+    transform: scale(1.05);
+}
+
+.header-right-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+.header-nav-links {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    position: relative;
+    margin-top: -10px;
+}
+
+.header-nav-links a {
+    text-decoration: none;
+    color: #000000;
+    font-size: 17px;
+    font-weight: 500;
+    position: relative;
+    padding: 4px 2px;
+    transition: all 0.2s ease;
+}
+
+.header-nav-links a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0%;
+    height: 2px;
+    background-color: #00aaff;
+    transition: width 0.3s ease-in-out;
+}
+
+.header-nav-links a:hover {
+    color: #00aaff;
+}
+
+.header-nav-links a:hover::after {
+    width: 100%;
+}
+
+/* ① 로그인/회원가입 묶음 */
+.header-auth-buttons {
+    display: flex;
+    align-items: center;
+    margin-top: 16px;
+    margin-right: 16px;
+    gap: 8px;
+}
+
+/* ② 회원가입 버튼 */
+.signup-button {
+    background-color: #ffffff;
+    color: #00aaff;
+    border: 1px solid #00aaff;
+    padding: 8px 18px;
+    border-radius: 24px;
+    text-decoration: none;
+    font-weight: bold;
+    box-shadow: 0 3px 8px rgba(0, 170, 255, 0.2);
+    transition: all 0.2s ease-in-out;
+}
+
+/* ③ 마이페이지 버튼 */
+.profile-button {
+    background-color: #00aaff;
+    color: #ffffff;
+    border: 1px solid #00aaff;
+    padding: 8px 18px;
+    border-radius: 24px;
+    text-decoration: none;
+    font-weight: bold;
+    box-shadow: 0 3px 8px rgba(0, 170, 255, 0.2);
+    transition: all 0.2s ease-in-out;
+}
+
+.profile-button:hover {
+    background-color: #008ecc;
+    border-color: #008ecc;
+}
+
+/* ④ 로그아웃 버튼 */
+.logout-button {
+    background-color: #ff4d4d;
+    color: #ffffff;
+    border: 1px solid #ff4d4d;
+    padding: 8px 18px;
+    border-radius: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 3px 8px rgba(255, 77, 77, 0.2);
+    transition: all 0.2s ease-in-out;
+}
+
+.logout-button:hover {
+    background-color: #e03e3e;
+    border-color: #e03e3e;
+}
+
+.signup-button:hover {
+    background-color: #e5f8ff;
+    transform: translateY(-2px);
+}
+
+/* ③ 로그인 버튼 (기존 것을 인라인 스타일 제거하고 CSS로) */
+.login-button {
+    background-color: #00aaff;
+    color: white;
+    padding: 8px 18px;
+    border-radius: 24px;
+    text-decoration: none;
+    font-weight: bold;
+    box-shadow: 0 3px 8px rgba(0, 170, 255, 0.2);
+    transition: all 0.2s ease-in-out;
+}
+
+.login-button:hover {
+    background-color: #0090dd;
+    transform: translateY(-2px);
+}
+
+/* 드롭다운 영역 스타일 */
+.header-dropdown {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    justify-content: end;
+    padding : 20px;
+}
+
+.header-dropdown-title {
+    color: #000000;
+    font-weight: 500;
+}
+
+.header-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #ffffff;
+    border: 1px solid #00aaff;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    min-width: 140px;
+    box-shadow: 0 4px 10px rgba(0, 170, 255, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    
+}
+
+.header-dropdown-menu a {
+    padding: 10px 14px;
+    text-decoration: none;
+    color: #000000;
+    transition: background-color 0.2s;
+}
+
+.header-dropdown-menu a:hover {
+    background-color: #e5f8ff;
+}
+
+.arrow {
+    font-size: 12px;
+    color: #00aaff;
+}
