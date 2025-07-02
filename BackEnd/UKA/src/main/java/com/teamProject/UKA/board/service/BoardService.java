@@ -1,6 +1,7 @@
 package com.teamProject.UKA.board.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,10 +50,16 @@ public class BoardService {
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다. id=" + id));
 
         // 조회수 증가
-        board.setView(board.getView() + 1);
+//        board.setView(board.getView() + 1);
         // save() 없이 영속성 컨텍스트에서 변경감지 후 자동 반영됨 (트랜잭션 내)
         return new BoardResponseDTO(board);
     }
+	
+	//조회수 증가
+	@Transactional
+	public void incrementViewCount(String id) {
+	    repository.incrementViewCount(id);
+	}
 	
 	//게시글 추천 카운트
 	@Transactional
@@ -86,6 +93,7 @@ public class BoardService {
 		board.setTitle(requestDTO.getTitle());
 		board.setAuthor(requestDTO.getAuthor());
 		board.setContent(requestDTO.getContent());
+		board.setUpdatedAt(LocalDateTime.now());
 		
 		return new BoardResponseDTO(board);
 	}
@@ -114,6 +122,4 @@ public class BoardService {
 
         return prefix + "_" + String.format("%04d", nextSeq);
     }
-
-	
 }

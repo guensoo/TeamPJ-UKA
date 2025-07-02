@@ -1,56 +1,72 @@
 /* 모달 전체 어둡게 */
 .customer-slide-modal {
-  position: fixed;
-  z-index: 1010;
-  left: 0; top: 0; right: 0; bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    position: fixed;
+    z-index: 1010;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* 모달 내부 */
 .customer-slide-modal-content {
-  background: #fff;
-  padding: 36px 28px 24px 28px;
-  border-radius: 18px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.17);
-  z-index: 1011;
-  min-width: 400px;
-  max-width: 95vw;
-  position: relative;
+    background: #fff;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.17);
+    z-index: 1011;
+    min-width: 400px;
+    max-width: 95vw;
+    max-height: 90vh; /* 적당한 높이 제한 */
+    position: relative;
+}
+.customer-slide-modal img {
+    max-width: 100%;
+    max-height: calc(90vh - 60px); /* 적당한 높이 제한 */
+    object-fit: contain; /* 또는 cover, 원하시는 방식에 따라 */
+    display: block;
+    margin: 0 auto;
 }
 
 /* X 닫기 버튼 */
 .customer-close-btn {
-  position: absolute;
-  right: 18px; top: 14px;
-  font-size: 32px;
-  background: none;
-  border: none;
-  color: #00aaff;
-  cursor: pointer;
-  z-index: 20;
-  padding: 0;
+    position: absolute;
+    right: 18px;
+    top: 14px;
+    font-size: 32px;
+    background: none;
+    border: none;
+    color: #00aaff;
+    cursor: pointer;
+    z-index: 20;
+    padding: 0;
 }
 
-/* 슬라이드 썸네일 */
+/* 썸네일 */
 .customer-slide-thumbnails {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 24px;
-  margin-top: 10px;
-  justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+    margin-top: 10px;
+    justify-content: center;
+    width: 100%;
+    max-width: 1100px;
+    object-fit: cover;
+    height: 100%;
+    transition: box-shadow 0.2s, border 0.15s;
 }
-.customer-slide-thumb {
-  width: 800px;
-  height: 100%;
-  border-radius: 8px;
-  object-fit: cover;
-  border: 2px solid #eee;
-  /* cursor: pointer; */
-  transition: box-shadow 0.2s, border 0.15s;
+
+.customer-slide-thumbnails img {
+    width: 100%;
+    max-width: 1100px;
+    height: auto;
+    object-fit: cover;
 }
+
 /* .customer-slide-thumb:hover {
   box-shadow: 0 0 0 2px #00aaff;
   border: 2px solid #00aaff;
@@ -58,52 +74,56 @@
 
 /* 슬라이드 좌우 버튼 */
 .customer-slider-arrow-btn {
-  transition: color 0.18s, background 0.18s;
+    transition: color 0.18s, background 0.18s;
 }
+
 .customer-slider-arrow-btn:disabled {
-  color: #ccc !important;
-  cursor: default !important;
+    color: #ccc !important;
+    cursor: default !important;
 }
 
 /* 슬라이드 메인 이미지 */
 .customer-slide {
-  border-radius: 16px;
-  background: #f0f2f6;
-  object-fit: cover;
-  display: block;
+    border-radius: 16px;
+    background: #f0f2f6;
+    object-fit: cover;
+    display: block;
 }
 
 /* 버튼들 줄 세우기 */
 .customer-adoption-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 18px;
-  margin-top: 16px;
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    margin-top: 16px;
 }
 
 .customer-adopt-button {
-  background: #00aaff;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  padding: 10px 24px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.18s;
-  box-shadow: 0 2px 6px rgba(0,170,255,0.08);
+    background: #00aaff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    padding: 10px 24px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.18s;
+    box-shadow: 0 2px 6px rgba(0, 170, 255, 0.08);
 }
+
 .customer-adopt-button:disabled {
-  background: #b5e3f6;
-  color: #eee;
-  cursor: default;
+    background: #b5e3f6;
+    color: #eee;
+    cursor: default;
 }
+
 .customer-slider-arrow-btn {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.13);
-  outline: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.13);
+    outline: none;
 }
+
 .customer-slider-arrow-btn:disabled {
-  color: #ccc !important;
-  background: rgba(0,0,0,0.09) !important;
-  cursor: default !important;
+    color: #ccc !important;
+    background: rgba(0, 0, 0, 0.09) !important;
+    cursor: default !important;
 }

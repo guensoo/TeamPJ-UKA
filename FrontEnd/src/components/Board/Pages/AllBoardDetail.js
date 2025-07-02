@@ -3,13 +3,9 @@ import { useEffect, useState } from 'react';
 import './BoardDetail.css';
 import Swal from 'sweetalert2';
 import { useAdmin } from '../../../api/AdminContext';
-import { fetchPostById, deletePost, updatePost, toggleLikes, toggleReport } from '../../../api/BoardApi';
-import { createComment, createReply, fetchCommentsByBoard, fetchRepliesByComment } from '../../../api/BoardCommentApi';
-
-const mockComments = [
-    { id: 1, author: 'guest1', content: '저도 궁금해요.', date: '25.06.14', parentId: null },
-    { id: 2, author: 'user2', content: '답변 부탁드려요.', date: '25.06.14',parentId: null },
-];
+import { fetchPostById, deletePost, toggleLikes, toggleReport, incrementViewCount } from '../../../api/BoardApi';
+import { createComment, createReply, fetchCommentsByBoard, fetchRepliesByComment, updateComment, deleteComment } from '../../../api/BoardCommentApi';
+import CommentList from '../Comment/CommentList';
 
 const AllBoardDetail = () => {
     const { id } = useParams();
@@ -45,15 +41,19 @@ const AllBoardDetail = () => {
     const [editReplyId, setEditReplyId] = useState(null);
     const [editReplyText, setEditReplyText] = useState('');
 
+    //추천, 신고 상태
     const [isLiked, setIsLiked] = useState(false);
     const [isReported, setIsReported] = useState(false);
 
-    const filteredList = location.state?.filteredList || null;
+    //검색 필터링 리스트(useLocation)
+    const filteredList = location.state?.filteredList || [];
+    const noticedPosts = location.state?.noticedPosts || [];
 
     //게시글 ID 조회
     useEffect(() => {
         const getPostsById = async () => {
             try {
+                await incrementViewCount(id); //조회수 증가
                 const data = await fetchPostById(id);
                 setPost(data);
             } catch (error) {
@@ -70,10 +70,10 @@ const AllBoardDetail = () => {
     },[id, navigate])
 
     //삭제 버튼
-    const handleDelete = async () => {
+    const handleDelete = async () => {     
         const confirm = await Swal.fire({
             title: '삭제하시겠습니까?',
-            text: '삭제된 게시글은 복구할 수 없습니다.',
+            html: `삭제된 게시글은 복구할 수 없습니다.<br>댓글을 모두 삭제하셔야 삭제가 완료됩니다.`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d63031',
@@ -84,11 +84,12 @@ const AllBoardDetail = () => {
 
         if (confirm.isConfirmed) {
             try {
-                await deletePost(post.id);
+                await deletePost(id);
                 Swal.fire('삭제 완료', '게시글이 삭제되었습니다.', 'success');
                 navigate('/board/all');
             } catch (error) {
-                Swal.fire('삭제 실패', '게시글 삭제 중 오류가 발생했습니다.', 'error');
+                console.error(`게시글 삭제 실패(id: ${post.id}):`, error);
+                Swal.fire('삭제 실패', '댓글을 모두 삭제해주세요.', 'error');
             }
         }
     }
@@ -97,7 +98,8 @@ const AllBoardDetail = () => {
     const handleNavigate = (post) => {
         navigate(`/board/all/detail/${post.id}`, {
             state: {
-                filteredList: filteredList
+                filteredList: filteredList,
+                noticedPosts: noticedPosts
             }
         });
     }
@@ -106,276 +108,152 @@ const AllBoardDetail = () => {
     useEffect(() => {
         if(!post) return;
 
+        const isNotice = post.category === "NOTICE";
+        const targetList = isNotice ? noticedPosts : filteredList;
+
         if(!filteredList || filteredList.length === 0){
             setPrev(null);
             setNext(null);
             return;
         }
 
-        const sortedList = [...filteredList].sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+        const sortedList = [...targetList].sort((a,b) => {
+            const dateA = a.updatedAt ? new Date(a.updatedAt) : new Date(a.createdAt);
+            const dateB = b.updatedAt ? new Date(b.updatedAt) : new Date(b.createdAt);
+            return dateB - dateA;
+        });
         const idx = sortedList.findIndex(p => p.id === post.id);
 
         setPrev(sortedList[idx - 1] || null);
         setNext(sortedList[idx + 1] || null);
 
-    },[post, filteredList])
+    },[post, filteredList, noticedPosts])
 
-    // 댓글 목록 조회
-    useEffect(() => {
-        const getComments = async () => {
-            try {
-                const data = await fetchCommentsByBoard(id);
-                setComments(data);
-            } catch (error) {
-                console.error('댓글 목록 조회 실패', error);
+    //답글 조회(재귀)
+    const fetchAllReplies = async (parentId) => {
+        const replies = await fetchRepliesByComment(parentId);
+        let allReplies = [...replies];
+
+        for (const reply of replies) {
+            const childReplies = await fetchAllReplies(reply.id);
+            allReplies = allReplies.concat(childReplies);
+        }
+
+        return allReplies;
+    };
+
+    // 전체 댓글 조회
+    const getAllComments = async () => {
+        try {
+            // 댓글 목록
+            const commentsData = await fetchCommentsByBoard(id); //최상위 댓글들
+            const allCommentsWithReplies = [...commentsData];
+
+            for (const comment of commentsData) {
+                // 대댓글 가져오기
+                const replies = await fetchAllReplies(comment.id);
+                allCommentsWithReplies.push(...replies);
             }
-        };
-        getComments();
+
+            setComments(allCommentsWithReplies);
+        } catch (error) {
+            console.error('댓글 및 대댓글 조회 실패', error);
+        }
+    };
+
+    useEffect(() => {
+        getAllComments();
     }, [id]);
 
-    // 댓글 LocalStorage에 저장
-    // useEffect(() => {
-    //     localStorage.setItem(`comments-${id}`, JSON.stringify(comments));
-    // }, [comments, id]);
+    // 댓글 작성
+    const handleCommentSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!commentInput.trim()) return;
+
+        try {
+            await createComment(id, {
+                author: currentUser,
+                content: commentInput.trim(),
+            });
+            setCommentInput('');
+            // 작성 후 댓글 목록 재조회
+            await getAllComments();
+        } catch (error) {
+            console.error('댓글 작성 실패', error);
+            Swal.fire('오류', '댓글 작성에 실패했습니다.', 'error');
+    }
+    };
+
+    //대댓글 작성
+    const handleReplySubmit = async (e, parentId) => {
+        e.preventDefault();
+
+        // const input = replyInput[parentId]?.trim();
+        const input = e.target.elements[0].value.trim();
+
+        if (!input) return;
+
+        try {
+            await createReply(parentId, {
+                author: currentUser,
+                content: input,
+            });
+            setReplyInput((prev) => {
+                const newInputs = { ...prev };
+                delete newInputs[parentId];
+                return newInputs;
+            });
+            setReplyTargetId(null);
+            await getAllComments();
+        } catch (error) {
+            console.error('대댓글 작성 실패', error);
+            Swal.fire('오류', '대댓글 작성에 실패했습니다.', 'error');
+        }
+    }
 
     // 댓글 수정
+    const saveEditComment = async (editCommentId,editCommentText) => {
+        if(!editCommentText || editCommentText.trim() === '') return;
+
+        try {
+            await updateComment(editCommentId, editCommentText.trim());
+            await getAllComments(); // 수정 후 전체 댓글 목록 조회
+            setEditCommentId(null);
+            setEditCommentText('');    
+        } catch (error) {
+            console.error("댓글 수정 실패",error);
+            Swal.fire('오류', '댓글 수정에 실패했습니다.', 'error');
+        }
+    };
+
+    // 대댓글 수정 저장
+    const saveEditReply = async () => {
+        if (!editReplyText || editReplyText.trim() === '') return;
+        try {
+            await updateComment(editReplyId, editReplyText.trim());
+            await getAllComments(); // 수정 후 목록 재조회
+            setEditReplyId(null);
+            setEditReplyText('');
+        } catch (error) {
+            console.error('답글 수정 실패', error);
+            Swal.fire('오류', '답글 수정에 실패했습니다.', 'error');
+        }  
+    };
+
     const EditComment = (comment) => {
         setEditCommentId(comment.id);
         setEditCommentText(comment.content);
     };
 
-    // 댓글 수정 저장
-    const saveEditComment = () => {
-        if (editCommentText.trim() === '') return;
-
-        setComments(prev =>
-            prev.map(c =>
-                c.id === editCommentId ? { ...c, content: editCommentText } : c
-            )
-        );
-        setEditCommentId(null);
-        setEditCommentText('');
-    };
-
-    // 대댓글 수정
-    const EditReply = (reply) => {
-        setEditReplyId(reply.id);
-        setEditReplyText(reply.content);
-    };
-
-    // 대댓글 수정 저장
-    const saveEditReply = () => {
-        if (editReplyText.trim() === '') return;
-
-        setComments(prev =>
-            prev.map(c =>
-                c.id === editReplyId ? { ...c, content: editReplyText } : c
-            )
-        );
-        setEditReplyId(null);
-        setEditReplyText('');
-    };
-
-    if (!post) {
-        return <p>게시글을 찾을 수 없습니다.</p>;
-    }
-
-    // 댓글 작성
-    const handleCommentSubmit = async (e) => {
-        e.preventDefault();
-        if (commentInput.trim()) {
-            setComments([
-                ...comments,
-                {
-                id: comments.length + 1,
-                author: currentUser,
-                content: commentInput,
-                date: (new Date().toISOString().split('T')[0]),
-                parentId: null,
-                },
-            ]);
-        setCommentInput('');
-        }
-    };
-
-    //답글
-    const handleReplySubmit = (e, parentId) => {
-        e.preventDefault();
-
-        const input = replyInput[parentId]?.trim();
-        if(!input) return;
-        
-        setComments([
-            ...comments,
-            {
-                id: Date.now(),
-                author: currentUser,
-                content: input,
-                date: new Date().toISOString().split('T')[0],
-                parentId: parentId,
-            },
-        ]);
-        setReplyInput(prev => {
-            const newInputs = {...prev};
-            delete newInputs[parentId];
-            return newInputs;
-        });
-
-        setReplyTargetId(null);
-        
-    }
-
-    // ✅ 댓글과 대댓글 재귀 렌더링 함수
-    const renderCommentTree = (parentId = null, level = 0) => {
-        return comments
-        .filter(c => c.parentId === parentId)
-        .map(c => (
-            <div key={c.id} style={{ marginLeft: parentId ? 20 : 0, marginBottom: 12 }}>
-            <div style={{ fontSize: 15 }}>
-                <b>
-                    {c.author}
-                    {c.author === currentUser && " (작성자)"}
-                </b>
-                <span style={{ marginLeft: 6, color: "#bbb", fontSize: 13 }}>{c.date}</span>
-            </div>
-            <div>
-                {editCommentId === c.id || editReplyId === c.id ? (
-                <>
-                    <input
-                        type="text"
-                        value={editCommentId === c.id ? editCommentText : editReplyText}
-                        onChange={e => {
-                            if (editCommentId === c.id) setEditCommentText(e.target.value);
-                            else setEditReplyText(e.target.value);
-                        }}
-                        style={{
-                            fontSize: 14,
-                            padding: "6px 12px",
-                            border: "1px solid #ccc",
-                            borderRadius: 6,
-                            width: "60%",
-                            marginTop: 6,
-                        }}
-                    />
-                    <button
-                        className="board-detail-comment-button"
-                        onClick={() => {
-                            if (editCommentId === c.id) saveEditComment();
-                            else saveEditReply();
-                        }}
-                        style={{
-                            cursor: 'pointer',
-                        }}
-                        >
-                        저장
-                    </button>
-                    <button
-                        className="board-detail-comment-button"
-                        onClick={() => {
-                            setEditCommentId(null);
-                            setEditReplyId(null);
-                        }}
-                        style={{
-                            cursor: 'pointer',
-                        }}
-                    >
-                    취소
-                    </button>
-                </>
-                ) : (
-                <>
-                    <div style={{ fontSize: 14, marginTop: 4 }}>{c.content}</div>
-                    {(isAdmin || c.author === currentUser) && (
-                    <>
-                        <button
-                            onClick={() =>
-                                c.parentId
-                                ? EditReply(c)
-                                : EditComment(c)
-                            }
-                            style={{
-                                fontSize: 13,
-                                marginLeft: 4,
-                                background: 'none',
-                                border: 'none',
-                                color: '#0984e3',
-                                cursor: 'pointer',
-                            }}
-                        >
-                        ✏️ 수정
-                        </button>
-                        <button
-                            onClick={() =>
-                                c.parentId
-                                ? handleDeleteReply(c.id)
-                                : handleDeleteComment(c.id)
-                            }
-                            style={{
-                                fontSize: 13,
-                                marginLeft: 6,
-                                background: 'none',
-                                border: 'none',
-                                color: '#e17055',
-                                cursor: 'pointer',
-                            }}
-                        >
-                        🗑 삭제
-                        </button>
-                    </>
-                    )}
-                </>
-                )}
-            </div>
-
-            {/* ↪ 답글 버튼 */}
-            <button
-                onClick={() => setReplyTargetId(prev => (prev === c.id ? null : c.id))}
-                style={{
-                fontSize: 13,
-                marginTop: 6,
-                background: 'none',
-                border: 'none',
-                color: '#6c5ce7',
-                cursor: 'pointer',
-                }}
-            >
-                ↪ 답글
-            </button>
-
-            {/* 답글 입력창 */}
-            {replyTargetId === c.id && (
-                <form
-                onSubmit={e => handleReplySubmit(e, c.id)}
-                style={{ display: 'flex', gap: 8, marginTop: 6 }}
-                >
-                <input
-                    type="text"
-                    placeholder="답글을 입력하세요"
-                    value={replyInput[c.id] || ''}
-                    onChange={e =>
-                    setReplyInput(prev => ({ ...prev, [c.id]: e.target.value }))
-                    }
-                    style={{
-                    flex: 1,
-                    border: "1px solid #ccc",
-                    borderRadius: 7,
-                    fontSize: 14,
-                    padding: "6px 12px"
-                    }}
-                />
-                <button type="submit" className="board-detail-submit-button">등록</button>
-                </form>
-            )}
-
-            {/* 🔁 재귀 호출 */}
-            {renderCommentTree(c.id, level + 1)}
-            </div>
-        ));
+    const EditReply = (comment) => {
+        setEditReplyId(comment.id);
+        setEditReplyText(comment.content);
     };
 
     //댓글 삭제
-    const handleDeleteComment = (id) => {
-        Swal.fire({
+    const handleDeleteComment = async (id) => {
+        const confirm = await Swal.fire({
             title: '댓글 삭제',
             text: '해당 댓글 및 대댓글이 삭제됩니다. 계속할까요?',
             icon: 'warning',
@@ -384,19 +262,24 @@ const AllBoardDetail = () => {
             cancelButtonColor: '#636e72',
             confirmButtonText: '삭제',
             cancelButtonText: '취소',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                setComments(prev =>
-                    prev.filter(c => c.id !== id && c.parentId !== id)  // 댓글 + 대댓글 제거
-                );
-            Swal.fire('삭제 완료', '댓글이 삭제되었습니다.', 'success');
-            }
         });
+
+        if(confirm.isConfirmed){
+            try {
+                await deleteComment(id);
+                await getAllComments();
+                Swal.fire('삭제 완료', '댓글이 삭제되었습니다.', 'success');
+            } catch (error) {
+                console.error('댓글 삭제 실패', error);
+                Swal.fire('오류', '댓글 삭제에 실패했습니다.', 'error');
+            }
+        }
+        
     };
 
     //대댓글 삭제
-    const handleDeleteReply = (id) => {
-        Swal.fire({
+    const handleDeleteReply = async (id) => {
+        const confirm = await Swal.fire({
             title: '답글 삭제',
             text: '정말 삭제하시겠습니까?',
             icon: 'question',
@@ -405,14 +288,25 @@ const AllBoardDetail = () => {
             cancelButtonColor: '#636e72',
             confirmButtonText: '삭제',
             cancelButtonText: '취소',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                setComments(prev => prev.filter(c => c.id !== id));
-            Swal.fire('삭제 완료', '답글이 삭제되었습니다.', 'success');
-            }
         });
+
+        if (confirm.isConfirmed) {
+            try {
+                await deleteComment(id);
+                await getAllComments();
+                Swal.fire('삭제 완료', '답글이 삭제되었습니다.', 'success');
+            } catch (error) {
+                console.error('답글 삭제 실패', error);
+                Swal.fire('오류', '답글 삭제에 실패했습니다.', 'error');
+            }
+    }
     };
 
+    if (!post) {
+        return <p>게시글을 찾을 수 없습니다.</p>;
+    }
+
+    //추천 버튼
     const handleLikesButton = async () => {
         try {
             const updatedPost = await toggleLikes(post.id, !isLiked);
@@ -423,6 +317,7 @@ const AllBoardDetail = () => {
         }
     };
 
+    //신고 버튼
     const handleReportButton = async () => {
         try {
             const updatedPost = await toggleReport(post.id, !isReported);
@@ -448,7 +343,9 @@ const AllBoardDetail = () => {
                 <p style={{fontSize: 30}}>{post.title}</p>
                 <div style={{textAlign: 'right', marginTop: 15}}>
                     <span style={{color: '#ccc'}}>작성자 : {post.author}</span><br/>
-                    <span style={{color: '#ccc'}}>{new Date(post.createdAt).toLocaleString()}</span>
+                    <span style={{color: '#ccc'}}>
+                        {post.updatedAt && post.updatedAt !== post.createdAt ? `수정됨 ${new Date(post.updatedAt).toLocaleString()}` : new Date(post.createdAt).toLocaleString()}
+                    </span>
                 </div>  
             </div>
             <hr/>
@@ -493,28 +390,52 @@ const AllBoardDetail = () => {
             {/* 댓글 */}
             <strong>댓글({comments.length})</strong>
             <div style={{ marginTop: 12 }}>
-                {renderCommentTree()}
+                <CommentList
+                    comments={comments}
+                    currentUser={currentUser}
+                    isAdmin={isAdmin}
+                    handleDeleteComment={handleDeleteComment}
+                    handleDeleteReply={handleDeleteReply}
+                    saveEditComment={saveEditComment}
+                    saveEditReply={saveEditReply}
+                    replyTargetId={replyTargetId}
+                    setReplyTargetId={setReplyTargetId}
+                    replyInput={replyInput}
+                    setReplyInput={setReplyInput}
+                    handleReplySubmit={handleReplySubmit}
+                    EditComment={EditComment}
+                    EditReply={EditReply}
+                    editCommentId={editCommentId}
+                    editCommentText={editCommentText}
+                    setEditCommentId={setEditCommentId}
+                    setEditCommentText={setEditCommentText}
+                    editReplyId={editReplyId}
+                    editReplyText={editReplyText}
+                    setEditReplyId={setEditReplyId}
+                    setEditReplyText={setEditReplyText}
+                />
             </div>
-            
-            <form
-                onSubmit={handleCommentSubmit}
-                style={{ display: 'flex', gap: 8, marginTop: 12 }}
-            >
-                <input
+            {/* 최상위 댓글 입력폼 추가 */}
+            <div style={{ marginTop: 12 }}>
+                <form onSubmit={handleCommentSubmit} style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
+                    <input
                     type="text"
                     placeholder="댓글을 입력하세요"
                     value={commentInput}
                     onChange={e => setCommentInput(e.target.value)}
                     style={{
                         flex: 1,
-                        border: "1px solid #ccc",
+                        border: '1px solid #ccc',
                         borderRadius: 7,
-                        fontSize: 16,
-                        padding: "8px 14px"
+                        fontSize: 14,
+                        padding: '6px 12px',
                     }}
-                />
-                <button type="submit" className="board-detail-submit-button">등록</button>
-            </form>
+                    />
+                    <button type="submit" className="board-detail-submit-button">
+                    등록
+                    </button>
+                </form>
+            </div>
 
             {/* 이전/다음글 */}
             <div className="board-post-navigation">

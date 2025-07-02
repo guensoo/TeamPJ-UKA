@@ -55,7 +55,10 @@ public class SecurityConfig {
                         "/comment/**",
                         "/customer/faq/**",
                         "/customer/qna/**",
-                        "/admin/**"
+                        "/admin/**",
+                        "/customer/adoption/**",
+                        "/uploads/**",
+                        "/api/users/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )

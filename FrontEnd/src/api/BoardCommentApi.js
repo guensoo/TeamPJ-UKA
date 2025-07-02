@@ -45,3 +45,24 @@ export const fetchRepliesByComment = async (parentCommentId) => {
         throw error;
     }
 };
+
+//댓글, 답글 수정
+export const updateComment = async (commentId, content) => {
+    try {
+        const res = await axios.put(`${API_BASE_URL}/comment/${commentId}`, {content});
+        return res.data;
+    } catch (error) {
+        console.error(`댓글/답글 수정 실패(commentId: ${commentId}):`, error);
+        throw error;
+    }
+}
+
+//댓글, 답글 삭제
+export const deleteComment = async (commentId) => {
+    try {
+        await axios.delete(`${API_BASE_URL}/comment/${commentId}`);
+    } catch (error) {
+        console.error(`댓글/답글 삭제 실패(commentId: ${commentId}):`, error);
+        throw error;
+    }
+}

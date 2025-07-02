@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import './FormButton.css';
 import { Editor } from '@toast-ui/react-editor';
@@ -21,6 +21,8 @@ const AllBoardEdit = () => {
     const [post, setPost] = useState('');
     const [category, setCategory] = useState('');
     const [title, setTitle] = useState('');
+
+    const [isEdit, setIsEdit] = useState(false);
 
     const categoryLabels = {
         NOTICE: '공지사항',
@@ -49,6 +51,7 @@ const AllBoardEdit = () => {
         return <div>게시글이 없습니다.</div>
     }
 
+    //수정
     const handleSubmit = (e) => {
         e.preventDefault();
         
@@ -59,9 +62,11 @@ const AllBoardEdit = () => {
             title,
             category,
             content: updatedContent,
-            updatedAt: new Date(),
+            // updatedAt: post.updatedAt,
         }
 
+        console.log("수정시간",post.updatedAt)
+        console.log("현재시간",new Date(post.updatedAt).toLocaleString())
         Swal.fire({
             title: '게시글 수정',
             text: '수정하시겠습니까?',

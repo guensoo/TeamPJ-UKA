@@ -62,6 +62,7 @@ public class RequestService {
 			entity.setDetail(dto.getDetail());
 			entity.setPhone(dto.getPhone());
 			entity.setSex(dto.isSex());
+			entity.setSelectedbreed(dto.getSelectedbreed());
 			entity.setKind(dto.getKind());
 			entity.setTime(dto.getTime());
 			entity.setLocal(dto.getLocal());

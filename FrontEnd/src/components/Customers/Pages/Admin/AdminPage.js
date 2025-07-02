@@ -46,11 +46,11 @@ const AdminPage = () => {
 
             <div className="admin-main">
                 <Routes>
-                <Route path="reported" element={<ReportedPosts />} />
-                <Route path="comment" element={<ReportedComments />} />
-                <Route path="newqna" element={<NewQnA />} />
-                <Route path="faqform" element={<FAQForm />} />
-                <Route path="reset" element={<DataReset />} />
+                    <Route path="reported" element={<ReportedPosts />} />
+                    <Route path="comment" element={<ReportedComments />} />
+                    <Route path="newqna" element={<NewQnA />} />
+                    <Route path="faqform" element={<FAQForm />} />
+                    <Route path="reset" element={<DataReset />} />
                 </Routes>
             </div>
         </div>

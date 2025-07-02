@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,7 @@ import com.teamProject.UKA.customer.qna.dto.QnaRequestDTO;
 import com.teamProject.UKA.customer.qna.dto.QnaResponseDTO;
 import com.teamProject.UKA.customer.qna.entity.QnaEntity;
 import com.teamProject.UKA.customer.qna.repository.QnaCommentRepository;
+import com.teamProject.UKA.customer.qna.repository.QnaLikeLogRepository;
 import com.teamProject.UKA.customer.qna.repository.QnaRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ public class QnaService {
 
 	private final QnaRepository qnaRepository;
 	private final QnaCommentRepository qnaCommentRepository;
+    private final QnaLikeLogRepository qnaLikeLogRepository;
 
 	// QnA 등록
 	@Transactional
@@ -169,4 +172,9 @@ public class QnaService {
 
 		return QnaResponseDTO.fromEntity(qna, comments);
 	}
+	
+	public boolean hasUserLikedQna(Long qnaNo, String userId) {
+	    return qnaLikeLogRepository.existsByQnaNoAndUserId(qnaNo, userId);
+	}
+
 }

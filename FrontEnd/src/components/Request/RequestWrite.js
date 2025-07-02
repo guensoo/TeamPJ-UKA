@@ -1,10 +1,11 @@
 import DatePicker from 'react-datepicker';
 import defimg from '../../assets/default.jpg'
 import './RequestWrite.css'
-import { Button, Switch} from "@mui/material";
+import { Button, Dialog, DialogTitle, ListItem, ListItemButton, Switch} from "@mui/material";
 import { forwardRef, useState } from "react";
 import {useNavigate} from 'react-router-dom'
 import { useAlert } from '../Customers/Context/AlertContext';
+import { animal } from "../DetailPage/DetailBodyData.js";
 
 export const RequestWrite = () => {
 
@@ -16,7 +17,8 @@ export const RequestWrite = () => {
     const [error,setError] = useState(' ');
     // 한번이라도 수정했는지-에러 컨트롤
     const [isTouched,setIsTouched] = useState(false);
-    // 
+    //
+    const [open,setOpen] = useState(false);
     const navigate = useNavigate();
     // 폼 데이터
     const [formData, setFormData] = useState({
@@ -25,7 +27,7 @@ export const RequestWrite = () => {
         age:'',
         name:'',
         image:'default.jpg',
-
+        selectedBreed:'',
         date:'',
         local:'',
         phone:'',
@@ -38,7 +40,7 @@ export const RequestWrite = () => {
     //이미지 등록
     const handleImgChange = (e) => {
         try {
-            const file = e.target.file[0];
+            const file = e.target.files[0];
             if(!file) return;
 
             setImg(file)
@@ -65,6 +67,27 @@ export const RequestWrite = () => {
         }
         // setError(' ')
     },[formData.name])
+    
+    
+
+
+
+    // 취소 버튼 눌렀을시
+    const handleCancle = async () => {
+
+        const result = await showAlert({
+            title:`작성을 취소하시겠습니까?\n(이전 화면으로 돌아갑니다)`,
+            icon:'warning',
+            showCancelButton : true,
+            confirmButtonText: '네',
+            cancelButtonText:'아니요',
+        })
+
+        // '네' 버튼 눌렀을 시
+        if(result.isConfirmed){
+            navigate(-1)
+        }
+    }
 
 
     //(중요) 완료 눌렀을 시 동작
@@ -109,7 +132,8 @@ export const RequestWrite = () => {
                 find : false,
 
                 name : formData.name,
-                kind : formData.kind,
+                kind : formData.kind==='cat'?'고양이':'강아지',
+                selectedbreed: formData.selectedBreed,
                 // JSON.stringify(body.user)
                 user_no : JSON.parse(localStorage.getItem('user')).seq,
                 // user_seq : localStorage.getItem('userId'),
@@ -117,9 +141,9 @@ export const RequestWrite = () => {
                 sex : formData.sex==='on',    // 성별
                 detail:formData.detail,      // 특징
                 age:formData.age,                // 나이
-                lostLocation: formData.local,      // 실종 장소
-                lostTime: formData.date,          // 실종 시간  
-                contactNumber: formData.phone,     // 연락수단
+                local: formData.local,      // 실종 장소
+                time: formatDateToYYYYMMDD(formData.date),// 실종 시간  
+                phone: formData.phone,     // 연락수단
             }
 
             const option = {
@@ -151,6 +175,14 @@ export const RequestWrite = () => {
                 {formData.date===""?"날짜 선택":value+' ~'}
             </Button>
         ));
+
+        // 날짜 형식 변환 함수
+        const formatDateToYYYYMMDD = (date) => {
+            const year = date.getFullYear();
+            const month = `${date.getMonth() + 1}`.padStart(2, '0');
+            const day = `${date.getDate()}`.padStart(2, '0');
+            return `${year}${month}${day}`;
+        };
 
 
     return(
@@ -200,35 +232,76 @@ export const RequestWrite = () => {
                                 {/* 빨간색 바 */}
                                 <div className="RWbottomBar">
                                     <span className="RWbottomBarText">
-                                        🐾<input
-                                            placeholder='종류'
-                                            value={formData.kind}
-                                            onChange={(e)=>{
-                                                setFormData(prev=>({...prev,kind:e.target.value}))
-                                                if (!isTouched) setIsTouched(true);
-                                            }}
-                                            className='RWinput_main'
-                                        />
-                                        | 🧸
-                                         <small>수컷</small>
-                                        <Switch onChange={(e)=>setFormData(prev=>({...prev,sex:e.target.value}))} defaultChecked color="default" /><small>암컷</small>
-                                        | 🕒
-                                        <input
-                                            placeholder='나이'
-                                            value={formData.age}
-                                            onChange={(e)=>setFormData(prev=>({...prev,age:e.target.value}))
-                                            }
-                                            className='RWinput_main'
-                                        />
-                                        | 🏷️
-                                        <input
-                                            placeholder='이름'
-                                            value={formData.name}
-                                            onChange={(e)=>{setFormData(prev=>({...prev,name:e.target.value}))}}
-                                            className='RWinput_main'
-                                        />
-                                        </span>
+                                        <div style={{display:'flex',flexDirection:'row',gap :'20px'}}>
+                                            <span>
+                                                🏷️
+                                                <input
+                                                    placeholder='이름'
+                                                    style={{width:'150px'}}
+                                                    value={formData.name}
+                                                    onChange={(e)=>{setFormData(prev=>({...prev,name:e.target.value}))}}
+                                                    className='RWinput_main'
+                                            /></span>
+
+                                            |
+
+                                            <span>🐾
+                                                <select value={formData.kind} onChange={(e)=>{setFormData(prev=>({...prev,kind:e.target.value}))}}>
+                                                    <option value="" disabled hidden>종류</option>
+                                                    <option value="dog">강아지</option>
+                                                    <option value="cat" >고양이</option>
+                                                </select>
+
+                                                <Button variant="contained" onClick={
+                                                    formData.kind===''?(()=>{}):()=>setOpen(true)}
+                                                >
+                                                    {formData.selectedBreed===''?'품종':formData.selectedBreed}
+                                                </Button>
+                                            
+                                                <Dialog
+                                                    onClose={()=>{setOpen(!open)}}
+                                                    open={open}
+                                                >
+                                                    <DialogTitle
+                                                        sx={{background:'#cceeff'}}
+                                                    >품종을 선택하세요</DialogTitle>
+                                                        {animal[formData.kind === 'cat' ? 'cat' : 'dog'].map((animal, index) => (
+                                                            <ListItemButton key={index} 
+                                                                onClick={()=>{
+                                                                    const result = Object.keys(animal)[0]
+                                                                    setFormData(prev=>({...prev,selectedBreed:result}))
+                                                                    console.log(result)
+                                                                    // setSeletedBreed(Object.keys(animal)[0])
+                                                                    setOpen(false);
+                                                                }}>
+                                                                <ListItem disablePadding sx={{border:'1px solid #cceeff'}}>
+                                                                    {<img className="DBdialogimg" src={`/img/${formData.kind}_picture/${Object.values(animal)[0]}.jpg`} alt="고양이 이미지" />}
+                                                                    {Object.keys(animal)[0]}
+                                                                </ListItem>
+                                                        </ListItemButton>
+                                                        ))}               
+                                                </Dialog>
+                                            </span>
+                                        </div>
+                                        <div style={{display:'flex',gap :'20px'}}>   
+                                            <span>🕒
+                                                <input
+                                                    style={{width:'150px'}}
+                                                    placeholder='나이'
+                                                    value={formData.age}
+                                                    onChange={(e)=>setFormData(prev=>({...prev,age:e.target.value}))
+                                                    }
+                                                    className='RWinput_main'/>
+                                            </span>
+                                            |
+                                            <span>🧸
+                                                <small style={{alignSelf:'center'}}>수컷</small>
+                                                <Switch onChange={(e)=>setFormData(prev=>({...prev,sex:e.target.value}))} defaultChecked color="default" /><small style={{alignSelf:'center'}}>암컷</small>
+                                            </span>
+                                        </div>
+                                    </span>
                                 </div>
+
 
                                 {/* 작성내용 */}
                                 <div className="RWrightSection">
@@ -272,7 +345,7 @@ export const RequestWrite = () => {
                                         value={formData.phone}
                                         onChange={(e)=>{setFormData(prev=>({...prev,phone:e.target.value}))}}
                                         className="RWinput"
-                                        placeholder="연락 가능한 전화번호를 입력해주세요"
+                                        placeholder="연락 가능한 전화번호 또는 SNS아이디를 입력해주세요"
                                     />
                                     </div>
 
@@ -299,15 +372,26 @@ export const RequestWrite = () => {
                         </div>
                     </div>
                </div>{/* end ex */}
-                    <Button 
-                        variant="contained"
-                        className="DBButton"
-                        color="primary"
-                        sx={{marginLeft:'auto', marginTop:'20px'}}
-                        onClick={()=>{
-                            handleSuccess();
-                        }}>완료
-                    </Button>
+                    <div className='RWbuttonbox'>
+                        <Button 
+                            variant="contained"
+                            className="DBButton"
+                            color="primary"
+                            onClick={()=>{
+                                handleCancle();
+                            }}>취소
+                        </Button>
+
+                        <Button 
+                            variant="contained"
+                            className="DBButton"
+                            color="primary"
+                            
+                            onClick={()=>{
+                                handleSuccess();
+                            }}>완료
+                        </Button>
+                    </div>
             </div>{/* end top */}
         </div>//end container
         )

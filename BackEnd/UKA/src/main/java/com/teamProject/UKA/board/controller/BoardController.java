@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.teamProject.UKA.board.dto.BoardCommentCount;
 import com.teamProject.UKA.board.dto.BoardRequestDTO;
 import com.teamProject.UKA.board.dto.BoardResponseDTO;
 import com.teamProject.UKA.board.service.BoardService;
@@ -41,12 +42,19 @@ public class BoardController {
 		return ResponseEntity.ok(responseDTO);
 	}
 
-	// 게시글 조회 (조회수 자동 증가)
+	// 게시글 조회
     @GetMapping("/{id}")
     public ResponseEntity<BoardResponseDTO> getBoard(@PathVariable("id") String id) {
     	// id : board_250630_0004
         BoardResponseDTO responseDTO = service.getBoard(id);
         return ResponseEntity.ok(responseDTO);
+    }
+    
+    //게시글 조회수 증가
+    @PostMapping("/{id}/view")
+    public ResponseEntity<Void> incrementView(@PathVariable("id") String id) {
+        service.incrementViewCount(id);
+        return ResponseEntity.ok().build();
     }
     
     //게시글 추천 카운트

@@ -72,6 +72,19 @@ public class QnaCommentService {
     // 댓글 삭제
     @Transactional
     public void deleteQnaComment(Long commentId) {
-        qnaCommentRepository.deleteById(commentId);
+        QnaCommentEntity comment = qnaCommentRepository.findById(commentId)
+            .orElseThrow(() -> new RuntimeException("댓글이 없습니다."));
+        comment.setDeleted("Y");
+        // (JPA 변경감지로 자동 update이긴 하지만, 더 확실히 하고 싶으면 save까지)
+        qnaCommentRepository.save(comment);
+    }
+    
+    // 삭제 댓글 변경
+    @Transactional
+    public void deleteComment(Long commentId) {
+        QnaCommentEntity comment = qnaCommentRepository.findById(commentId)
+            .orElseThrow(() -> new RuntimeException("댓글이 없습니다."));
+        comment.setDeleted("Y");
+        // save() 호출하거나, 트랜잭션 커밋 시 자동 반영
     }
 }

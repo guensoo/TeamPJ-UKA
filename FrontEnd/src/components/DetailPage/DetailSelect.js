@@ -1,41 +1,16 @@
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import './DetailSelect.css'
 import { useEffect } from 'react';
-
-// {
-//           "desertionNo" : "448567202500980",
-//           "happenDt" : "20250613",
-//           "happenPlace" : "진해구 명동방파제",
-//           "kindFullNm" : "[개] 믹스견",
-//           "upKindCd" : "417000",
-//           "upKindNm" : "개",
-//           "kindCd" : "000114",
-//           "kindNm" : "믹스견",
-//           "colorCd" : "흰색",
-//           "age" : "2023(년생)",
-//           "weight" : "15(Kg)",
-//           "noticeNo" : "경남-창원1-2025-00377",
-//           "noticeSdt" : "20250613",
-//           "noticeEdt" : "20250623",
-//           "popfile1" : "http://openapi.animal.go.kr/openapi/service/rest/fileDownloadSrvc/files/shelter/2025/06/202506130706422.jpg",
-//           "popfile2" : "http://openapi.animal.go.kr/openapi/service/rest/fileDownloadSrvc/files/shelter/2025/06/202506130706903.jpg",
-//           "processState" : "보호중",
-//           "sexCd" : "M",
-//           "neuterYn" : "N",
-//           "specialMark" : "진트리버처럼 생긴 순딩순딩 똥꼬발랄한 아이~키트검사 지알디아양성. 원충약투여.",
-//           "careRegNo" : "348527200900001",
-//           "careNm" : "창원동물보호센터",
-//           "careTel" : "055-225-5701",
-//           "careAddr" : "경상남도 창원시 성산구 공단로474번길 117 (상복동) 창원동물보호센터",
-//           "careOwnerNm" : "창원시장",
-//           "orgNm" : "경상남도 창원시 의창성산구",
-//           "updTm" : "2025-06-13 07:40:54.0"
-//         }
-
+import defimg from '../../assets/noImage.jpg';
 
 export const DetailSelect = () => {
-  const data = useLocation().state;
-  console.log(data)
+
+  const filteredData = useLocation().state.list
+  const index = useLocation().state.index;
+  const data = filteredData[index];
+  // console.log('전달받은 filter : ',filteredData)
+  // console.log('몇번째 : ',index)
+  // console.log('현재 페이지 데이터 : ',data)
 
   // Params를 사용해서 선택한 정보 전달
   const {id} = useParams();
@@ -105,7 +80,7 @@ export const DetailSelect = () => {
             alt="동물 사진"
             className='DSimageStyle'
             onError={(e) => {
-              e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjNGNEY2Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOUI5QkEwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiI+7IKs7KeEIOuhnOuUqSDsi6TtjqA8L3RleHQ+Cjwvc3ZnPg=='
+              e.target.src = defimg
             }}
           /></div>
         )}
@@ -245,6 +220,10 @@ export const DetailSelect = () => {
       <div style={{ marginTop: '32px',display:'flex', justifyContent:'space-around' }}>
         <button 
           className='DSbuttonStyle'
+          onClick={()=>{
+            navigate('/about/select',{state:{list:filteredData,index:index-1<0?index:index-1}})
+            window.scrollTo(0,0)
+          }}
           onMouseEnter={(e) => {
             e.target.style.transform = 'scale(1.05)';
             e.target.style.boxShadow = '0 6px 20px rgba(238, 90, 82, 0.6)';
@@ -259,7 +238,7 @@ export const DetailSelect = () => {
 
         <button 
           className='DSbuttonStyle'
-          onClick={()=>{navigate('/customer/adoption')}}
+          onClick={()=>{navigate('/customer/adoption',{state:data})}}
           onMouseEnter={(e) => {
             e.target.style.transform = 'scale(1.05)';
             e.target.style.boxShadow = '0 6px 20px rgba(238, 90, 82, 0.6)';
@@ -274,6 +253,10 @@ export const DetailSelect = () => {
 
         <button 
           className='DSbuttonStyle'
+            onClick={()=>{
+            navigate('/about/select',{state:{list:filteredData,index:index+1>=filteredData.length?index:index+1}})
+            window.scrollTo(0,0)
+          }}
           onMouseEnter={(e) => {
             e.target.style.transform = 'scale(1.05)';
             e.target.style.boxShadow = '0 6px 20px rgba(238, 90, 82, 0.6)';
@@ -291,125 +274,3 @@ export const DetailSelect = () => {
   )
 }
 
-
-    // <div className="DScontainer">
-
-    //         <div className='DStop'>
-    //             {/* 이미지 */} 
-    //             <img src={data.popfile1} />
-            
-            
-    //         </div>{/* end top */}   
-
-    //         <div className='DSbottom'>
-    //             {/* 가져온 정보로 상세 정보 표시 */}
-    //             <h2>센터 정보</h2>
-    //             <div className='DSinfo-box'>
-    //                 <div className='DSinfo'>
-    //                     <h3><Chip label="유기 번호" className='DSinfo-text' color="primary" /></h3>
-    //                     <p>{data.desertionNo}</p>
-    //                 </div>
-
-    //                 <div className='DSinfo'>
-    //                     <h3><Chip label="공고 번호" className='DSinfo-text' color="primary" /></h3>
-    //                     <p>{data.noticeNo}</p>
-    //                 </div>
-
-    //                 <div className='DSinfo'>
-    //                     <h3><Chip label="공고 날짜" className='DSinfo-text' color="primary" /></h3>
-    //                     <p>{data.noticeSdt}~{data.noticeEdt}</p>
-    //                 </div>
-
-    //                 <div className='DSinfo'>
-    //                     <h3><Chip label="보호센터이름" className='DSinfo-text' color="primary"/></h3>
-    //                     <p>{data.careNm}</p>
-    //                 </div>
-
-    //                 <div className='DSinfo'>
-    //                     <h3><Chip label="보호센터전화번호" className='DSinfo-text' color="primary"/></h3>
-    //                     <p>{data.careTel}</p>
-    //                 </div>
-
-
-    //                 <div className='DSinfo'>
-    //                     <h3><Chip label="보호자닉네임" className='DSinfo-text' color="primary"/></h3>
-    //                     <p>{data.careOwnerNm}</p>
-    //                 </div>
-
-    //                 <div className='DSinfo'>
-    //                     <h3><Chip label="보호번호" className='DSinfo-text' color="primary"/></h3>
-    //                     <p>{data.careRegNo}</p>
-    //                 </div>
-
-    //                 <div className='DSinfo'>
-    //                     <h3><Chip label="발견일자" className='DSinfo-text' color="primary"/></h3>
-    //                     <p>{data.happenDt}</p>
-    //                 </div>
-
-    //                 <div className='DSinfo'>
-    //                     <h3><Chip label="발견장소" className='DSinfo-text' color="primary"/></h3>
-    //                     <p>{data.happenPlace}</p>
-    //                 </div>
-
-    //                 <div className='DSinfo'>
-    //                     <h3><Chip label="센터주소" className='DSinfo-text' color="primary"/></h3>
-    //                     <p>{data.careAddr}</p>
-    //                 </div>
-
-                    
-    //             </div>
-
-
-
-    //             {/* 가져온 정보로 상세 정보 표시 */}
-    //             <h2>동물정보</h2>
-    //             <div className='DSinfo-box'>
-    //                 <div className='DSinfo'>
-    //                     <h3><Chip label="종류" className='DSinfo-text' color="success"/></h3>
-    //                     <p>{data.upKindNm}</p>
-    //                 </div>
-
-    //                 <div className='DSinfo'>
-    //                     <h3><Chip label="품종" className='DSinfo-text' color="success"/></h3>
-    //                     <p>{data.kindNm}</p>
-    //                 </div>
-
-    //                 <div className='DSinfo'>
-    //                     <h3><Chip label="털색" className='DSinfo-text' color="success"/></h3>
-    //                     <p>{data.colorCd}</p>
-    //                 </div>
-
-    //                 <div className='DSinfo'>
-    //                     <h3><Chip label="출생년도" className='DSinfo-text' color="success"/></h3>
-    //                     <p>{data.age}</p>
-    //                 </div>
-
-    //                 <div className='DSinfo'>
-    //                     <h3><Chip label="몸무게" className='DSinfo-text' color="success"/></h3>
-    //                     <p>{data.weight}</p>
-    //                 </div>
-
-    //                 <div className='DSinfo'>
-    //                     <h3><Chip label="성별" className='DSinfo-text' color="success"/></h3>
-    //                     <p>{data.sexCd==='M'?'수컷':'암컷'}</p>
-    //                 </div>
-
-    //                 <div className='DSinfo'>
-    //                     <h3><Chip label="보호상태" className='DSinfo-text' color="success"/></h3>
-    //                     <p>{data.processState}</p>
-    //                 </div>
-
-    //                 <div className='DSinfo'>
-    //                     <h3><Chip label="특징" className='DSinfo-text' color="success"/></h3>
-    //                     <p>{data.specialMark}</p>
-    //                 </div>
- 
-    //             </div>
-
-    //         </div>{/* ent bottom */}
-    //         {/* 고객센터로 값과 함께 전달할 버튼 */}
-    //             <div className='DSbutton'>
-    //                 <Button variant="contained" color='secondary' onClick={()=>navigate('/about/select')} >이전 동물</Button>
-    //                 <Button variant="contained" onClick={()=>navigate('/customer/adoption')} >입양 문의</Button>
-    //                 <Button variant="contained" color='secondary' onClick={()=>navigate('/about/select')} >다음 동물</Button>
-    //             </div> 

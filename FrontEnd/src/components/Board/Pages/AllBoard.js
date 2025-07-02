@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './AllBoard.css';
+import './BoardList.css';
 import Swal from 'sweetalert2';
 import { fetchAllPosts } from '../../../api/BoardApi';
 
@@ -48,7 +48,11 @@ const AllBoard = () => {
             if (sortOption === 'view') return order * (b.view - a.view);
             if (sortOption === 'likes') return order * (b.likes - a.likes);
             if (sortOption === 'comment') return order * (b.comment - a.comment);
-            if (sortOption === 'latest') return order * (new Date(b.createdAt) - new Date(a.createdAt));
+            if (sortOption === 'latest') {
+                const dateA = a.updatedAt ? new Date(a.updatedAt) : new Date(a.createdAt);
+                const dateB = b.updatedAt ? new Date(b.updatedAt) : new Date(b.createdAt);
+                return order * (dateB - dateA);
+            }
             return 0;
         });
     };
@@ -113,7 +117,7 @@ const AllBoard = () => {
 
 	//타이틀 클릭시
     const handleTitleClick = (post) => {
-        navigate(`/board/all/detail/${post.id}`, { state: { filteredList: isSearching ? filteredPosts : displayedPosts, } });
+        navigate(`/board/all/detail/${post.id}`, { state: { filteredList: isSearching ? filteredPosts : displayedPosts, noticedPosts: noticedPosts} });
     };
 
 	//글쓰기 버튼
@@ -231,7 +235,7 @@ const AllBoard = () => {
                         </div>
                     </td>
                     <td className='notice-cell'>
-                        <div className='board-cell-text' style={{marginLeft:20}}>{post.view}</div>
+                        <div className='board-cell-text' style={{marginLeft:15}}>{post.view}</div>
                     </td>
                     <td className='notice-cell'>
                         <div className='board-cell-text' style={{marginLeft:20}}>{post.likes}</div>
@@ -240,7 +244,9 @@ const AllBoard = () => {
                         <div className='board-cell-text' style={{marginLeft:20}}>{post.comment}</div>
                     </td>
                     <td className='notice-cell'>
-                        <div className='board-cell-text' style={{marginLeft:15}}>{formatDate(post.createdAt)}</div>
+                        <div className='board-cell-text' style={{marginLeft:15}}>
+                            {post.updatedAt ? formatDate(post.updatedAt) : formatDate(post.createdAt)}
+                        </div>
                     </td>
                 </tr>
                 ))}
@@ -275,7 +281,9 @@ const AllBoard = () => {
                                 <div className='board-cell-text' style={{marginLeft:20}}>{post.comment}</div>
                             </td>
                             <td>
-                                <div className='board-cell-text' style={{marginLeft:15}}>{formatDate(post.createdAt)}</div>
+                                <div className='board-cell-text' style={{marginLeft:15}}>
+                                    {post.updatedAt ? formatDate(post.updatedAt) : formatDate(post.createdAt)}
+                                </div>
                             </td>
                     </tr>           
                     ))

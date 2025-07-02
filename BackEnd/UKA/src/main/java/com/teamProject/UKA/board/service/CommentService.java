@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.teamProject.UKA.board.model.Board;
 import com.teamProject.UKA.board.model.Comment;
+import com.teamProject.UKA.board.repository.BoardRepository;
 import com.teamProject.UKA.board.repository.CommentRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class CommentService {
 
 	private final CommentRepository commentRepository;
+	private final BoardRepository boardRepository;
 	
 	//댓글ID 생성
 	@Transactional(readOnly = true)
@@ -52,4 +54,63 @@ public class CommentService {
         String nextId = String.format("%s_%03d", parentId, max + 1); 
         return nextId;
     }
+
+	// 댓글 작성 (+ Board.comment 증가)
+    @Transactional
+    public Comment createComment(Comment comment) {
+        Comment saved = commentRepository.save(comment);
+
+        Board board = comment.getBoard();
+        board.setComment(board.getComment() + 1);
+        boardRepository.save(board); // 영속성 컨텍스트에 있어도 명시적으로 저장 가능
+
+        return saved;
+    }
+	
+	// 댓글/대댓글 수정
+    public Comment updateComment(String commentId, String newContent) {
+        Comment comment = commentRepository.findById(commentId)
+            .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
+        comment.setContent(newContent);
+        return commentRepository.save(comment);
+    }
+
+    // 댓글 및 해당 댓글의 모든 하위 대댓글 삭제 (재귀 삭제)
+//    @Transactional
+//    public void deleteCommentAndReplies(String commentId) {
+//        List<Comment> replies = commentRepository.findByParentCommentId(commentId);
+//        for (Comment reply : replies) {
+//            deleteCommentAndReplies(reply.getId());
+//        }
+//        commentRepository.deleteById(commentId);
+//    }
+    
+    // 댓글 및 해당 댓글의 모든 하위 대댓글 삭제 (재귀 삭제)
+    @Transactional
+    public int deleteCommentAndReplies(String commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다. id=" + commentId));
+
+        int deleteCount = deleteRecursively(commentId);
+
+        // Board.comment 동기화
+        Board board = comment.getBoard();
+        int newCommentCount = Math.max(board.getComment() - deleteCount, 0);
+        board.setComment(newCommentCount);
+        boardRepository.save(board);
+
+        return deleteCount;
+    }
+
+    // 재귀적으로 삭제 후 삭제된 댓글 개수 반환
+    private int deleteRecursively(String commentId) {
+        int count = 1; // 본인
+        List<Comment> replies = commentRepository.findByParentCommentId(commentId);
+        for (Comment reply : replies) {
+            count += deleteRecursively(reply.getId());
+        }
+        commentRepository.deleteById(commentId);
+        return count;
+    }
+    
 }

@@ -37,6 +37,9 @@ public class RequestDataEntity {
 
 	@Column(name = "kind")
 	private String kind;
+	
+	@Column(name="selectedbreed")
+	private String selectedbreed;
 
 	@Column(name = "sex")
 	private boolean sex;
@@ -74,6 +77,7 @@ public class RequestDataEntity {
 				
 				.img(img)
 				.kind(kind) 
+				.selectedbreed(selectedbreed)
 				.sex(sex)
 				.age(age)
 				.name(name)

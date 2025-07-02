@@ -25,6 +25,7 @@ public class QnaResponseDTO {
     private Integer qnaReportCount;
     private Integer qnaLikeCount;
     private Integer qnaViews;
+    private boolean isLikedByMe;
     
     // 댓글 리스트 필드 추가
     private List<QnaCommentResponseDTO> comments;

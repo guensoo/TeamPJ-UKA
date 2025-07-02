@@ -43,6 +43,9 @@ public class QnaCommentEntity {
 
     @Column(name = "qna_comment_updated_at")
     private LocalDateTime qnaCommentUpdatedAt;
+    
+    @Column(name = "deleted", length = 1, nullable = false)
+    private String deleted = "N";
 
     @PrePersist
     protected void onCreate() {
@@ -51,10 +54,14 @@ public class QnaCommentEntity {
         this.qnaCommentUpdatedAt = now;
         if (this.qnaCommentIsSecret == null) this.qnaCommentIsSecret = "N";
         if (this.qnaCommentIsReported == null) this.qnaCommentIsReported = "N";
+        if (this.deleted == null) this.deleted = "N";
     }
 
     @PreUpdate
     protected void onUpdate() {
         this.qnaCommentUpdatedAt = LocalDateTime.now();
+        if ("Y".equals(this.deleted)) {
+            this.qnaCommentContent = "관리자에 의해 삭제된 댓글입니다.";
+        }
     }
 }

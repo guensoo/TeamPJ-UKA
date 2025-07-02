@@ -52,14 +52,17 @@ export const fetchQnaList = async () => {
     }
 };
 
-// QnA 단일 조회
-export const fetchQnaDetail = async (qnaId, password = null) => {
+export const fetchQnaDetail = async (qnaId, password = null, userId = null) => {
     const token = localStorage.getItem('token');
-    const url = password
-        ? `http://localhost:8888/customer/qna/${qnaId}?password=${password}`
-        : `http://localhost:8888/customer/qna/${qnaId}`;
 
-    // 토큰 있으면 헤더, 없으면 헤더 없이 요청
+    let url = `http://localhost:8888/customer/qna/${qnaId}`;
+    const params = new URLSearchParams();
+
+    if (password) params.append("password", password);
+    if (userId) params.append("userId", userId);
+
+    if (params.toString()) url += `?${params.toString()}`;
+
     const config = token
         ? { headers: { Authorization: `Bearer ${token}` } }
         : {};
@@ -196,53 +199,111 @@ export const deleteQnaComment = async (commentId) => {
 
 // QnA 조회수 증가
 export const increaseViewCount = async (qnaNo) => {
-  try {
-    const res = await axios.patch(`http://localhost:8888/customer/qna/${qnaNo}/increase-view`);
-    return res.data;
-  } catch (error) {
-    console.error('increaseViewCount API 에러:', error.response ? error.response.data : error.message);
-    throw error;
-  }
+    try {
+        const res = await axios.patch(`http://localhost:8888/customer/qna/${qnaNo}/increase-view`);
+        return res.data;
+    } catch (error) {
+        console.error('increaseViewCount API 에러:', error.response ? error.response.data : error.message);
+        throw error;
+    }
 };
 
 // 추천 기능
 export const likeQna = async (qnaId, userId) => {
     console.log('likeQna 호출:', qnaId, userId); // 디버깅용 로그
-  try {
-    const res = await axios.post(
-      `http://localhost:8888/customer/qna/${qnaId}/like`,
-      { userId } // ← 여기에 같이 담아서 보냄
-    );
-    return res.data;
-  } catch (error) {
-    console.error('likeQna API 에러:', error.response ? error.response.data : error.message);
-    throw error;
-  }
+    try {
+        const res = await axios.post(
+            `http://localhost:8888/customer/qna/${qnaId}/like`,
+            { userId } // ← 여기에 같이 담아서 보냄
+        );
+        return res.data;
+    } catch (error) {
+        console.error('likeQna API 에러:', error.response ? error.response.data : error.message);
+        throw error;
+    }
 };
 
 // 추천 취소 API 호출 (DELETE 메서드, userId는 요청 본문에 포함)
 export const unlikeQna = async (qnaId, userId) => {
-  try {
-    const res = await axios.delete(`http://localhost:8888/customer/qna/${qnaId}/like`, {
-      data: { userId }  // DELETE 요청 시 axios는 data를 이렇게 넘김
-    });
-    return res.data;
-  } catch (error) {
-    console.error('unlikeQna API 에러:', error.response ? error.response.data : error.message);
-    throw error;
-  }
+    try {
+        const res = await axios.delete(`http://localhost:8888/customer/qna/${qnaId}/like`, {
+            data: { userId }  // DELETE 요청 시 axios는 data를 이렇게 넘김
+        });
+        return res.data;
+    } catch (error) {
+        console.error('unlikeQna API 에러:', error.response ? error.response.data : error.message);
+        throw error;
+    }
 };
 
 // 신고 기능
 export const reportQna = async (qnaId, userId) => {
-  try {
-    const res = await axios.post(
-      `http://localhost:8888/customer/qna/${qnaId}/report`,
-      { userId } // ← 마찬가지로 userId 담아서
-    );
-    return res.data;
-  } catch (error) {
-    console.error('reportQna API 에러:', error.response ? error.response.data : error.message);
-    throw error;
-  }
+    try {
+        const res = await axios.post(
+            `http://localhost:8888/customer/qna/${qnaId}/report`,
+            { userId } // ← 마찬가지로 userId 담아서
+        );
+        return res.data;
+    } catch (error) {
+        console.error('reportQna API 에러:', error.response ? error.response.data : error.message);
+        throw error;
+    }
+};
+
+// Adoption 이미지 전체 조회
+export const fetchAdoptionImages = async () => {
+    try {
+        const res = await axios.get('http://localhost:8888/customer/adoption');
+        return res.data; // [{id, type, seq, src}, ...]
+    } catch (error) {
+        console.error('fetchAdoptionImages 에러:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
+// Adoption 이미지 추가
+export const createAdoptionImage = async (image) => {
+    console.log('📡 createAdoptionImage 호출됨:', image); // ✅ 여기에 콘솔 찍기
+    try {
+        const res = await axios.post('http://localhost:8888/customer/adoption', image);
+        console.log('✅ createAdoptionImage 성공:', res.data);
+        return res.data;
+    } catch (error) {
+        console.error('❌ createAdoptionImage 에러:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
+// Adoption 이미지 삭제
+export const deleteAdoptionImage = async (id) => {
+    try {
+        await axios.delete(`http://localhost:8888/customer/adoption/${id}`);
+    } catch (error) {
+        console.error('deleteAdoptionImage 에러:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
+// Adoption 이미지 수정
+export const updateAdoptionImage = async (id, image) => {
+    try {
+        const res = await axios.put(`http://localhost:8888/customer/adoption/${id}`, image);
+        return res.data;
+    } catch (error) {
+        console.error('updateAdoptionImage 에러:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
+// 프론트: 파일 업로드 함수
+export const uploadImageFile = async (formData) => {
+    try {
+        const res = await axios.post('http://localhost:8888/customer/adoption/upload', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        return res.data.url;
+    } catch (error) {
+        console.error('uploadImageFile 에러:', error.response?.data || error.message);
+        throw error; // 상위에서 핸들링 가능하도록 예외 다시 던짐
+    }
 };

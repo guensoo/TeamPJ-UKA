@@ -9,8 +9,6 @@ import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-sy
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import { useAdmin } from '../../../api/AdminContext';
-import { useBoard } from '../Context/BoardContext';
-
 
 const AllBoardForm = () => {
     const [title, setTitle] = useState('');
@@ -18,8 +16,6 @@ const AllBoardForm = () => {
     const navigate = useNavigate();
     const titleInputRef = useRef(null);
     const editorRef = useRef(null);
-
-    // const {posts} = useBoard();
 
     const API_BASE_URL = 'http://localhost:8888';
 
@@ -156,7 +152,6 @@ const AllBoardForm = () => {
                         {isAdmin && <option value='NOTICE'>공지사항</option>} {/* 관리자만 공지사항 글쓰기 가능 */}
                         <option value='CHAT'>속닥속닥</option>
                         <option value='REVIEW'>입양후기</option>
-                        
                     </select>
                 </div>
                 <div>

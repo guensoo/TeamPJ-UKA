@@ -1,7 +1,10 @@
-import { Outlet, NavLink} from 'react-router-dom';
+import { Outlet, NavLink, useLocation} from 'react-router-dom';
 import './BoardLayout.css';
 
 const BoardLayout = () => {
+
+    const location = useLocation();
+    const currentCategory = location.state?.category || null;
 
     return (
         <div>
@@ -36,7 +39,7 @@ const BoardLayout = () => {
             속닥속닥
             </NavLink>
             <NavLink
-                to="/board/adoptionReview"
+                to="/board/review"
                 className={({ isActive }) => isActive ? 'active' : ''}
             >
             입양후기

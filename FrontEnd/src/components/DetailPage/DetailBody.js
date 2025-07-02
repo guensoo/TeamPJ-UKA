@@ -1,12 +1,12 @@
 import { forwardRef, useEffect, useState } from "react"
-import img from "../../assets/test1.jpg"
 import { animal } from "./DetailBodyData";
 import './DetailBody.css'
 import { CardComponent } from "./CardComponent";
-import { Box, Button, Dialog, DialogActions, DialogTitle, ListItem, ListItemButton, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { Box, Button, Dialog, DialogTitle, ListItem, ListItemButton, ToggleButton, ToggleButtonGroup} from "@mui/material";
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import AppsIcon from '@mui/icons-material/Apps';
 import DatePicker from 'react-datepicker';
+import { useAlert } from '../Customers/Context/AlertContext';
 // css검사해보니 모든 클래스들이 react-datepicker로 시작해서 사용해도 괜찮을듯.
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -27,9 +27,11 @@ export const DetailBody = () => {
     const [allData, setAllData] = useState([]);
     const [targetAddress, setTargetAddress] = useState('');
     const [targetCenters, setTargetCenters] = useState([]);
+    const [detailFilter, setDetailFilter] = useState([]);
     // 지도 준비 상태 
     const [mapLoad, setMapLoad] = useState(false);
 
+    const { showAlert } = useAlert();
 
     // 동물 데이터 로딩
     useEffect(() => {
@@ -45,7 +47,8 @@ export const DetailBody = () => {
     }, []);
 
 
-
+    const [neuter,setNeuter] = useState('');
+    const [sex,setSex] = useState('');
     const [kind,setKind] = useState('')
     // 품종 값 선택
     const [selectedBreed,setSeletedBreed] = useState('')
@@ -62,7 +65,7 @@ export const DetailBody = () => {
 
     // 페이징 상태
     const [currentPage,setCurrentPage] = useState(1);
-    const itemsPerPage = 11;
+    const itemsPerPage = 12;
     
 
     const gunList = siDo ? SiGunGooData.filter(item => item.uprCd === siDo) : [];
@@ -70,6 +73,7 @@ export const DetailBody = () => {
     const gunGuName = gunGu ? SiGunGooData.find(x => x.orgCd === gunGu)?.orgdownNm : "";
     const centerOptions = getFilteredCentersByOrgNm(allData, siDoName, gunGuName);
     const selectedCenterData = center ? allData.find(item => item.careRegNo === center) : null;
+    const selectedCenterDataOnly = center ? allData.filter(item => item.careRegNo === center) : null;
 
 
     // 유틸 함수-센터명
@@ -93,21 +97,11 @@ export const DetailBody = () => {
             {selectedDate===""?"공고 날짜":value+' ~'}
         </Button>
     ));
-    
-    //본데이터
-    const [cardDate,setCardDate] = useState([]);
-    //카드 더미
-    const cardData = Array(32).fill(0).map((_, i) => ({
-        id: i,
-        title: `제목 ${i + 1}`,
-        description: '간략한 정보',
-        img: img,
-    }));
 
     // 페이지 
     const startIdx = (currentPage - 1) * itemsPerPage;
-    const currentItems = targetCenters?.slice(startIdx, startIdx + itemsPerPage);
-    const totalPages = Math.ceil(cardData.length / itemsPerPage);
+    const currentItems = detailFilter?.slice(startIdx, startIdx + itemsPerPage);
+    const totalPages = Math.ceil(detailFilter.length / itemsPerPage);
 
     //보드에서 가져온 페이지 버튼
     const getPageNumbers = () => {
@@ -119,15 +113,22 @@ export const DetailBody = () => {
         return Array.from({ length: end - start + 1 }, (_, i) => start + i);
     };
 
-
+    // 날짜 형식 변환 함수
+    const formatDateToYYYYMMDD = (date) => {
+        const year = date.getFullYear();
+        const month = `${date.getMonth() + 1}`.padStart(2, '0');
+        const day = `${date.getDate()}`.padStart(2, '0');
+        return `${year}${month}${day}`;
+    };
 
     return(
         <div className="DBcontainer">
 
             {/* 헤더 */}
             <div className="DBcombobox">
+                <h2 className="DBcombotitle">지역선택</h2>
                 {/* 시 */}
-                <div>
+                <div className="DBcomboboxcenter">
                     <select
                         id="siDo"
                         value={siDo}
@@ -145,9 +146,8 @@ export const DetailBody = () => {
                             </option>
                         ))}
                     </select>
-                </div>
+                
                 {/* 군 */}
-                <div>
                     <select
                         id="gunGu"
                         value={gunGu}
@@ -165,9 +165,8 @@ export const DetailBody = () => {
                             </option>
                         ))}
                     </select>
-                </div>
+                
                 {/* 센터 */}
-                <div>
                     <select
                         id="center"
                         value={center}
@@ -185,34 +184,39 @@ export const DetailBody = () => {
 
                 
                 {/* 센터 선택, 마커 생성 버튼 */}
-                <Button
-                    variant="contained"
-                    className="DBButton"
-                    color="info"
-                    sx={{ marginLeft: '20px'}}
-                    onClick={() => {
-                        let filteredCenters = [];
-                        if (selectedCenterData) {
-                            // 센터 선택 시 1개 센터만 마커 표시
-                            filteredCenters = [selectedCenterData];
-                        } else if (siDoName && gunGuName) {
-                            // 시군구 선택 시 그 지역 내 모든 센터 표시
-                            filteredCenters = allData.filter(
-                                item => item.orgNm === `${siDoName} ${gunGuName}`
-                            );
-                        } else if (siDoName) {
-                            // 시/도 선택 시 그 시도 내 모든 센터 표시
-                            filteredCenters = allData.filter(
-                                item => item.orgNm.startsWith(siDoName)
-                            );
-                        }
-                        setShow(!show)
-                        setTargetCenters(filteredCenters);
-                        console.log("마커 표시할 센터 목록:", filteredCenters);
-                    }}
-                ><span>
-                    검색하기</span>
-                </Button>
+                <div className="DBcomboboxright">
+                    <Button
+                        variant="contained"
+                        className="DBButton"
+                        color="info"
+                        sx={{ marginLeft: '20px'}}
+                        onClick={() => {
+                            let filteredCenters = [];
+                            if (selectedCenterData) {
+                                // 센터 선택 시 1개 센터만 마커 표시
+                                // filteredCenters = [selectedCenterData];
+                                filteredCenters=selectedCenterDataOnly;
+                            } else if (siDoName && gunGuName) {
+                                // 시군구 선택 시 그 지역 내 모든 센터 표시
+                                filteredCenters = allData.filter(
+                                    item => item.orgNm === `${siDoName} ${gunGuName}`
+                                );
+                            } else if (siDoName) {
+                                // 시/도 선택 시 그 시도 내 모든 센터 표시
+                                filteredCenters = allData.filter(
+                                    item => item.orgNm.startsWith(siDoName)
+                                );
+                            }
+                            setShow(true)
+                            setTargetCenters(filteredCenters);
+                            setDetailFilter(filteredCenters)
+                            console.log("마커 표시할 센터 목록:", filteredCenters);
+                            window.scrollTo({ top: 300, left: 0, behavior: 'smooth' });
+                        }}
+                        >
+                        <span>검색하기</span>
+                    </Button>
+                </div>
             </div>
 
 
@@ -220,7 +224,7 @@ export const DetailBody = () => {
             <div className="DBtop">
                 {/* 여기에 지도 들어갈 것 같아요. */}
                 <div className="DBmap">
-                    {!mapLoad&&<Loading />}
+                    {!mapLoad&& <Loading />}
                     <NaverMap centers={targetCenters} onMapReady={()=>setMapLoad(true)} />
                 </div>
             </div>{/* end top */}
@@ -231,44 +235,55 @@ export const DetailBody = () => {
   
                     <div className="DBboard-header-container">
                         <div className="DBboard-header-left">
-                            <h1 className="DBboard-title">상세검색</h1>
+                            <h2 className="DBboard-title">상세검색</h2>
                         </div>
                         <div className="DBboard-header-center">
-                            <select>
-                                <option value="" disabled selected hidden>보호상태</option>
-                                <option >공고중</option>
-                                <option >임시보호중</option>
+
+                            <select value={neuter} onChange={(e)=>{setNeuter(e.target.value)}}>
+                                <option value="" disabled selected hidden>중성화 여부</option>
+                                <option value={''}>(전체)</option>
+                                <option value={'Y'}>완료</option>
+                                <option value={'N'}>미완료</option>
+                                <option value={'U'}>불확실</option>
                             </select>
-                            
+
                             {/* 달력 */}
                             <DatePicker
                                 showIcon
+                                minDate={new Date().setDate(new Date().getDate()-30)}
+                                maxDate={new Date().setDate(new Date().getDate()+5)}
                                 closeOnScroll={true}
                                 selected={selectedDate}
                                 dateFormat="YYYY/MM/dd"
                                 customInput={
-                                <CustomButton
-                                    variant="contained"
-                                >{selectedDate}</CustomButton>
+                                    <CustomButton
+                                        variant="contained"
+                                        onClick={()=>{if(!show){
+                                    }}}
+                                        >{selectedDate}
+                                    </CustomButton>
                                 }
                                 onChange={(date)=>setSelectedDate(date)}
                             />
 
-                            <select>
-                                <option value="" disabled selected hidden>털색</option>
-                                <option >갈색</option>
-                                <option >검은색</option>
-                                <option >흰색</option>
-                                <option >회색</option>
-                            </select>
-
-                            <select onChange={(e)=>{setKind(e.target.value)}}>
+                            <select value={kind} onChange={(e)=>{setKind(e.target.value)}}>
                                 <option value="" disabled selected hidden>종류</option>
-                                <option value="dog">개</option>
+                                <option value="dog">강아지</option>
                                 <option value="cat" >고양이</option>
                             </select>
 
-                            <Button variant="contained" onClick={()=>{setOpen(true)}}>
+                            <Button variant="contained" onClick={
+                                kind===''?(()=>{if(!show){
+                                        showAlert({
+                                            title:'지역 검색을 먼저 해주세요',
+                                            icon: 'warning'
+                                            
+                                            // showCancelButton : true,
+                                            // confirmButtonText: '네',
+                                            // cancelButtonText:'아니요',
+                                        })
+                                    }}):()=>setOpen(true)}
+                            >
                                 {selectedBreed===''?'품종':selectedBreed}
                             </Button>
                             <Dialog
@@ -289,13 +304,14 @@ export const DetailBody = () => {
                                                 {Object.keys(animal)[0]}
                                             </ListItem>
                                     </ListItemButton>
-                                    ))}                        
+                                    ))}               
                             </Dialog>
 
-                            <select >
-                                <option value="" disabled selected hidden>성별</option>
-                                <option >수컷</option>
-                                <option >암컷</option>
+                            <select value={sex} onChange={(e)=>{setSex(e.target.value)}}>
+                                <option  value="" disabled selected hidden>성별</option>
+                                <option value=''>(전체)</option>
+                                <option value='M' >수컷</option>
+                                <option value='F'>암컷</option>
                             </select>
                         </div>
                             
@@ -306,10 +322,57 @@ export const DetailBody = () => {
                                 className="DBButton"
                                 color="primary"
                                 fullWidth
-                                sx={{marginLeft:10}}
+                                sx={{marginLeft:2}}
                                 onClick={()=>{
-                                    setShow(!show)
-                                }}>검색하기
+                                    setKind('')
+                                    setSex('')
+                                    setNeuter('')
+                                    setSelectedDate('')
+                                    setSeletedBreed('')
+                                }}>
+                            초기화
+                            </Button>
+                            <Button 
+                                variant="contained"
+                                className="DBButton"
+                                color="primary"
+                                fullWidth
+                                onClick={()=>{
+                                    if(!show){
+                                        showAlert({
+                                            title:'지역 검색을 먼저 해주세요',
+                                            icon: 'warning'
+                                            
+                                            // showCancelButton : true,
+                                            // confirmButtonText: '네',
+                                            // cancelButtonText:'아니요',
+                                        })
+                                    }
+                                    // setShow(!show)
+                                    // console.log(...new Set(allData.map(item=>item.processState)))
+                                    // setTargetCenters(targetCenters.filter((item)=>item.kindNm===kind))
+
+                                    //중성화 필터 알고리즘
+                                    // setDetailFilter(targetCenters.filter((item)=>!neuter||item.neuterYn===neuter))
+                                    //품종 필터 알고리즘 완성
+                                    // setDetailFilter(targetCenters.filter((item)=>!selectedBreed||item.kindNm===selectedBreed))
+                                    // 성별 필터 알고리즘 완성
+                                    // setDetailFilter(targetCenters.filter((item)=>!sex||item.sexCd===sex))
+                                    // 개,고양이 필터 알고리즘 완성
+                                    // setDetailFilter(targetCenters.filter((item)=>!kind||item.upKindNm===(kind==='dog'?'개':'고양이')))
+
+                                    // 통합 필터
+                                    setDetailFilter(
+                                        targetCenters.filter((item) =>
+                                            (!selectedDate || item.happenDt >= formatDateToYYYYMMDD(selectedDate)) &&
+                                            (!neuter || item.neuterYn === neuter) &&
+                                            (!selectedBreed || item.kindNm === selectedBreed) &&
+                                            (!sex || item.sexCd === sex) &&
+                                            (!kind || item.upKindNm === (kind === 'dog' ? '개' : '고양이'))
+                                        )
+                                    );
+
+                                }}>상세검색하기
                             </Button>
                         </div>   
                     </div>
@@ -363,19 +426,27 @@ export const DetailBody = () => {
                             title={item.title}
                         />
                     ))} */}
-                    {targetCenters.map((item) => (
+
+                    {currentItems.length<1?
+                        <div>
+                        <div><h2>표시할 데이터가 없습니다. </h2></div>
+                        </div>:
+                         currentItems.map((item,index) => (
                         <CardComponent
-                            key={item.id}
+                            key={item.desertionNo}
                             row={isRow}
                             img={item.popfile1}
                             detail={item.description}
                             title={item.title}
                             list={item}
+                            filteredData={detailFilter}
+                            index={index+(currentPage*itemsPerPage)-itemsPerPage}
                         />
                     ))}
 
 
                 </Box>
+                {/* 페이징 버튼 */}
                 <div className="DBpagination">
                     <button
                         onClick={() => {
@@ -398,7 +469,8 @@ export const DetailBody = () => {
                         {page}
                     </button>
                     ))}
-                    <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>›</button>
+                    <button onClick={() => {
+                        setCurrentPage(currentPage + 1)}} disabled={currentPage === totalPages}>›</button>
                     <button
                         onClick={() => {
                             const nextGroupStart = Math.floor((currentPage - 1) / 5 + 1) * 5 + 1;

@@ -3,9 +3,11 @@ package com.teamProject.UKA.board.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,7 +48,8 @@ public class CommentController {
                 .content(commentRequest.getContent())
                 .build();
 
-        Comment savedComment = commentRepository.save(comment);
+//        Comment savedComment = commentRepository.save(comment);
+        Comment savedComment = commentService.createComment(comment);
         return ResponseEntity.ok(savedComment);
     }
     
@@ -69,7 +72,8 @@ public class CommentController {
                 .content(commentRequest.getContent())
                 .build();
 
-        Comment savedReply = commentRepository.save(reply);
+//        Comment savedReply = commentRepository.save(reply);
+        Comment savedReply = commentService.createComment(reply);
         return ResponseEntity.ok(savedReply);
     }
     
@@ -88,5 +92,22 @@ public class CommentController {
     public ResponseEntity<List<Comment>> getRepliesByParentComment(@PathVariable("parentCommentId") String parentCommentId) {
         List<Comment> replies = commentRepository.findByParentCommentId(parentCommentId);
         return ResponseEntity.ok(replies);
+    }
+    
+    // 댓글/대댓글 수정
+    @PutMapping("/{commentId}")
+    public ResponseEntity<Comment> updateComment(
+            @PathVariable("commentId") String commentId,
+            @RequestBody Comment commentRequest) {
+
+        Comment updated = commentService.updateComment(commentId, commentRequest.getContent());
+        return ResponseEntity.ok(updated);
+    }
+
+    // 댓글/대댓글 삭제
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable("commentId") String commentId) {
+        commentService.deleteCommentAndReplies(commentId);
+        return ResponseEntity.noContent().build();
     }
 }

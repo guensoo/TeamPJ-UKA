@@ -67,6 +67,6 @@ const DataReset = () => {
             </div>
         </div>
     );
-  };
+};
 
 export default DataReset;

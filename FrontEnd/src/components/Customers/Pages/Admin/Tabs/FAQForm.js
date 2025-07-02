@@ -71,40 +71,40 @@ const FAQForm = () => {
     };
 
 
-        //취소 버튼
-        const handleCancel = async () => {
-            const result = await showAlert({
-                title: '작성 취소',
-                text: '작성을 취소하시겠습니까?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#6c5ce7',
-                cancelButtonColor: '#636e72',
-                confirmButtonText: '확인',
-                cancelButtonText: '취소',
-            });
-        }
+    //취소 버튼
+    const handleCancel = async () => {
+        const result = await showAlert({
+            title: '작성 취소',
+            text: '작성을 취소하시겠습니까?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#6c5ce7',
+            cancelButtonColor: '#636e72',
+            confirmButtonText: '확인',
+            cancelButtonText: '취소',
+        });
+    }
 
     return (
         <div className="customer-faq-form">
             <h2>FAQ 글쓰기</h2>
             <form onSubmit={handleSubmit}>
                 <div className="customer-faq-form-title">
-                    <label style={{marginRight:10, fontWeight: 'bold'}}>제목</label><br />
+                    <label style={{ marginRight: 10, fontWeight: 'bold' }}>제목</label><br />
                     <input
                         type="text"
                         value={title}
                         onChange={e => setTitle(e.target.value)}
                         style={{ width: '683px', padding: '10px', marginBottom: '16px' }}
                         onKeyDown={(e) => {
-                            if(e.key === 'Enter'){
+                            if (e.key === 'Enter') {
                                 e.preventDefault();
                             }
                         }}
                     />
                 </div>
                 <div className='customer-write-container'>
-                    <label style={{fontWeight: 'bold'}}>내용</label><br />
+                    <label style={{ fontWeight: 'bold' }}>내용</label><br />
                     <Editor
                         ref={editorRef}
                         previewStyle="vertical"

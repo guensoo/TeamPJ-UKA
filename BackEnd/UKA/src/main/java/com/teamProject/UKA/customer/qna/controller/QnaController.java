@@ -43,7 +43,6 @@ public class QnaController {
         return ResponseEntity.ok(qnaService.getAllQna());
     }
 
-    // QnA 게시글 상세 조회 (댓글 포함)
     @GetMapping("/{no}")
     public ResponseEntity<QnaResponseDTO> getQna(
         @PathVariable("no") Long no,
@@ -54,9 +53,10 @@ public class QnaController {
 
         // 관리자 권한 체크
         boolean isAdmin = false;
+        String userId = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
-            String userId = authentication.getName();
+            userId = authentication.getName();
             if (userId != null && userId.toLowerCase().contains("admin")) {
                 isAdmin = true;
             }
@@ -75,8 +75,18 @@ public class QnaController {
         }
 
         // QnA + 댓글 리스트 DTO로 반환
-        return ResponseEntity.ok(qnaService.getQnaWithComments(no));
+        QnaResponseDTO dto = qnaService.getQnaWithComments(no);
+
+        // 👇 여기에 추천여부 추가!
+        boolean isLikedByMe = false;
+        if (userId != null) {
+            isLikedByMe = qnaService.hasUserLikedQna(no, userId); // 서비스에 추가 필요
+        }
+        dto.setLikedByMe(isLikedByMe);
+
+        return ResponseEntity.ok(dto);
     }
+
 
     // 조회수 증가용 엔드포인트
     @PatchMapping("/{no}/increase-view")
