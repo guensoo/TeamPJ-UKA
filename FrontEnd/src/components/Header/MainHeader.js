@@ -40,12 +40,10 @@ const MainHeaders = () => {
 
             <div className="header-right-section">
                 <div className="header-auth-buttons">
-                    {user ? (
+                    {user && (
                         isAdminUser(user)
-                            ? <p><strong style={{color: "red"}}>관리자</strong> 계정으로 접속하였습니다.</p>
+                            ? <p><strong style={{ color: "red" }}>관리자</strong> 계정으로 접속하였습니다.</p>
                             : <p>{user.userId} 회원님 반갑습니다.</p>
-                    ) : (
-                        <p>로그인 해주세요.</p>
                     )}
                 {/* 여기 위 까지 관리자 테스트 */}
                     {user ? (

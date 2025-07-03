@@ -20,6 +20,7 @@ import { MapQnaRaw } from '../Mappers/QnaMapper';
 import isAdminCheck from '../../Common/isAdminCheck';
 import {
     handleLikeAction,
+    handleReportAction,
     handleCommentSubmit,
     handleEditSave,
     handleDeleteComment,
@@ -62,10 +63,13 @@ const QnADetail = () => {
             setQna(mappedDetail);
 
             // ✅ 신고 상태
-            setIsReported(mappedDetail.isReported === 'Y');
+            setIsReported(!!mappedDetail.isReportedByMe);
+            console.log('QNA DETAIL API RAW:', rawDetail);
+            console.log('QNA DETAIL MAPPED:', mappedDetail);
 
             // ✅ 추천 상태 (서버 기준)
             setIsLiked(mappedDetail.isLikedByMe === true); // ← 이게 핵심!
+            
 
             // ✅ localStorage는 참고용으로 동기화 (선택)
             const storageKey = `qna_liked_${user?.userId}_${mappedDetail.id}`;
@@ -98,41 +102,27 @@ const QnADetail = () => {
     };
 
 
-    useEffect(() => {
-        const lastViewTimeKey = `qna_last_view_time_${id}`;
-        const now = Date.now();
-        const lastViewTime = localStorage.getItem(lastViewTimeKey);
+useEffect(() => {
+    const lastViewTimeKey = `qna_last_view_time_${id}`;
+    const now = Date.now();
+    const lastViewTime = localStorage.getItem(lastViewTimeKey);
 
-        // 상세 데이터 불러오기 함수
-        const fetchData = async () => {
+    // ✅ 상위에서 만든 fetchData만 부르기
+    fetchData();
+
+    // 조회수 증가 로직
+    if (!lastViewTime || now - lastViewTime > 10 * 60 * 1000) {
+        (async () => {
             try {
-                const raw = await fetchQnaDetail(id, password);
-                const mapped = MapQnaRaw(raw);
-                setQna(mapped);
-                setLikes(mapped.likes);
-                setIsLiked(mapped.isLikedByMe); // ★ 바꿔주세요!
-                console.log('API isLikedByMe:', mapped.isLikedByMe); // ★
-                console.log('isLiked state:', isLiked);
+                await increaseViewCount(id);
+                await fetchData();
+                localStorage.setItem(lastViewTimeKey, now);
             } catch (error) {
-                // 에러 처리
+                console.error('조회수 증가 중 에러:', error);
             }
-        };
-
-        fetchData(); // 최초 데이터 로드
-
-        // 조회수 증가 로직
-        if (!lastViewTime || now - lastViewTime > 10 * 60 * 1000) {  // 10분 이상 경과 시 조회수 증가
-            (async () => {
-                try {
-                    await increaseViewCount(id); // 조회수 증가
-                    await fetchData();           // 증가 후 최신 데이터 다시 로드
-                    localStorage.setItem(lastViewTimeKey, now);
-                } catch (error) {
-                    console.error('조회수 증가 중 에러:', error);
-                }
-            })();
-        }
-    }, [id, password]);
+        })();
+    }
+}, [id, password, isLiked]);
 
 
 
@@ -153,6 +143,17 @@ const QnADetail = () => {
             setQna,
             setLikes,
             setIsLiked,
+            showAlert,
+        });
+    };
+    // 신고 처리 함수
+    const handleReport = () => {
+        handleReportAction({
+            qna,
+            user,
+            isReported,
+            setQna,
+            setIsReported,
             showAlert,
         });
     };
@@ -293,65 +294,6 @@ const QnADetail = () => {
             navigate('/customer/qna');
         } catch (e) {
             await error(e?.response?.data?.message || '삭제 중 오류가 발생했습니다.');
-        }
-    };
-
-    // 신고 핸들러
-    const handleReport = async () => {
-        const result = await showAlert({
-            title: '신고하시겠습니까?',
-            text: '해당 게시글을 신고합니다.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: '예',
-            cancelButtonText: '아니오',
-        });
-
-        if (!result || !result.isConfirmed) return;
-
-        try {
-            if (isAdmin) {
-                for (let i = 0; i < 5; i++) {
-                    await reportQna(qna.id, user.userId);
-                }
-                await showAlert({
-                    title: '신고하였습니다.',
-                    icon: 'success',
-                    timer: 1500,
-                    showConfirmButton: false,
-                    imageUrl: process.env.PUBLIC_URL + '/img/you.png',
-                    imageWidth: 300,
-                    imageHeight: 300,
-                    imageAlt: '너고소',
-                });
-                setIsReported(true); // 신고 상태 업데이트
-            } else {
-                await reportQna(qna.id, user.userId);
-                setIsReported(true); // ★ 신고 성공 시 상태 true 로 변경
-                await showAlert({
-                    title: '신고하였습니다.',
-                    icon: 'success',
-                    timer: 1500,
-                    showConfirmButton: false,
-                });
-            }
-            // 신고 후 상태 최신화
-            const updated = await fetchQnaDetail(qna.id);
-            setQna(MapQnaRaw(updated));
-        } catch (e) {
-            if (e.response?.status === 409) {
-                // 이미 신고한 경우 에러 발생 시에도 상태 true 처리
-                setIsReported(true);
-                await showAlert({
-                    title: '이미 신고한 게시글입니다.',
-                    icon: 'info',
-                });
-            } else {
-                await showAlert({
-                    title: e?.response?.data?.message || '이미 신고했거나 오류가 발생했습니다.',
-                    icon: 'error',
-                });
-            }
         }
     };
 
@@ -589,21 +531,23 @@ const QnADetail = () => {
                     className="qna-detail-recommend-btn"
                     onClick={handleLike}
                     style={{
-                        background: isLiked ? "#ddd" : "",
+                        background: isLiked ? "#00aaff" : "",
+                        color: isLiked ? "#fff" : "black",
                         cursor: isLiked ? "pointer" : "pointer"
                     }}
                 >
-                    {isLiked ? "추천 취소" : "추천"}
+                    👍추천
                 </button>
                 <span style={{ color: '#bbb', fontWeight: 700 }}>|</span>
                 <button className="qna-detail-report-btn"
                     style={{
-                        background: isReported ? "#ddd" : "",
+                        background: isReported ? "red" : "",
+                        color: isReported ? "#fff" : "black",
                         cursor: isReported ? "not-allowed" : "pointer"
                     }}
 
                     disabled={isReported}
-                    onClick={handleReport}>신고</button>
+                    onClick={handleReport}>🚨신고</button>
             </div>
 
 

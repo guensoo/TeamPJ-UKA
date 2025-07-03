@@ -5,6 +5,7 @@ const CommentList = ({
     comments,
     currentUser,
     isAdmin,
+    post,
     handleDeleteComment,
     handleDeleteReply,
     saveEditComment,
@@ -35,6 +36,7 @@ const CommentList = ({
             level={level}
             currentUser={currentUser}
             isAdmin={isAdmin}
+            post={post}
             editCommentId={editCommentId}
             editCommentText={editCommentText}
             setEditCommentId={setEditCommentId}

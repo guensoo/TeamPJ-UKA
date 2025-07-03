@@ -18,6 +18,11 @@ const NoticeList = () => {
     const [confirmKeyword, setConfirmKeyword] = useState('');
     const [searchOption, setSearchOption] = useState('title');
 
+    // 유저 정보
+    const loginData = JSON.parse(localStorage.getItem("user"));
+    const isAdmin = loginData?.userId?.includes("admin") ? true : false;
+    const currentUser = loginData?.nickname;
+
     const itemsPerPage = 10;
 
     const categoryLabels = {
@@ -102,7 +107,7 @@ const NoticeList = () => {
 
     //searching 여부에 따라 페이징
     const totalPages = Math.max(1, Math.ceil(
-        (isSearching ? filteredPosts.length : displayedPosts.length) / itemsPerPage));
+        (isSearching ? filteredPosts.length : noticedPosts.length) / itemsPerPage));
 
 	// 페이지 버튼 생성 로직
     const getPageNumbers = () => {
@@ -121,7 +126,7 @@ const NoticeList = () => {
 
 	//글쓰기 버튼
     const handleWrite = () => {
-        navigate('/board/notice/form');
+        isAdmin ? navigate('/board/notice/form') : Swal.fire('오류', '공지사항은 관리자만 등록가능합니다.', 'error');
     };
 
     //검색한 키워드 강조
@@ -215,15 +220,20 @@ const NoticeList = () => {
                 {/* 공지사항 매핑 */}
                 {displayedPosts.length > 0 ? (
                     displayedPosts?.map((post) => (
-                    <tr key={`notice-${post.id}`} className="notice-row">
+                    <tr key={`notice-${post.id}`}
+                        style={{color: post.report >= 5 && 'red'}}
+                    >
                         <td className='notice-tab-only'>{categoryLabels[post.category]}</td>
                         <td className="notice-title-only" onClick={() => handleTitleClick(post)}>
                             <div className='board-cell-text'>
                                 📢
-                                {searchOption === 'title' 
-                                    ? highlightKeyword(post.title, isSearching ? confirmKeyword : '')
-                                    : post.title
-                                }
+                                {post.report >= 5 ? (
+                                    <span style={{ color: 'red' }}>{post.title} (신고차단된 글)</span>
+                                ) : (
+                                    searchOption === 'title'
+                                        ? highlightKeyword(post.title, isSearching ? confirmKeyword : '')
+                                        : post.title
+                                )}
                             </div>
                         </td>
                         <td className='notice-cell-only'>
@@ -235,7 +245,7 @@ const NoticeList = () => {
                             </div>
                         </td>
                         <td className='notice-cell-only'>
-                            <div className='board-cell-text' style={{marginLeft:15}}>{post.view}</div>
+                            <div className='board-cell-text' style={{marginLeft:20}}>{post.view}</div>
                         </td>
                         <td className='notice-cell-only'>
                             <div className='board-cell-text' style={{marginLeft:20}}>{post.likes}</div>

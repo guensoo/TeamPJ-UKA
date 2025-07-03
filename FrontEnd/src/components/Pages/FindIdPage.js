@@ -1,7 +1,10 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import MainLogo from '../../assets/MainLogo.png';
+
+// const API_BASE_URL = "http://localhost:8888";
+const API_BASE_URL = "http://192.168.3.24:8888";
 
 export default function FindIdPage() {
     const [email, setEmail] = useState('');
@@ -14,7 +17,7 @@ export default function FindIdPage() {
         setError(''); 
         setResult(null);
         try {
-            const res = await fetch('http://localhost:8888/api/auth/find-userId', {
+            const res = await fetch(`${API_BASE_URL}api/auth/find-userId`, {
                 method: 'POST',
                 headers: {
                     'Content-Type':'application/json'

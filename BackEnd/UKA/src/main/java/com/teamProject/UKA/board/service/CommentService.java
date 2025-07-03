@@ -74,16 +74,6 @@ public class CommentService {
         comment.setContent(newContent);
         return commentRepository.save(comment);
     }
-
-    // 댓글 및 해당 댓글의 모든 하위 대댓글 삭제 (재귀 삭제)
-//    @Transactional
-//    public void deleteCommentAndReplies(String commentId) {
-//        List<Comment> replies = commentRepository.findByParentCommentId(commentId);
-//        for (Comment reply : replies) {
-//            deleteCommentAndReplies(reply.getId());
-//        }
-//        commentRepository.deleteById(commentId);
-//    }
     
     // 댓글 및 해당 댓글의 모든 하위 대댓글 삭제 (재귀 삭제)
     @Transactional

@@ -18,6 +18,7 @@ const MapQnaRaw = (raw) => {
         likes: raw.qnaLikeCount ?? 0, // ✅ 추천 수
         comments: raw.comments ?? [],
         isLikedByMe: raw.likedByMe === true, // ✅ 내가 추천했는지 여부
+        isReportedByMe: raw.reportedByMe,
     };
 }
 export { MapQnaRaw };

@@ -152,7 +152,13 @@
     background-size: 16px;
 }
 
-
+/* 품종선택-검색 */
+.dialogSearch{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding :10px 30px;
+}
 
  
  /* ========================================================================= */

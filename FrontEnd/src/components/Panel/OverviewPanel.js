@@ -1,5 +1,6 @@
 // src/components/Panel/OverviewPanel.js
 import { useMemo, useRef  } from "react";
+import { useNavigate } from "react-router-dom";
 import "./OverviewPanel.css";
 
 import chartCat from "../../assets/chartCat.png";
@@ -34,6 +35,7 @@ const allImages = [
 
 export default function OverviewPanel({ allRegionData, regionData, regionNm, setRegionNm, loading, error }) {
     const selectRef = useRef(null);
+    const navigate = useNavigate();
 
     // 전체 집계
     const overallData = useMemo(() => {
@@ -85,6 +87,15 @@ export default function OverviewPanel({ allRegionData, regionData, regionNm, set
     ]
     : [];
     const pieColors = ["#8884d8", "#82ca9d", "#ffc658"];
+
+    // 버튼 클릭 핸들러
+    const handleFindClick = () => {
+        if (!regionNm) {
+            return alert("지역을 선택해주세요!");
+        }
+        // regionNm을 쿼리스트링으로 넘김
+        navigate(`/about?regionNm=${encodeURIComponent(regionNm)}`);
+    };
 
     return (
         <div className="info-panel">
@@ -236,10 +247,9 @@ export default function OverviewPanel({ allRegionData, regionData, regionNm, set
                     </select>
                     <button
                         className="info-bottom-button"
-                        onClick={() => {
-
-                        }}
-                    > 찾기
+                        onClick={handleFindClick}
+                    >
+                        찾기
                     </button>
                 </div>
             </div>

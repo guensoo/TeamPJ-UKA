@@ -7,6 +7,9 @@ const SliderBanner = ({ currentSlide, onPrev, onNext, MainSlides }) => {
     const visibleCount = 2; // 한 번에 보여줄 슬라이드 개수
     const translatePercent = (currentSlide * 100) / visibleCount;
 
+
+    console.log("MainSlides ::", MainSlides);
+
     // 1) MainSlides가 비어 있을 때
     if (!MainSlides || MainSlides.length === 0) {
         return (
@@ -53,7 +56,7 @@ const SliderBanner = ({ currentSlide, onPrev, onNext, MainSlides }) => {
                             </div>
                             <div className="slide-info">
                                 <Link
-                                    to={`/animal/${slide.desertionNo}`}
+                                    to={`/about/select?desertionNo=${slide.desertionNo}`}
                                     className="slide-link"
                                     style={{ textDecoration: 'none', fontSize : 16}}
                                 >

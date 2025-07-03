@@ -1,14 +1,22 @@
 import DatePicker from 'react-datepicker';
 import defimg from '../../assets/default.jpg'
 import './RequestWrite.css'
-import { Button, Dialog, DialogTitle, ListItem, ListItemButton, Switch} from "@mui/material";
+import { Button, Dialog, DialogTitle, ListItem, ListItemButton, Switch, TextField} from "@mui/material";
 import { forwardRef, useState } from "react";
 import {useNavigate} from 'react-router-dom'
 import { useAlert } from '../Customers/Context/AlertContext';
-import { animal } from "../DetailPage/DetailBodyData.js";
+import  {animal as animalData}  from "../DetailPage/DetailBodyData.js";
+import SearchIcon from '@mui/icons-material/Search';
+import RefreshIcon from '@mui/icons-material/Refresh';
+
+// const API_BASE_URL = "http://localhost:8888";
+const API_BASE_URL = "http://192.168.3.24:8888";
 
 export const RequestWrite = () => {
 
+    const navigate = useNavigate();
+    // 받아온 데이터 
+    const [animal,setAnimal] = useState([]);
     // 사진 예시로 보여주기.
     const [preview,setPreview] = useState(defimg);
     // 사진 세팅
@@ -17,9 +25,8 @@ export const RequestWrite = () => {
     const [error,setError] = useState(' ');
     // 한번이라도 수정했는지-에러 컨트롤
     const [isTouched,setIsTouched] = useState(false);
-    //
+    // 품종선택 열기
     const [open,setOpen] = useState(false);
-    const navigate = useNavigate();
     // 폼 데이터
     const [formData, setFormData] = useState({
         kind:'',
@@ -116,7 +123,7 @@ export const RequestWrite = () => {
                 // imageUrl = 'default.jpg';
             }else{
                 try {
-                    const uploadImg = await fetch("http://localhost:8888/request/image",{
+                    const uploadImg = await fetch(`${API_BASE_URL}/request/image`,{
                     method:"POST",
                     body:imageForm
                     })
@@ -155,7 +162,7 @@ export const RequestWrite = () => {
             }
 
             try {
-                const response = await fetch('http://www.localhost:8888/request',option)
+                const response = await fetch(`${API_BASE_URL}/request`,option)
 
                 const list = await response.json()
 
@@ -246,40 +253,93 @@ export const RequestWrite = () => {
                                             |
 
                                             <span>🐾
-                                                <select value={formData.kind} onChange={(e)=>{setFormData(prev=>({...prev,kind:e.target.value}))}}>
+                                                <select value={formData.kind} onChange={(e)=>{
+                                                    setFormData(prev=>({...prev,kind:e.target.value}))
+                                                    setAnimal(animalData[formData.kind]);
+                                                }}>
                                                     <option value="" disabled hidden>종류</option>
                                                     <option value="dog">강아지</option>
                                                     <option value="cat" >고양이</option>
+                                                    <option value="etc" >기타</option>
                                                 </select>
 
                                                 <Button variant="contained" onClick={
-                                                    formData.kind===''?(()=>{}):()=>setOpen(true)}
+                                                    formData.kind===''?(()=>{
+                                                        showAlert({
+                                                            title:`종류를 먼저 선택해주세요`,
+                                                            icon:'warning',
+                                                        })
+                                                    }):formData.kind==='etc'?()=>{    
+                                                        //동작안함.
+                                                    }:()=>{
+                                                        setOpen(true)
+                                                        setAnimal(animalData[formData.kind]);
+                                                    }}
+                                                    sx={{opacity:formData.kind==='etc'?'0.3':'1'}}
                                                 >
                                                     {formData.selectedBreed===''?'품종':formData.selectedBreed}
                                                 </Button>
                                             
                                                 <Dialog
+                                                    fullWidth={true}
+                                                    maxWidth={'sm'}
                                                     onClose={()=>{setOpen(!open)}}
                                                     open={open}
                                                 >
                                                     <DialogTitle
                                                         sx={{background:'#cceeff'}}
                                                     >품종을 선택하세요</DialogTitle>
-                                                        {animal[formData.kind === 'cat' ? 'cat' : 'dog'].map((animal, index) => (
-                                                            <ListItemButton key={index} 
-                                                                onClick={()=>{
-                                                                    const result = Object.keys(animal)[0]
-                                                                    setFormData(prev=>({...prev,selectedBreed:result}))
-                                                                    console.log(result)
-                                                                    // setSeletedBreed(Object.keys(animal)[0])
+                                                    <div className='dialogSearch'>
+                                                        <TextField
+                                                            fullWidth
+                                                            placeholder='검색어를 입력해주세요'
+                                                            onChange={e=>{
+                                                                const keyword = e.target.value.trim();
+
+                                                                if(keyword===''){
+                                                                    setAnimal(animalData[formData.kind])
+                                                                    return;
+                                                                }
+                                                                const filtered = (animalData[formData.kind] || []).filter(item => {
+                                                                    const breedName = Object.keys(item)[0];
+                                                                    return breedName.includes(keyword);
+                                                                });
+
+                                                                setAnimal(filtered);
+                                                            }}
+                                                        />
+                                                        <RefreshIcon
+                                                            onClick={()=>{
+                                                                setAnimal(animalData[formData.kind])
+                                                            }}
+                                                        sx={{fontSize:'50px'}} /> 
+                                                        <SearchIcon 
+                                                        sx={{fontSize:'50px'}} /> 
+                                                    </div>
+
+                                                    {(animal||[]).map((animalItem, index) => {
+                                                        const breedName = Object.keys(animalItem)[0];
+                                                        const breedImg = Object.values(animalItem)[0];
+                                                        return (
+                                                            <ListItemButton
+                                                                key={index}
+                                                                onClick={() => {
+                                                                    setFormData(prev => ({ ...prev, selectedBreed: breedName }));
                                                                     setOpen(false);
-                                                                }}>
-                                                                <ListItem disablePadding sx={{border:'1px solid #cceeff'}}>
-                                                                    {<img className="DBdialogimg" src={`/img/${formData.kind}_picture/${Object.values(animal)[0]}.jpg`} alt="고양이 이미지" />}
-                                                                    {Object.keys(animal)[0]}
+                                                                    setAnimal(animalData[formData.kind] || []);
+                                                                }}
+                                                                >
+                                                                <ListItem disablePadding sx={{ border: '1px solid #cceeff' }}>
+                                                                    <img
+                                                                    className="DBdialogimg"
+                                                                    src={`/img/${formData.kind}_picture/${breedImg}.jpg`}
+                                                                    alt={`${breedName} 이미지`}
+                                                                    />
+                                                                    {breedName}
                                                                 </ListItem>
-                                                        </ListItemButton>
-                                                        ))}               
+                                                            </ListItemButton>
+                                                        );
+                                                        })}
                                                 </Dialog>
                                             </span>
                                         </div>
@@ -287,7 +347,7 @@ export const RequestWrite = () => {
                                             <span>🕒
                                                 <input
                                                     style={{width:'150px'}}
-                                                    placeholder='나이'
+                                                    placeholder='나이(몸무게)'
                                                     value={formData.age}
                                                     onChange={(e)=>setFormData(prev=>({...prev,age:e.target.value}))
                                                     }

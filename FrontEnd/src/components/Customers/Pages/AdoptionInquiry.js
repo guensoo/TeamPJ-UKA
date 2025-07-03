@@ -3,19 +3,11 @@ import { useAlert } from '../Context/AlertContext';
 import isAdminCheck from '../../Common/isAdminCheck';
 import './AdoptionInquiry.css';
 import { saveThumbnails, savePopups } from './AdoptionImageActive';
+import AdoptionApplicationForm from './AdoptionForm';
+import { useLocation } from 'react-router-dom';
 
-// const DEFAULT_SLIDE_IMAGES = [
-//   '/AdoptionImage/photo1.jpg',
-//   '/AdoptionImage/photo2.jpg',
-//   '/AdoptionImage/photo3.jpg',
-//   '/AdoptionImage/photo4.jpg',
-//   '/AdoptionImage/photo5.jpg',
-//   '/AdoptionImage/photo6.jpg',
-// ];
-// const DEFAULT_THUMBNAILS = [
-//   '/AdoptionImage/image.png',
-//   '/AdoptionImage/image2.gif',
-// ];
+// const BASE_URL = "http://localhost:8888";
+const BASE_URL = "http://192.168.3.24:8888";
 
 const AdoptionInquiry = () => {
     const [open, setOpen] = useState(false);
@@ -36,20 +28,38 @@ const AdoptionInquiry = () => {
     const [photoDraft, setPhotoDraft] = useState([]);
     const [popupFileMap, setPopupFileMap] = useState({});
 
+    // 신청서 작성 모달
+    const [showApplication, setShowApplication] = useState(false);
+    const location = useLocation();
+    const data = location.state || {};
+    const animalInfo = (data.kindFullNm && data.desertionNo)
+        ? {
+            kindFullNm: data.kindFullNm,
+            desertionNo: data.desertionNo,
+            age: data.age,              // 예: "2023(년생)"
+            weight: data.weight,        // 예: "5(Kg)"
+            sexCd: data.sexCd,          // 예: "M"
+        }
+        : null;
+
+    const animalImgUrl = data.animalImgUrl || data.popfile1 || '';
+    console.log('동물 품종 : ', data);
+
     // 관리자 체크
     const isAdmin = isAdminCheck();
+
 
     useEffect(() => {
         setOpen(true);
         // TODO: 서버에서 이미지 fetch 예시
         const fetchImages = async () => {
             try {
-                const res1 = await fetch('http://localhost:8888/customer/adoption/POPUP');
+                const res1 = await fetch(`${BASE_URL}/customer/adoption/POPUP`);
                 const slideData = await res1.json();
                 console.log('슬라이드 이미지 데이터:', slideData); // 디버깅용
                 setSlideImages(slideData);
                 setPhotoDraft(slideData);
-                const res2 = await fetch('http://localhost:8888/customer/adoption/THUMBNAIL');
+                const res2 = await fetch(`${BASE_URL}/customer/adoption/THUMBNAIL`);
                 const thumbData = await res2.json();
                 setThumbnails(thumbData);
                 setThumbnailDraft(thumbData);
@@ -171,7 +181,7 @@ const AdoptionInquiry = () => {
                             key={item.id}
                             src={item.src.startsWith("blob:")
                                 ? item.src
-                                : `http://localhost:8888${item.src}`}
+                                : `${BASE_URL}${item.src}`}
                             alt={`썸네일${idx + 1}`}
                             style={{ marginRight: 12, verticalAlign: 'middle' }}
                         />
@@ -206,7 +216,7 @@ const AdoptionInquiry = () => {
                                     <img
                                         src={img.src.startsWith("blob:")
                                             ? img.src
-                                            : `http://localhost:8888${img.src}`}
+                                            : `${BASE_URL}${img.src}`}
                                         alt={`썸네일${idx + 1}`}
                                         style={{
                                             width: 100,
@@ -350,7 +360,7 @@ const AdoptionInquiry = () => {
                                         <img
                                             src={img.src.startsWith("blob:")
                                                 ? img.src
-                                                : `http://localhost:8888${img.src}`}
+                                                : `${BASE_URL}${img.src}`}
                                             alt={`팝업${idx + 1}`}
                                             style={{
                                                 width: 120,
@@ -545,7 +555,7 @@ const AdoptionInquiry = () => {
                                         src={
                                             slideImages[slide]?.src?.startsWith("blob:")
                                                 ? slideImages[slide].src
-                                                : `http://localhost:8888${slideImages[slide]?.src}`
+                                                : `${BASE_URL}${slideImages[slide]?.src}`
                                         }
                                         alt={`사진${slide + 1}`}
                                         className="customer-slide"
@@ -662,17 +672,82 @@ const AdoptionInquiry = () => {
                 </a>
                 <button
                     className="customer-adopt-button"
-                    onClick={async () => {
-                        await showAlert({
-                            title: '입양 상담 신청',
-                            text: '입양 상담 신청 준비 중입니다.',
-                            icon: 'info'
-                        });
-                    }}
+                    onClick={() => setShowApplication(true)}
                 >
                     📝 입양 상담 신청
                 </button>
             </div>
+            {/* 입양신청서 모달 */}
+            {showApplication && (
+                <div
+                    style={{
+                        position: 'fixed',
+                        left: 0,
+                        top: 0,
+                        width: '100vw',
+                        height: '100vh',
+                        zIndex: 1000,
+                        background: 'rgba(0,0,0,0.5)',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        padding: '20px' // 추가
+                    }}
+                    onClick={() => setShowApplication(false)}
+                >
+                    <div
+                        style={{
+                            background: '#fff',
+                            borderRadius: '16px',
+                            width: '100%', // 변경
+                            maxWidth: '800px', // 추가
+                            height: '90vh', // 변경
+                            maxHeight: '800px', // 추가
+                            position: 'relative',
+                            boxShadow: '0 10px 40px rgba(0,0,0,0.15)',
+                            display: 'flex', // 추가
+                            flexDirection: 'column' // 추가
+                        }}
+                        onClick={e => e.stopPropagation()}
+                    >
+                        {/* <button
+                            onClick={() => setShowApplication(false)}
+                            style={{
+                                position: 'absolute',
+                                right: '20px',
+                                top: '20px',
+                                fontSize: '28px',
+                                background: 'none',
+                                border: 'none',
+                                color: '#666',
+                                cursor: 'pointer',
+                                zIndex: 10,
+                                width: '40px', // 추가
+                                height: '40px', // 추가
+                                borderRadius: '50%', // 추가
+                                display: 'flex', // 추가
+                                alignItems: 'center', // 추가
+                                justifyContent: 'center' // 추가
+                            }}
+                            title="닫기"
+                        >×</button> */}
+
+                        {/* 폼 컨테이너 - 스크롤 가능 */}
+                        <div style={{
+                            flex: 1,
+                            overflow: 'auto',
+                            padding: '20px',
+                            paddingTop: '60px' // 닫기 버튼 공간 확보
+                        }}>
+                            <AdoptionApplicationForm
+                                animalInfo={animalInfo}
+                                animalImgUrl={animalImgUrl}
+                                onClose={() => setShowApplication(false)}
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

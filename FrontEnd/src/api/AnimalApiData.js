@@ -1,6 +1,8 @@
 const API_URL = process.env.REACT_APP_ALL_ANIMAL_API_URL;
 const API_KEY = process.env.REACT_APP_ALL_ANIMAL_API_KEY;
-const BASE_URL = "http://localhost:8888";
+
+// const BASE_URL = "http://localhost:8888";
+const BASE_URL = "http://192.168.3.24:8888";
 const PAGE_SIZE = 1000;
 
 /*

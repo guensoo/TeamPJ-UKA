@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './FormButton.css';
 import { Editor } from '@toast-ui/react-editor';
@@ -7,8 +7,8 @@ import color from '@toast-ui/editor-plugin-color-syntax'
 import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import Swal from 'sweetalert2';
-import axios from 'axios';
 import { useAdmin } from '../../../api/AdminContext';
+import { createPost, uploadImage } from '../../../api/BoardApi';
 
 const AllBoardForm = () => {
     const [title, setTitle] = useState('');
@@ -17,37 +17,10 @@ const AllBoardForm = () => {
     const titleInputRef = useRef(null);
     const editorRef = useRef(null);
 
-    const API_BASE_URL = 'http://localhost:8888';
-
     // 유저 정보
-    const user = JSON.parse(localStorage.getItem('user'));
-    console.log("user :", user);
-    const isAdmin = useAdmin();
-
-    //글쓰기 시 제목 포커스
-    //로컬 스토리지에서 데이터 불러오기
-    useEffect(() => {
-        const savedTitle = localStorage.getItem('post-title');
-        const savedCategory = localStorage.getItem('post-category');
-        const savedContent = localStorage.getItem('post-content');
-        
-        if (savedTitle) setTitle(savedTitle);
-        if (savedCategory) setCategory(savedCategory);
-        if (savedContent && editorRef.current) {
-            setTimeout(() => {
-                editorRef.current.getInstance().setMarkdown(savedContent);
-            }, 0); // ref가 초기화된 후에 실행되도록
-        }
-
-        titleInputRef.current?.focus();
-    },[])
-
-    // 저장된 데이터 삭제 함수
-    const clearTempData = () => {
-        localStorage.removeItem('post-title');
-        localStorage.removeItem('post-category');
-        localStorage.removeItem('post-content');
-    };
+    const loginData = JSON.parse(localStorage.getItem("user"));
+    const isAdmin = loginData?.userId?.includes("admin") ? true : false;
+    const currentUser = loginData?.nickname;
 
     //등록 버튼
     const handleSubmit = (e) => {
@@ -76,7 +49,7 @@ const AllBoardForm = () => {
         const newPost = {
             category: category,  // 반드시 Category enum 이름과 일치해야 함
             title: title,
-            author: !!user ? user.nickname : "익명",
+            author: currentUser,
             content: content
         }
 
@@ -92,9 +65,7 @@ const AllBoardForm = () => {
         }).then(async (result) => {
             try {
                 if(result.isConfirmed){
-                    const res = await axios.post(`${API_BASE_URL}/board`, newPost);
-
-                    clearTempData(); //저장된 임시데이터 삭제
+                    await createPost(newPost)
                     Swal.fire({
                         title: '등록 완료',
                         text: '게시글이 등록되었습니다.',
@@ -131,7 +102,6 @@ const AllBoardForm = () => {
             cancelButtonText: '취소',
         }).then((result) => {
             if(result.isConfirmed){
-                clearTempData(); //저장된 임시데이터 삭제
                 navigate('/board/all')
             }
         })
@@ -180,6 +150,17 @@ const AllBoardForm = () => {
                         hideModeSwitch={true}
                         placeholder="내용을 입력하세요."
                         plugins={[color]}
+                        hooks={{
+                            addImageBlobHook: async (blob, callback) => {
+                                try {
+                                    const imageUrl = await uploadImage(blob);
+                                    console.log('업로드된 이미지 URL:', imageUrl);
+                                    callback(imageUrl, 'image');
+                                } catch (error) {
+                                    Swal.fire({ icon: 'error', title: '이미지 업로드 실패', confirmButtonColor: '#6c5ce7' });
+                                }
+                            }
+                        }}
                     />
                 </div>
                 <div className='board-write-button-container'>

@@ -1,5 +1,8 @@
+// const BASE_URL = "http://localhost:8888";
+const BASE_URL = "http://192.168.3.24:8888";
+
 export async function signup({ userId, nickname, password, email }) {
-    const res = await fetch("http://localhost:8888/api/auth/signup", {
+    const res = await fetch(`${BASE_URL}/api/auth/signup`, {
         method: 'POST',
         headers: {
         'Content-Type': 'application/json'
@@ -68,7 +71,7 @@ export async function verifyEmailCode(email, code) {
 }
 
 export async function login({ userId, password }) {
-    const res = await fetch("http://localhost:8888/api/auth/login", {
+    const res = await fetch(`${BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: { 
             "Content-Type": "application/json" 
@@ -96,7 +99,8 @@ export async function getMe() {
         throw new Error('로그인 토큰이 없습니다.');
     }
 
-    const res = await fetch('http://localhost:8888/api/auth/me', {
+    
+    const res = await fetch(`${BASE_URL}/api/auth/me`, {
         method: 'GET',
         headers: {
         'Content-Type': 'application/json',

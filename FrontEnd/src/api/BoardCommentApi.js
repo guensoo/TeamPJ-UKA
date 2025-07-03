@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_BASE_URL = 'http://localhost:8888';
+// const API_BASE_URL = "http://localhost:8888";
+const API_BASE_URL = "http://192.168.3.24:8888";
 
 // 댓글 작성
 export const createComment = async (boardId, comment) => {

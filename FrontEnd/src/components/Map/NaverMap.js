@@ -28,6 +28,18 @@ const NaverMap = ({ centers = [], onMapReady }) => {
         setIsMapReady(true); //지도 준비 완료.
         onMapReady?.();
 
+        // 여기서 zoom_changed 이벤트 리스너 등록
+        naver.maps.Event.addListener(mapInstance.current, 'zoom_changed', () => {
+            naver.maps.Event.trigger(mapInstance.current, 'resize');
+        });
+
+        // 지도 클릭 시 InfoWindow 닫기 처리 추가
+        naver.maps.Event.addListener(mapInstance.current, 'click', () => {
+            if (infoWindowRef.current) {
+                infoWindowRef.current.close();
+            }
+        });
+
         loadScript(
             'https://openapi.map.naver.com/openapi/v3/maps-geocoder.js',
             () => createMarkers()

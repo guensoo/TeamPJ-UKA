@@ -1,7 +1,8 @@
-import { likeQna, unlikeQna, fetchQnaDetail, deleteQnaComment, editQnaComment, createQnaComment } from '../../../api/CustomerApiData'; // 실제 API 함수 import
+import { reportQna, likeQna, unlikeQna, fetchQnaDetail, deleteQnaComment, editQnaComment, createQnaComment } from '../../../api/CustomerApiData'; // 실제 API 함수 import
 import { MapQnaRaw } from '../Mappers/QnaMapper'; // MapQnaRaw 함수 import
 import { useAlert } from '../Context/AlertContext'; // showAlert 함수 import (만약 context 등에서 사용한다면)
 
+// 좋아요 처리 핸들러
 export const handleLikeAction = async ({
     qna,
     user,
@@ -62,6 +63,62 @@ export const handleLikeAction = async ({
         }
     } finally {
         setLikeLoading?.(false);
+    }
+};
+
+// 신고 처리 핸들러
+export const handleReportAction = async ({
+    qna,
+    user,
+    isReported,
+    setQna,
+    setIsReported,
+    showAlert,
+    setReportLoading,
+}) => {
+    if (!user || !user.userId) {
+        await showAlert({ title: '로그인이 필요합니다.', icon: 'warning' });
+        return;
+    }
+
+    const storageKey = `qna_reported_${user.userId}_${qna.id}`;
+    let optimisticReported = !isReported;
+
+    // 1. Optimistic update
+    setIsReported(optimisticReported);
+
+    try {
+        setReportLoading?.(true);
+
+        if (isReported) {
+            // 보통 신고는 "취소" 기능 없음! (필요시 구현)
+            await showAlert({ title: '이미 신고하셨습니다.', icon: 'info' });
+        } else {
+            await reportQna(qna.id, user.userId);
+            localStorage.setItem(storageKey, 'true');
+            await showAlert({ title: '신고하였습니다.', icon: 'success', timer: 1200 });
+        }
+
+        // 2. 필요하면 서버에서 최신 상태 받아오기
+        // const updated = await fetchQnaDetail(qna.id);
+        // setQna(MapQnaRaw(updated));
+
+    } catch (e) {
+        // 롤백 (Optimistic UI)
+        setIsReported(isReported);
+
+        if (e.response?.status === 409) {
+            setIsReported(true);
+            await showAlert({ title: '이미 신고한 게시글입니다.', icon: 'info' });
+        } else {
+            await showAlert({
+                title: '⚠️ 신고 오류',
+                text: e.response?.data?.message || '신고 처리 중 오류가 발생했습니다.',
+                icon: 'warning',
+            });
+        }
+    } finally {
+        setReportLoading?.(false);
     }
 };
 

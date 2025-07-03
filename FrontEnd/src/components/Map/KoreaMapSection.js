@@ -22,7 +22,6 @@ const KoreaMapSection = ({
                     onClick={() => onRegionSelect(city.orgdownNm)}
                     onMouseEnter={() => onRegionHover(city.orgdownNm)}
                     onMouseLeave={() => onRegionHover(null)}
-                //   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);  
                 />
             ))}
         </svg>

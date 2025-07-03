@@ -79,10 +79,13 @@ public class QnaController {
 
         // 👇 여기에 추천여부 추가!
         boolean isLikedByMe = false;
+        boolean isReportedByMe = false;
         if (userId != null) {
             isLikedByMe = qnaService.hasUserLikedQna(no, userId); // 서비스에 추가 필요
+            isReportedByMe = qnaService.hasUserReportedQna(no, userId);
         }
         dto.setLikedByMe(isLikedByMe);
+        dto.setReportedByMe(isReportedByMe);
 
         return ResponseEntity.ok(dto);
     }

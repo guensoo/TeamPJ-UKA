@@ -1,4 +1,4 @@
-import KoreaAcademyImage from '../../assets/KoreaAcademyImage.jpg';
+import KoreaAcademyImage from '../../assets/KoreaAcademyImage.png';
 import InstagramLogo from '../../assets/InstagramLogo.png';
 
 const MainFooter = () => {

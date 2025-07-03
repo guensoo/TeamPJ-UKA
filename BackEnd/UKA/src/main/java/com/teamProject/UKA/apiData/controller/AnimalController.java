@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.teamProject.UKA.apiData.dto.AnimalDTO;
@@ -29,6 +30,13 @@ public class AnimalController {
 	    // Entity → DTO 변환 필요 (아직 toDTO 없으면 아래 예시 추가)
 	    List<AnimalDTO> animals = animalService.getAllAnimals();
 	    return ResponseEntity.ok(animals);
+	}
+	
+	//api 공고번호로 단건조회
+	@GetMapping
+	public ResponseEntity<AnimalDTO> getById(@RequestParam(name="desertionNo") String desertionNo){
+		AnimalDTO animals = animalService.getById(desertionNo);
+		return ResponseEntity.ok(animals); 
 	}
 	
     @PostMapping("/import")

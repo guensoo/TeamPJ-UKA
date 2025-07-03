@@ -1,16 +1,12 @@
 import {Link, useNavigate}from 'react-router-dom'
-import {Card,CardContent,CardMedia,CardActionArea,Typography, Alert} from '@mui/material'
+import {Card,CardContent,CardMedia,CardActionArea,Typography} from '@mui/material'
 import defimg from '../../assets/noImage.jpg';
 import { useState } from 'react';
-export const CardComponent = ({img,row=false,index,filteredData}) => {
+export const CardComponent = ({img,row=false,list}) => {
 
     const navigate = useNavigate();
     const [imgSrc,setImgSrc] = useState(img);
-    const list = filteredData[index]
-    
-    // console.log('해당하는 자료 :',list)
-    // console.log('넘겨받은 번호 :',index)
-    // console.log('넘겨받은 필터자료 : ',filteredData)
+    // console.log(list)
 
     
     if(!row){
@@ -18,7 +14,7 @@ export const CardComponent = ({img,row=false,index,filteredData}) => {
             // 카드(세로)
         <Card sx={{ flex:'0 0 20%'}} raised={true} >
             <CardActionArea onClick={()=>{
-                navigate('/about/select',{state:{list:filteredData,index:index}})
+                navigate(`/about/select?desertionNo=${list.desertionNo}`)
                 window.scrollTo(0,0)
                 }}           
                 >

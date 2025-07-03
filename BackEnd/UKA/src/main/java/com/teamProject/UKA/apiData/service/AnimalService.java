@@ -30,4 +30,9 @@ public class AnimalService {
         List<AnimalEntity> entities = dtos.stream().map(AnimalEntity::fromDTO).collect(Collectors.toList());
         animalRepository.saveAll(entities);
     }
+    
+    public AnimalDTO getById(String desertionNo) {
+    	AnimalDTO result =  animalRepository.findById(desertionNo).get().toDTO();
+    	return result;
+    }
 }

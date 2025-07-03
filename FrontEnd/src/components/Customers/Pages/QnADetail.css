@@ -79,7 +79,7 @@
 .qna-detail-recommend-btn,
 .qna-detail-report-btn {
     background: #fff;
-    border: 1px solid #b19cd9;
+    border: 1px solid #bfbfbf;
     color: #b19cd9;
     font-weight: 700;
     border-radius: 7px;
@@ -89,10 +89,13 @@
     transition: background 0.15s, color 0.15s;
 }
 
-.qna-detail-recommend-btn:hover,
+.qna-detail-recommend-btn:hover{
+    /* background: #b19cd9; */
+    /* color: #fff; */
+    border: 1px solid #00aaff;
+}
 .qna-detail-report-btn:hover {
-    background: #b19cd9;
-    color: #fff;
+    border: 1px solid red;
 }
 
 /* 이전/다음글 네비게이션 텍스트 */

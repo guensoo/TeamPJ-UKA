@@ -1,7 +1,9 @@
 --테이블 기존 데이터 삭제
 --(data.sql사용시 실행 할때 마다 data.sql이 실행되기 때문.(중복 insert))
+delete from adoption_image;
 delete from request;
 ALTER TABLE request AUTO_INCREMENT = 1;
+ALTER TABLE adoption_image AUTO_INCREMENT = 1;
 delete from users;
 
 
@@ -36,3 +38,8 @@ INSERT INTO request (find, img, kind,selectedBreed, sex, age, name, time, local,
 (false, 'http://localhost:8888/request/img/cat8.jpg','고양이', '아메리칸 숏헤어', false, '5살', '두리', '2025-06-18 20:40', '서울 양천구 목동', '010-3434-5656', '줄무늬 있음', 2),
 (false, 'http://localhost:8888/request/img/dog1.jpg','강아지', '불독', true, '6살', '복실이', '2025-06-19 10:05', '서울 중구 명동', '010-1212-7878', '주름 많고 무거움', 1),
 (false, 'http://localhost:8888/request/img/cat9.jpg','고양이', '렉돌', false, '2살', '솜이', '2025-06-20 11:15', '서울 서대문구 연희동', '010-9999-1111', '눈이 크고 온순함', 2);
+
+
+INSERT INTO adoption_image (seq, src, type) VALUES
+('0', '/uploads/3bb43879-fe04-4861-972d-d23a1ef6cc54_photo1.jpg', 'POPUP'),
+('0', '/uploads/d70406ca-52fd-402e-8e02-892561b14362_image.png', 'THUMBNAIL');
