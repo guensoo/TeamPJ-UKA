@@ -330,11 +330,13 @@ export const RequestWrite = () => {
                                                                 }}
                                                                 >
                                                                 <ListItem disablePadding sx={{ border: '1px solid #cceeff' }}>
-                                                                    <img
-                                                                    className="DBdialogimg"
-                                                                    src={`/img/${formData.kind}_picture/${breedImg}.jpg`}
-                                                                    alt={`${breedName} 이미지`}
+                                                                    <div style={{backgroundColor:'#e5f4ff'}}>
+                                                                        <img
+                                                                        className="DBdialogimg"
+                                                                        src={`/img/${formData.kind}_picture/${breedImg}.jpg`}
+                                                                        alt={`${breedName} 이미지`}
                                                                     />
+                                                                    </div>
                                                                     {breedName}
                                                                 </ListItem>
                                                             </ListItemButton>

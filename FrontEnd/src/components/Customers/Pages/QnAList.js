@@ -155,7 +155,18 @@ const QnAList = () => {
     };
 
     // 글쓰기 이동
-    const handleWrite = () => navigate('/customer/qna/new');
+    const handleWrite = async () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            await showAlert({
+                title: '로그인이 필요합니다.',
+                icon: 'warning',
+            });
+            navigate('/login');
+            return;
+        }
+        navigate('/customer/qna/new');
+    };
 
     return (
         <div className="customer-container">

@@ -64,8 +64,6 @@ const QnADetail = () => {
 
             // ✅ 신고 상태
             setIsReported(!!mappedDetail.isReportedByMe);
-            console.log('QNA DETAIL API RAW:', rawDetail);
-            console.log('QNA DETAIL MAPPED:', mappedDetail);
 
             // ✅ 추천 상태 (서버 기준)
             setIsLiked(mappedDetail.isLikedByMe === true); // ← 이게 핵심!

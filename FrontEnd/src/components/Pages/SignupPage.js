@@ -25,9 +25,9 @@ function validate(form) {
     // 🚩 금지 아이디(admin)
     if (form.userId.toLowerCase() === "admin") return "사용할 수 없는 아이디입니다.";
 
-    // 닉네임: 6~16글자, 한글/영문/숫자만(특수문자 불가)
+    // 닉네임: 2~16글자, 한글/영문/숫자만(특수문자 불가)
     if (!form.nickname.trim()) return "닉네임을 입력하세요.";
-    if (form.nickname.length <= 6 || form.nickname.length >= 16) return "닉네임은 6~16자여야 합니다.";
+    if (form.nickname.length <= 2 || form.nickname.length >= 16) return "닉네임은 2~16자여야 합니다.";
     if (!/^[가-힣a-zA-Z0-9]+$/.test(form.nickname)) return "닉네임은 한글, 영문, 숫자만 가능합니다.";
     // 🚩 금지 닉네임(관리자)
     if (form.nickname === "관리자") return "사용할 수 없는 닉네임입니다.";

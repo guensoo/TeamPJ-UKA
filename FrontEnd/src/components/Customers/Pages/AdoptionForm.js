@@ -740,14 +740,6 @@ function AdoptionApplicationForm({ animalInfo, animalImgUrl, onClose }) {
                                             인쇄
                                         </button>
                                     )}
-                                    <button
-                                        onClick={handleDownloadEmpty}
-                                        className="form-button secondary"
-                                        style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-                                    >
-                                        <FileText size={16} />
-                                        양식 다운로드
-                                    </button>
                                 </>
                             )}
                         </div>

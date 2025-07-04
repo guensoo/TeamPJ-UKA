@@ -71,9 +71,11 @@ export const DetailBody = () => {
         console.log("뒤로가기 후 받은 gunGu:", newCenter);
         //강제 클릭
         // document.querySelector('.DBButton')?.click();
-        setTimeout(() => {
+        if(newSido||newGungu||newCenter){
+            setTimeout(() => {
             document.querySelector('.DBButton')?.click();
-        }, 200); 
+        }, 400); 
+        }
     }, [search]);
 
     const [neuter,setNeuter] = useState('');
@@ -214,6 +216,13 @@ export const DetailBody = () => {
                         color="info"
                         sx={{ marginLeft: '20px'}}
                         onClick={() => {
+                            // if(!show){
+                            //     showAlert({
+                            //         title:'지역 검색을 먼저 해주세요',
+                            //         icon: 'warning'
+                            //     })
+                            //     return
+                            // }
                             let filteredCenters = [];
                             if (selectedCenterData) {
                                 // 센터 선택 시 1개 센터만 마커 표시
@@ -274,8 +283,15 @@ export const DetailBody = () => {
                                 customInput={
                                     <CustomButton
                                         variant="contained"
-                                        onClick={()=>{if(!show){
-                                    }}}
+                                        onClick={()=>{
+                                            // if(!show){
+                                            //     showAlert({
+                                            //         title:'지역 검색을 먼저 해주세요',
+                                            //         icon: 'warning'
+                                            //     })
+                                            //     return
+                                            // }
+                                        }}
                                         >{selectedDate}
                                     </CustomButton>
                                 }
@@ -356,11 +372,13 @@ export const DetailBody = () => {
                                                                 }}
                                                                 >
                                                                 <ListItem disablePadding sx={{ border: '1px solid #cceeff' }}>
+                                                                    <div style={{backgroundColor:'#e5f4ff'}}>
                                                                     <img
                                                                     className="DBdialogimg"
                                                                     src={`/img/${kind}_picture/${breedImg}.jpg`}
                                                                     alt={`${breedName} 이미지`}
                                                                     />
+                                                                    </div>
                                                                     {breedName}
                                                                 </ListItem>
                                                             </ListItemButton>
@@ -402,6 +420,7 @@ export const DetailBody = () => {
                                             title:'지역 검색을 먼저 해주세요',
                                             icon: 'warning'
                                         })
+                                        return
                                     }
                                     // 통합 필터
                                     setDetailFilter(
@@ -410,7 +429,7 @@ export const DetailBody = () => {
                                             (!neuter || item.neuterYn === neuter) &&
                                             (!selectedBreed || item.kindNm === selectedBreed) &&
                                             (!sex || item.sexCd === sex) &&
-                                            (!kind || item.upKindNm === (kind === 'dog' ? '개' : '고양이'))
+                                            (!kind || item.upKindNm === (kind === 'etc'?'기타':kind==='dog' ? '개' : '고양이'))
                                         )
                                     );
 

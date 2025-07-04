@@ -21,19 +21,19 @@ const QnAForm = () => {
     const [loading, setLoading] = useState(true);
     const user = JSON.parse(localStorage.getItem('user'));
 
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        // 로그인 안 되어 있으면 로그인 페이지로 리다이렉트
-        if (!token) {
-            showAlert({
-                title: '로그인이 필요합니다.',
-                icon: 'warning'
-            }).then(() => {
-                navigate('/login');
-            });
-            return;
-        }
-    }, [navigate, showAlert]);
+    // useEffect(() => {
+    //     const token = localStorage.getItem('token');
+    //     // 로그인 안 되어 있으면 로그인 페이지로 리다이렉트
+    //     if (!token) {
+    //         showAlert({
+    //             title: '로그인이 필요합니다.',
+    //             icon: 'warning'
+    //         }).then(() => {
+    //             navigate('/login');
+    //         });
+    //         return;
+    //     }
+    // }, [navigate, showAlert]);
 
 
     useEffect(() => {

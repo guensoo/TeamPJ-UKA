@@ -30,7 +30,7 @@ export default function NoticeBar() {
             <div className="notice-bar-section">
                 <div className="notice-bar notice-bar--image">
                     <img src={m_dog_search01} alt="캠페인 배너" className="notice-bar-img" />
-                    <a href="https://kr.vonvon.me/quiz/145/?type=intro" className="notice-bar-img-btn">캠페인 참여하기</a>
+                    <a href="https://www.waveon.io/apps/10410/pages/1664244147132" className="notice-bar-img-btn">캠페인 참여하기</a>
                 </div>
             </div>
             {/* 슬라이드(캐러셀) 배너 */}

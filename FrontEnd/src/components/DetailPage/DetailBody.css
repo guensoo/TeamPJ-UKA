@@ -12,7 +12,6 @@
     min-width: 1075px;
     display: flex;
     flex-direction: column;
-    margin-top: 20px;
 }
 
     /* 보드에서 가져온 헤더 */
@@ -331,4 +330,18 @@
     background-color: #eee;
     color: #999;
     cursor: not-allowed;
+}
+
+/* 품종선택-검색 */
+.dialogSearch{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding :10px 30px;
+}
+
+.DBdialogimg{
+  height:200px;
+  width: 250px;
+  object-fit: contain;
 }

@@ -151,7 +151,7 @@ export async function handleCommentSubmit({
     } catch (error) {
         showAlert && showAlert({
             title: '댓글 등록 실패',
-            text: error?.message || '서버 오류',
+            text: '댓글 등록에 실패했습니다.',
             icon: 'error'
         });
     }

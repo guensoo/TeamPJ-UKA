@@ -19,6 +19,8 @@
     color: #222;
     letter-spacing: -1px;
     word-break: keep-all;
+    padding-bottom: 7px;
+    padding-left: 8px;
 }
 
 .qna-detail-meta,
