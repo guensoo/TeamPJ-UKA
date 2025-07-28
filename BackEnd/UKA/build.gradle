@@ -69,6 +69,7 @@ dependencies {
 	// swagger
 	implementation("io.swagger.core.v3:swagger-annotations:2.2.32")
 	
+	implementation 'org.postgresql:postgresql:42.7.3'
  
 }
 

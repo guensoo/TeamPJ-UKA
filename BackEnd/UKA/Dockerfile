@@ -11,7 +11,7 @@ COPY . .
 RUN chmod +x gradlew
 
 # 5. Spring Boot 빌드
-RUN ./gradlew build -x test
+RUN ./gradlew build
 
 # 6. jar 파일 실행
 CMD ["java", "-jar", "build/libs/UKA-0.0.1-SNAPSHOT.jar"]
