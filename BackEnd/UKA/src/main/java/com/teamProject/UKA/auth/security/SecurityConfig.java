@@ -48,6 +48,8 @@ public class SecurityConfig {
                         "/api/auth/find-userId",
                         "/api/auth/reset-password-request",
                         "/api/auth/reset-password",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
                         "/request",
                     	"/request/*",
                     	"/request/img/**",

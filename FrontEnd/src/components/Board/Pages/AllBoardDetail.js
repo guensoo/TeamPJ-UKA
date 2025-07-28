@@ -122,7 +122,6 @@ const AllBoardDetail = () => {
         navigate(`/board/all/detail/${post.id}`, {
             state: {
                 filteredList: filteredList,
-                noticedPosts: noticedPosts
             }
         });
     }
@@ -214,6 +213,7 @@ const AllBoardDetail = () => {
     const handleReplySubmit = async (e, parentId) => {
         e.preventDefault();
 
+        if(currentUser === undefined) return Swal.fire("로그인 필요","로그인 후 이용해주세요.","error");
         // const input = replyInput[parentId]?.trim();
         const input = e.target.elements[0].value.trim();
 
@@ -433,8 +433,16 @@ const AllBoardDetail = () => {
                     > 🚨신고
                     </button>
                 }
-                {isAdmin && 
-                    <button className='board-detail-report-button' onClick={handleRestore}>
+                {isAdmin && post.category !== "NOTICE" &&
+                    <button 
+                        className='board-detail-report-button' 
+                        onClick={handleRestore}
+                        disabled={post.report < 5}
+                        style={{
+                            opacity: post.report < 5 ? 0.5 : 1,
+                            cursor: post.report < 5 ? 'not-allowed' : 'pointer'
+                        }}
+                    >
                         복원
                     </button>
                 }
@@ -508,6 +516,7 @@ const AllBoardDetail = () => {
             </div>
 
             {/* 이전/다음글 */}
+            {post.category !== "NOTICE" && (
             <div className="board-post-navigation">
                 {prev && (
                     <div 
@@ -525,6 +534,7 @@ const AllBoardDetail = () => {
                     </div>
                 )}
             </div>
+            )}
         </div>
     );
 };

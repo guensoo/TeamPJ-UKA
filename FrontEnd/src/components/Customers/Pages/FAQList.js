@@ -26,7 +26,13 @@ const FAQList = ({ searchKeyword = "", onDelete = () => { } }) => {
     const { showAlert } = useAlert();
 
     // 테스트용
-    const {isAdmin} = useAdmin();
+    function isAdminCheck() {
+        const user = JSON.parse(localStorage.getItem('user'));
+        return !!user && user.userId && user.userId.toLowerCase().includes('admin');
+    }
+    const isAdmin = isAdminCheck();
+    console.log('isAdmin:', isAdmin, 'user:', JSON.parse(localStorage.getItem('user')));
+
 
     useEffect(() => {
         fetchFaqs().then(setFaqList);

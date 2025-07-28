@@ -61,7 +61,7 @@ public class QnaCommentEntity {
     protected void onUpdate() {
         this.qnaCommentUpdatedAt = LocalDateTime.now();
         if ("Y".equals(this.deleted)) {
-            this.qnaCommentContent = "관리자에 의해 삭제된 댓글입니다.";
+            this.qnaCommentContent = "관리자에 의해 숨김처리된 댓글입니다.";
         }
     }
 }

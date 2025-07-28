@@ -3,6 +3,8 @@ import { RequestComponent } from './RequestComponent'
 import './RequestMain.css'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
+import Swal from 'sweetalert2'
+import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 
 // const API_BASE_URL = "http://localhost:8888";
 const API_BASE_URL = "http://192.168.3.24:8888";
@@ -11,6 +13,11 @@ export const RequestMain = () => {
     const navigate = useNavigate();
     const [card,setCard] = useState([]);
     const refs = useRef([]);
+
+    // 유저 정보
+    const loginData = JSON.parse(localStorage.getItem("user"));
+    const isAdmin = loginData?.userId?.includes("admin") ? true : false;
+    const currentUser = loginData?.nickname;
 
     useEffect(()=>{
         const requestApi = async () => {
@@ -46,9 +53,9 @@ export const RequestMain = () => {
                 sx={{marginLeft:'auto', marginTop:'20px'}}
 
                 onClick={()=>{
-                    navigate('/request/write')
-                    window.scrollTo(0,0)
-                }}>작성하기
+                    currentUser === undefined ? Swal.fire("로그인 필요","로그인 후 이용해주세요.","error") : navigate('/request/write');
+                }}>작성하기 
+                <CreateOutlinedIcon/>
             </Button>
 
             <Box className='RMtop'>
@@ -77,7 +84,9 @@ export const RequestMain = () => {
                                 selectedBreed={list.selectedbreed}
                             /> 
                             {/* 받은값 확인하기. */}
-                            {/* {console.log(list)} */}
+                            {
+                                // console.log(loginData.seq)
+                            }
                         </div>
                         {/* 밑줄 */}
                         <div className='RMhr'></div>

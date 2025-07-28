@@ -21,21 +21,6 @@ const QnAForm = () => {
     const [loading, setLoading] = useState(true);
     const user = JSON.parse(localStorage.getItem('user'));
 
-    // useEffect(() => {
-    //     const token = localStorage.getItem('token');
-    //     // 로그인 안 되어 있으면 로그인 페이지로 리다이렉트
-    //     if (!token) {
-    //         showAlert({
-    //             title: '로그인이 필요합니다.',
-    //             icon: 'warning'
-    //         }).then(() => {
-    //             navigate('/login');
-    //         });
-    //         return;
-    //     }
-    // }, [navigate, showAlert]);
-
-
     useEffect(() => {
         // 제목 포커싱
         document.querySelector('.customer-qna-form-title input')?.focus();
@@ -150,7 +135,7 @@ const QnAForm = () => {
                         setPassword={setPassword}
                     />
                 </div>
-                <div className='customer-write-button-container'>
+                <div className='customer-qna-write-button-container'>
                     <button type="submit" className="qna-action-btn">등록</button>
                     <button type="button" className="qna-action-btn" onClick={handleCancel}>취소</button>
                 </div>

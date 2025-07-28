@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.teamProject.UKA.request.dto.RequestDataDTO;
 import com.teamProject.UKA.request.service.RequestService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -32,8 +33,12 @@ public class RequestController {
 	
 	@Autowired final private RequestService service;
 	
+	private String ip = "192.168.3.24";
+//	private String ip = "localhost";
+	
 	//C - 찾고 있어요 '단건' 작성.
 	@PostMapping
+	@Operation(summary = "찾고있어요 쓰기", description = "찾고있어요 쓰기")
 	public ResponseEntity<?> write(@RequestBody RequestDataDTO dto){
 		List<RequestDataDTO> result = service.write(dto);
 		return ResponseEntity.ok().body(result);
@@ -58,7 +63,7 @@ public class RequestController {
 		try {
 			file.transferTo(new File(filePath));
 			//요청하면 보여줄 url
-			imageUrl = "http://localhost:8888/request/img/"+userId+uniqueFileName;
+			imageUrl = "http://"+ip+":8888/request/img/"+userId+uniqueFileName;
 		} catch (Exception e) {
 		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "파일 업로드 실패"));

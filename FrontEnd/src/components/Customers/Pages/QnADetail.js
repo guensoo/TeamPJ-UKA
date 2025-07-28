@@ -24,6 +24,7 @@ import {
     handleCommentSubmit,
     handleEditSave,
     handleDeleteComment,
+    handleHideComment,
 } from './QnAActions';
 import QnAComment from './QnAComment';
 
@@ -67,7 +68,7 @@ const QnADetail = () => {
 
             // ✅ 추천 상태 (서버 기준)
             setIsLiked(mappedDetail.isLikedByMe === true); // ← 이게 핵심!
-            
+
 
             // ✅ localStorage는 참고용으로 동기화 (선택)
             const storageKey = `qna_liked_${user?.userId}_${mappedDetail.id}`;
@@ -100,27 +101,27 @@ const QnADetail = () => {
     };
 
 
-useEffect(() => {
-    const lastViewTimeKey = `qna_last_view_time_${id}`;
-    const now = Date.now();
-    const lastViewTime = localStorage.getItem(lastViewTimeKey);
+    useEffect(() => {
+        const lastViewTimeKey = `qna_last_view_time_${id}`;
+        const now = Date.now();
+        const lastViewTime = localStorage.getItem(lastViewTimeKey);
 
-    // ✅ 상위에서 만든 fetchData만 부르기
-    fetchData();
+        // ✅ 상위에서 만든 fetchData만 부르기
+        fetchData();
 
-    // 조회수 증가 로직
-    if (!lastViewTime || now - lastViewTime > 10 * 60 * 1000) {
-        (async () => {
-            try {
-                await increaseViewCount(id);
-                await fetchData();
-                localStorage.setItem(lastViewTimeKey, now);
-            } catch (error) {
-                console.error('조회수 증가 중 에러:', error);
-            }
-        })();
-    }
-}, [id, password, isLiked]);
+        // 조회수 증가 로직
+        if (!lastViewTime || now - lastViewTime > 10 * 60 * 1000) {
+            (async () => {
+                try {
+                    await increaseViewCount(id);
+                    await fetchData();
+                    localStorage.setItem(lastViewTimeKey, now);
+                } catch (error) {
+                    console.error('조회수 증가 중 에러:', error);
+                }
+            })();
+        }
+    }, [id, password, isLiked]);
 
 
 
@@ -575,6 +576,7 @@ useEffect(() => {
                         setCommentInput: resetInput,
                         showAlert,
                         MapQnaRaw,
+                        password,
                     });
                     await fetchData(); // 댓글 등록 후 전체 새로고침
                 }}
@@ -583,6 +585,9 @@ useEffect(() => {
                 }}
                 handleDeleteComment={async (commentId) => {
                     await handleDeleteComment(commentId, fetchData, showAlert);
+                }}
+                handleHideComment={async (commentId) => {
+                    await handleHideComment(commentId, fetchData, showAlert);
                 }}
             />
 

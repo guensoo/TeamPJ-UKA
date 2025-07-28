@@ -206,6 +206,7 @@ const NoticeDetail = () => {
     const handleReplySubmit = async (e, parentId) => {
         e.preventDefault();
 
+        if(currentUser === undefined) return Swal.fire("로그인 필요","로그인 후 이용해주세요.","error");
         // const input = replyInput[parentId]?.trim();
         const input = e.target.elements[0].value.trim();
 
@@ -411,21 +412,6 @@ const NoticeDetail = () => {
                     }}
                 > 👍추천
                 </button>
-                {isAdmin &&
-                    <>
-                        <button className="board-detail-report-button"
-                            onClick={handleReportButton}
-                            style={{
-                                backgroundColor: isReported ? 'red' : '#fff',
-                                color: isReported ? '#fff' : '#000',
-                            }}
-                        > 🚨신고
-                        </button>
-                        <button className='board-detail-report-button' onClick={handleRestore}>
-                            복원
-                        </button>
-                    </>
-                }
                 {(isAdmin || (post.author === currentUser)) && (
                     <>
                         <button className="board-detail-button"

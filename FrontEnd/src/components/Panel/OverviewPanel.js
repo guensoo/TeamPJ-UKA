@@ -2,6 +2,7 @@
 import { useMemo, useRef  } from "react";
 import { useNavigate } from "react-router-dom";
 import "./OverviewPanel.css";
+import SiDoData from "../Map/koreaSiDoData";
 
 import chartCat from "../../assets/chartCat.png";
 import chartCat1 from "../../assets/chartCat1.png";
@@ -33,9 +34,10 @@ const allImages = [
     chartCat, chartCat1, chartCat2, chartCat3
 ];
 
-export default function OverviewPanel({ allRegionData, regionData, regionNm, setRegionNm, loading, error }) {
+export default function OverviewPanel({ allRegionData, regionData, regionNm, setRegionNm, loading, error,}) {
     const selectRef = useRef(null);
     const navigate = useNavigate();
+    // console.log('rawData')
 
     // 전체 집계
     const overallData = useMemo(() => {
@@ -93,8 +95,10 @@ export default function OverviewPanel({ allRegionData, regionData, regionNm, set
         if (!regionNm) {
             return alert("지역을 선택해주세요!");
         }
-        // regionNm을 쿼리스트링으로 넘김
-        navigate(`/about?regionNm=${encodeURIComponent(regionNm)}`);
+        // orgCd 검색
+        const result = SiDoData.find(item=>item.orgdownNm===regionNm).orgCd
+        // orgCd를 쿼리스트링으로 넘김
+        navigate(`/about?siDo=${encodeURIComponent(result)}`);
     };
 
     return (

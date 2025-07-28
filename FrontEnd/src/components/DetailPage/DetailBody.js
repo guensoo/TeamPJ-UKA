@@ -19,6 +19,7 @@ import SiDoData from "../Map/koreaSiDoData";
 import SiGunGooData from "../Map/KoreaSiGunGooData";
 import { fetchSavedAnimals } from "../../api/AnimalApiData.js";
 import Loading from "../Common/Loading.js";
+import Swal from "sweetalert2";
 
 export const DetailBody = () => {
     // 1) useLocation() 으로 쿼리스트링 읽어오기
@@ -506,15 +507,16 @@ export const DetailBody = () => {
                     </button>
                     ))}
                     <button onClick={() => {
-                        setCurrentPage(currentPage + 1)}} disabled={currentPage === totalPages}>›</button>
+                        setCurrentPage(currentPage + 1)}} disabled={currentPage === totalPages||totalPages===0}>›</button>
                     <button
                         onClick={() => {
+
                             const nextGroupStart = Math.floor((currentPage - 1) / 5 + 1) * 5 + 1;
                             //ex) currentPage = 14 -> floor((14-1)/5+1) = 3, 3*5+1 = 16page
                             const nextGroupPage = Math.min(nextGroupStart, totalPages); //둘중에 최솟값의 페이지의로 이동
                             setCurrentPage(nextGroupPage);
                         }}
-                        disabled={currentPage === totalPages}
+                        disabled={currentPage === totalPages||totalPages===0}
                     >
                     »
                     </button>
@@ -527,8 +529,11 @@ export const DetailBody = () => {
                             className="DBboard-search-input"
                             type="text"
                             placeholder="통합검색"
+                            onClick={()=>{Swal.fire("미구현","기능 준비중입니다","warning")}}
                         />
-                        <button className="DBboard-search-button">
+                        <button className="DBboard-search-button"
+                        onClick={()=>{Swal.fire("미구현","기능 준비중입니다","warning")}}
+                        >
                         🔍
                         </button>
                     </div>

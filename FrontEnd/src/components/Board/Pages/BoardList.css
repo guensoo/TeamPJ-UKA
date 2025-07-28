@@ -1,8 +1,8 @@
 .board-container {
     max-width: 100%;
     margin: auto;
-    padding: 20px;
-    min-width: 800px;
+    padding: 20px 0px;
+    min-width: 1075px;
 }
 
 .board-title {
@@ -59,15 +59,6 @@
     cursor: pointer;
 }
 
-.search-btn-modern {
-    /* background-color: #333; */
-    background-color: #fff;
-    border: 1px solid #000;
-    padding: 5px 14px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
 .board-options {
     /* color: #5d70ca; */
     color: #4895ff;
@@ -77,30 +68,11 @@
     width: 75px;
 }
 
-.board-options-modern {
-    /* color: #4895ff; */
-    /* border: 1px solid #5d70ca; */
-    /* border: 1px solid #4895ff; */
-    height: 35px;
-    width: 75px;
-}
-
 .board-write-btn {
     background-color: #fff;
     color: #4895ff;
     padding: 8px 16px;
     border: 1px solid #4895ff;
-    border-radius: 6px;
-    /* font-weight: bold; */
-    cursor: pointer;
-}
-
-.board-write-btn-modern {
-    background-color: #fff;
-    /* color: #4895ff; */
-    padding: 8px 16px;
-    /* border: 1px solid #4895ff; */
-    border: 1px solid #000;
     border-radius: 6px;
     /* font-weight: bold; */
     cursor: pointer;

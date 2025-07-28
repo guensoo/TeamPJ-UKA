@@ -101,8 +101,10 @@ const NoticeList = () => {
         // setSearchKeyword('')
     }
 
+    //검색 결과 정렬
+    const sortedFilteredPosts = sortPosts(filteredPosts);
     // 현재 페이지에 보여줄 게시글
-    const paginatedPosts = isSearching ? filteredPosts : noticedPosts;
+    const paginatedPosts = isSearching ? sortedFilteredPosts : noticedPosts;
     const displayedPosts = paginatedPosts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     //searching 여부에 따라 페이징
@@ -152,7 +154,7 @@ const NoticeList = () => {
     return (
         <div className="board-container">
             <div className="board-controls">
-                <select className='board-options-modern'
+                <select className='board-options'
                     value={sortOption} 
                     onChange={(e) => {setSortOption(e.target.value); setSortAsc(false);}}
                 >
@@ -161,7 +163,7 @@ const NoticeList = () => {
                 <option value='likes'>추천순</option>
                 <option value='comment'>댓글순</option>
                 </select>
-                <button className="board-write-btn-modern" onClick={handleWrite}>글쓰기</button>
+                <button className="board-write-btn" onClick={handleWrite}>글쓰기</button>
             </div>
 
             <table className="board-table">
@@ -326,7 +328,7 @@ const NoticeList = () => {
                         }
                     }}
                 />
-                <button className="search-btn-modern" onClick={handleSearch}>검색</button>                      
+                <button className="search-btn" onClick={handleSearch}>검색</button>                      
             </div>
         </div>
     );

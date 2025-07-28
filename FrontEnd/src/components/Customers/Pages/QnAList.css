@@ -1,8 +1,8 @@
 .customer-container {
     max-width: 100%;
     margin: auto;
-    padding: 20px;
-    min-width: 800px;
+    padding: 20px 0px;
+    min-width: 1075px;
 }
 
 .customer-title {

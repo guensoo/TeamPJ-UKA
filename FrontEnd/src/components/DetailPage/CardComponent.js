@@ -42,7 +42,7 @@ export const CardComponent = ({img,row=false,list}) => {
         <Card sx={{ display:'flex' }} raised={true}>
             <CardActionArea
                 onClick={() => {
-                navigate('/about/select',{state:list});
+                navigate(`/about/select?desertionNo=${list.desertionNo}`)
                 window.scrollTo(0, 0);
                 }}
                 sx={{ display: 'flex', flexDirection: 'row' }} // 가로 정렬

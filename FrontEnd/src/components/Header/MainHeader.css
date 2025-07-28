@@ -6,6 +6,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     border-bottom: 2px solid #00aaff;
     border-radius: 0 0 12px 12px;
+    min-width: 1072px;
 }
 .header-left-section {
     cursor : pointer;

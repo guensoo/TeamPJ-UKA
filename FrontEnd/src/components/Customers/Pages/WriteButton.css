@@ -17,7 +17,7 @@
     transform: translateY(-2px);
 }
 
-.customer-write-button-container {
+.customer-qna-write-button-container {
     display: flex;
     justify-content: flex-end;
     /* 오른쪽 정렬 */

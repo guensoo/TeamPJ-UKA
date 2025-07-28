@@ -45,6 +45,16 @@ const ChatForm = () => {
         }
 
         const content = editorRef.current?.getInstance().getHTML();
+        const plainText = content?.replace(/<[^>]*>/g, '').trim();
+        
+        if(!plainText){
+            Swal.fire({
+                icon: 'warning',
+                title: '내용을 입력해주세요',
+                confirmButtonColor: '#6c5ce7',
+            });
+            return;
+        }
 
         const newPost = {
             category: category,  // 반드시 Category enum 이름과 일치해야 함

@@ -1,4 +1,4 @@
-import { reportQna, likeQna, unlikeQna, fetchQnaDetail, deleteQnaComment, editQnaComment, createQnaComment } from '../../../api/CustomerApiData'; // 실제 API 함수 import
+import { reportQna, likeQna, unlikeQna, fetchQnaDetail, deleteQnaComment, editQnaComment, createQnaComment, hideQnaComment } from '../../../api/CustomerApiData'; // 실제 API 함수 import
 import { MapQnaRaw } from '../Mappers/QnaMapper'; // MapQnaRaw 함수 import
 import { useAlert } from '../Context/AlertContext'; // showAlert 함수 import (만약 context 등에서 사용한다면)
 
@@ -133,7 +133,8 @@ export async function handleCommentSubmit({
     setQna,
     setCommentInput,
     showAlert,
-    MapQnaRaw
+    MapQnaRaw,
+    password
 }) {
     e.preventDefault();
     if (!commentInput.trim()) return;
@@ -145,7 +146,7 @@ export async function handleCommentSubmit({
             qnaCommentContent: commentInput
         });
 
-        const updated = await fetchQnaDetail(qna.qnaNo);
+        const updated = await fetchQnaDetail(qna.qnaNo, password);
         setQna(MapQnaRaw(updated));
         setCommentInput('');
     } catch (error) {
@@ -165,17 +166,34 @@ export async function handleEditSave(commentId, newContent, fetchData, setEditin
 }
 
 // 댓글 삭제 핸들러
+export async function handleHideComment(commentId, fetchData, showAlert) {
+    const ok = await showAlert({
+        title: '댓글 숨김',
+        text: '이 댓글을 숨김처리 하시겠습니까?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '숨김',
+        cancelButtonText: '취소',
+    });
+    if (ok) {
+        await hideQnaComment (commentId);  // 실제 숨김처리 API 호출
+        await fetchData();
+    }
+}
+
+// --- 추가: 진짜(물리) 삭제 ---
+// 완전 삭제용 핸들러
 export async function handleDeleteComment(commentId, fetchData, showAlert) {
     const ok = await showAlert({
-        title: '댓글 삭제',
-        text: '정말 삭제하시겠습니까?',
+        title: '댓글 완전 삭제',
+        text: '정말로 이 댓글을 완전히 삭제하시겠습니까? 복구할 수 없습니다.',
         icon: 'warning',
-        showCancelButton: true, // SweetAlert2, Swal 등에서 확인/취소
+        showCancelButton: true,
         confirmButtonText: '삭제',
         cancelButtonText: '취소',
     });
     if (ok) {
-        await deleteQnaComment(commentId);
+        await deleteQnaComment(commentId); // 이게 실제 DB에서 삭제!
         await fetchData();
     }
 }

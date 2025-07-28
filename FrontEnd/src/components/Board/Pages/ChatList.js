@@ -101,8 +101,10 @@ const ChatList = () => {
         // setSearchKeyword('')
     }
 
+    //검색 결과 정렬
+    const sortedFilteredPosts = sortPosts(filteredPosts);
     // 현재 페이지에 보여줄 게시글
-    const paginatedPosts = isSearching ? filteredPosts : ChatPosts;
+    const paginatedPosts = isSearching ? sortedFilteredPosts : ChatPosts;
     const displayedPosts = paginatedPosts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     //searching 여부에 따라 페이징

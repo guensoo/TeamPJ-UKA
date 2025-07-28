@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Chatbot.css";
+import KoreaMap from "../../Map/koreaSiDoData"
 
 const keywordMap = {
     입양: "입양 절차는 상담 → 서류 → 방문입니다.",
@@ -53,6 +54,7 @@ const Chatbot = ({ onClose }) => {
     }, [messages]);
 
     const handleKeywordClick = (keyword) => {
+        const result = KoreaMap.find(item=>item.orgdownNm.includes(keyword))?.orgCd
         if (keyword === "위치") {
             setMessages((prev) => [
                 ...prev,
@@ -76,7 +78,7 @@ const Chatbot = ({ onClose }) => {
                     type: "options",
                     options: [`${keyword} 보호소 보러가기`],
                     actionType: "navigate",
-                    path: `/location/${regionPathMap[keyword]}`,
+                    path: `/about?siDo=${result}`,
                 },
             ]);
         } else {

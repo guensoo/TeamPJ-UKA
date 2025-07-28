@@ -8,6 +8,7 @@ const QnAComment = ({
     onRegister,       // 댓글 등록 함수
     handleEditSave,   // 댓글 수정 함수
     handleDeleteComment, // 댓글 삭제 함수
+    handleHideComment,
 }) => {
     const [commentInput, setCommentInput] = useState('');
 
@@ -30,6 +31,7 @@ const QnAComment = ({
                         isAdmin={isAdmin}
                         handleEditSave={handleEditSave}
                         handleDeleteComment={handleDeleteComment}
+                        handleHideComment={handleHideComment}
                     />
                 ))}
             </div>

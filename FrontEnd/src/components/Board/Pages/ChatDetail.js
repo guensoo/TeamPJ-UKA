@@ -205,6 +205,7 @@ const ChatDetail = () => {
     const handleReplySubmit = async (e, parentId) => {
         e.preventDefault();
 
+        if(currentUser === undefined) return Swal.fire("로그인 필요","로그인 후 이용해주세요.","error");
         // const input = replyInput[parentId]?.trim();
         const input = e.target.elements[0].value.trim();
 
@@ -420,8 +421,16 @@ const ChatDetail = () => {
                     > 🚨신고
                     </button>
                 }
-                {isAdmin && 
-                    <button className='board-detail-report-button' onClick={handleRestore}>
+                {isAdmin &&
+                    <button 
+                        className='board-detail-report-button' 
+                        onClick={handleRestore}
+                        disabled={post.report < 5}
+                        style={{
+                            opacity: post.report < 5 ? 0.5 : 1,
+                            cursor: post.report < 5 ? 'not-allowed' : 'pointer'
+                        }}
+                    >
                         복원
                     </button>
                 }

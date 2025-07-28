@@ -62,7 +62,6 @@ const AllBoard = () => {
         });
     };
 
-    // const noticedPosts = sortPosts(posts.filter(p => p.category === "NOTICE"));
     const noticedPosts = [...posts.filter(p => p.category === "NOTICE")]
         .sort((a, b) => {
             const dateA = a.updatedAt ? new Date(a.updatedAt) : new Date(a.createdAt);
@@ -109,10 +108,12 @@ const AllBoard = () => {
         // setSearchKeyword('')
     }
 
+    //검색 결과 정렬
+    const sortedFilteredPosts = sortPosts(filteredPosts);
     //공지사항 3개 제한
     const limitedNoticedPosts = noticedPosts.slice(0, 3);
     // 현재 페이지에 보여줄 게시글
-    const paginatedPosts = isSearching ? filteredPosts : normalPosts;
+    const paginatedPosts = isSearching ? sortedFilteredPosts : normalPosts;
     const displayedPosts = paginatedPosts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     //searching 여부에 따라 페이징

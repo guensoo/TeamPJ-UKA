@@ -51,10 +51,17 @@ public class QnaCommentController {
         return ResponseEntity.ok(qnaCommentService.updateQnaComment(commentId, dto));
     }
 
-    // 댓글 삭제
+    // 댓글 숨김
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable("commentId") Long commentId) {
         qnaCommentService.deleteQnaComment(commentId);
+        return ResponseEntity.noContent().build();
+    }
+    
+    // 댓글 삭제
+    @DeleteMapping("/comments/{commentId}/real")
+    public ResponseEntity<Void> deleteCommentPermanently(@PathVariable("commentId") Long commentId) {
+        qnaCommentService.deleteQnaCommentPermanently(commentId);
         return ResponseEntity.noContent().build();
     }
 }
