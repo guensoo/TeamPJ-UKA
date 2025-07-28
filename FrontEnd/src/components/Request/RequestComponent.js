@@ -5,9 +5,7 @@ import { useState } from 'react';
 import { useAlert } from '../Customers/Context/AlertContext';
 import { animal } from "../DetailPage/DetailBodyData.js";
 import Swal from 'sweetalert2';
-
-// const API_BASE_URL = "http://localhost:8888";
-const API_BASE_URL = "http://192.168.3.24:8888";
+import { BASE_URL } from '../../api/BaseUrl.js';
 
 export const RequestComponent = ({
   img = `${defimg}`, kind='', sex = '성별', age = '나이',
@@ -131,7 +129,7 @@ export const RequestComponent = ({
     let imageUrl = null;
 
     try {
-        const uploadImg = await fetch(`${API_BASE_URL}/request/image`,{
+        const uploadImg = await fetch(`${BASE_URL}/request/image`,{
         method:"POST",
         body:imageForm
         })
@@ -152,7 +150,7 @@ export const RequestComponent = ({
     console.log('수정된 값:', newData);
     // 여기서 서버 저장
     try {
-      const result = await fetch(`${API_BASE_URL}/request`,{
+      const result = await fetch(`${BASE_URL}/request`,{
           method:'PUT',
           headers:{
             'Content-Type':'application/json'
@@ -190,7 +188,7 @@ export const RequestComponent = ({
 
       // '네' 버튼 눌렀을 시
       if(result.isConfirmed){
-        const result =  await fetch(`${API_BASE_URL}/request/${list.no}`,{
+        const result =  await fetch(`${BASE_URL}/request/${list.no}`,{
           method:'DELETE'
         })
         await showAlert({title:'삭제가 완료 되었습니다.'})

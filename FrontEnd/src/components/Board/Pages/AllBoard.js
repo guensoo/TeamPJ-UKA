@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './BoardList.css';
 import Swal from 'sweetalert2';
 import { fetchAllPosts } from '../../../api/BoardApi';
+import TitleLength from '../utils/TitleLength';
 
 const AllBoard = () => {
     const [posts, setPosts] = useState([]);
@@ -236,8 +237,8 @@ const AllBoard = () => {
                         <div className='board-cell-text'>
                             📢
                             {searchOption === 'title' 
-                                ? highlightKeyword(post.title, isSearching ? confirmKeyword : '')
-                                : post.title
+                                ? highlightKeyword(TitleLength(post.title), isSearching ? confirmKeyword : '')
+                                : TitleLength(post.title)
                             }
                         </div>
                     </td>
@@ -275,11 +276,11 @@ const AllBoard = () => {
                             <td className='title-cell' onClick={() => handleTitleClick(post)}>
                                 <div className='board-cell-text'>
                                     {post.report >= 5 ? (
-                                        <span style={{ color: 'red' }}>{post.title} (신고차단된 글)</span>
+                                        <span style={{ color: 'red' }}>{TitleLength(post.title)} (신고차단된 글)</span>
                                     ) : (
                                         searchOption === 'title'
-                                            ? highlightKeyword(post.title, isSearching ? confirmKeyword : '')
-                                            : post.title
+                                            ? highlightKeyword(TitleLength(post.title), isSearching ? confirmKeyword : '')
+                                            : TitleLength(post.title)
                                     )}
                                 </div>
                             </td>

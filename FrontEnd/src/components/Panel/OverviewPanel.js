@@ -188,8 +188,8 @@ export default function OverviewPanel({ allRegionData, regionData, regionNm, set
                                         cx="50%"
                                         cy="50%"
                                         /* innerRadius 추가로 도넛 형태로 */
-                                        innerRadius={60}
-                                        outerRadius={80}
+                                        innerRadius={50}
+                                        outerRadius={65}
                                         /* 라벨 라인 제거, 값만 중앙 바깥쪽으로 표시 */
                                         stroke="none"
                                         labelLine={false}

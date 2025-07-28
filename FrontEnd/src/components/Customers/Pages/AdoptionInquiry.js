@@ -6,8 +6,7 @@ import { saveThumbnails, savePopups } from './AdoptionImageActive';
 import AdoptionApplicationForm from './AdoptionForm';
 import { useLocation } from 'react-router-dom';
 
-// const BASE_URL = "http://localhost:8888";
-const BASE_URL = "http://192.168.3.24:8888";
+import { BASE_URL } from '../../../api/BaseUrl';
 
 const AdoptionInquiry = () => {
     const [open, setOpen] = useState(false);

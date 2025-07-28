@@ -104,7 +104,7 @@ public class AuthService {
 		PasswordResetToken prt = new PasswordResetToken(token, u, LocalDateTime.now().plusHours(1));
 		tokenRepo.save(prt);
 
-		String link = "http://localhost:3000/reset-password?token="+token;
+		String link = "UKA-Center&"+token;
 		SimpleMailMessage msg = new SimpleMailMessage();
 		msg.setTo(email);
 		msg.setSubject("비밀번호 재설정 링크");

@@ -27,7 +27,7 @@ const MainFooter = () => {
                     <img src={InstagramLogo} alt="Instagram" style={{ width: '150px', height: '100px' }}/>
                 </a>
                 <a href="https://www.koreaisacademy.com/" target="_blank" rel="noopener noreferrer" aria-label="블로그 바로가기">
-                    <img src={KoreaAcademyImage} alt="Blog" style={{ width: '100px', height: '100px' }}/>
+                    <img src={KoreaAcademyImage} alt="Blog" style={{ width: '150px', height: '100px' }}/>
                 </a>
             </div>
         </div>

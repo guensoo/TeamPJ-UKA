@@ -1,7 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signup } from '../../api/auth';
-import axios from 'axios';
 
 import MainLogo from '../../assets/MainLogo.png';
 
@@ -18,43 +17,52 @@ import { useAlert } from '../Customers/Context/AlertContext';
 
 
 function validate(form) {
+    // 금지 아이디/닉네임 리스트
+    const bannedUserIds = ["admin"];
+    const bannedNicknames = ["관리자"];
+
     // 아이디: 6~16글자, 영문/숫자만(특수문자 불가)
-    if (!form.userId.trim()) return "아이디를 입력하세요.";
-    if (form.userId.length <= 6 || form.userId.length >= 16) return "아이디는 6~16자여야 합니다.";
-    if (!/^[a-zA-Z0-9]+$/.test(form.userId)) return "아이디는 영문과 숫자만 가능합니다.";
-    // 🚩 금지 아이디(admin)
-    if (form.userId.toLowerCase() === "admin") return "사용할 수 없는 아이디입니다.";
+    const userId = form.userId?.trim() || "";
+    if (!userId) return "아이디를 입력하세요.";
+    if (userId.length < 6 || userId.length > 16) return "아이디는 6~16자여야 합니다.";
+    if (!/^[a-zA-Z0-9]+$/.test(userId)) return "아이디는 영문과 숫자만 가능합니다.";
+    if (bannedUserIds.includes(userId.toLowerCase())) return "사용할 수 없는 아이디입니다.";
 
     // 닉네임: 2~16글자, 한글/영문/숫자만(특수문자 불가)
-    if (!form.nickname.trim()) return "닉네임을 입력하세요.";
-    if (form.nickname.length <= 2 || form.nickname.length >= 16) return "닉네임은 2~16자여야 합니다.";
-    if (!/^[가-힣a-zA-Z0-9]+$/.test(form.nickname)) return "닉네임은 한글, 영문, 숫자만 가능합니다.";
-    // 🚩 금지 닉네임(관리자)
-    if (form.nickname === "관리자") return "사용할 수 없는 닉네임입니다.";
+    const nickname = form.nickname?.trim() || "";
+    if (!nickname) return "닉네임을 입력하세요.";
+    if (nickname.length < 6 || nickname.length > 16) return "닉네임은 6~16자여야 합니다.";
+    if (!/^[가-힣a-zA-Z0-9]+$/.test(nickname)) return "닉네임은 한글, 영문, 숫자만 가능합니다.";
+    if (bannedNicknames.includes(nickname)) return "사용할 수 없는 닉네임입니다.";
 
     // 비밀번호: 8자리 이상, 영문/숫자/특수문자 모두 포함, 공백 금지
-    if (!form.password) return "비밀번호를 입력하세요.";
-    if (form.password.length <= 8) return "비밀번호는 8자리 이상이어야 합니다.";
-    if (!/[A-Za-z]/.test(form.password) || !/\d/.test(form.password) || !/[~!@#$%^&*()_\-+=\[\]{};':"\\|,.<>/?]/.test(form.password)) {
-        return "비밀번호는 영문, 숫자, 특수문자를 모두 포함해야 합니다.";
-    }
-    if (/\s/.test(form.password)) return "비밀번호에 공백은 사용할 수 없습니다.";
-
-    // 아이디-비밀번호 동일 금지
-    if (form.userId === form.password) return "아이디와 비밀번호가 같을 수 없습니다.";
+    const password = form.password || "";
+    if (!password) return "비밀번호를 입력하세요.";
+    if (password.length < 8) return "비밀번호는 8자리 이상이어야 합니다.";
+    if (!/[A-Za-z]/.test(password)) return "비밀번호에 영문이 포함되어야 합니다.";
+    if (!/\d/.test(password)) return "비밀번호에 숫자가 포함되어야 합니다.";
+    if (!/[^A-Za-z0-9]/.test(password)) return "비밀번호에 특수문자가 포함되어야 합니다.";
+    if (/\s/.test(password)) return "비밀번호에 공백은 사용할 수 없습니다.";
+    if (userId && password === userId) return "아이디와 비밀번호가 같을 수 없습니다.";
 
     // 비밀번호 확인
-    if (form.password !== form.passwordCheck) return "비밀번호가 일치하지 않습니다.";
+    if (password !== form.passwordCheck) return "비밀번호가 일치하지 않습니다.";
 
-    // 이메일: 입력 및 길이(최대 50자 제한 예시)
-    if (!form.emailId.trim()) return "이메일을 입력하세요.";
-    if (form.emailId.length >= 30) return "이메일 아이디는 30자 이하로 입력하세요.";
-    if (form.emailDomain === "custom" && !form.customDomain.trim()) return "이메일 도메인을 입력하세요.";
-    const email = form.emailDomain === 'custom'
-        ? `${form.emailId}@${form.customDomain}`
-        : `${form.emailId}@${form.emailDomain}`;
-    if (email.length >= 50) return "이메일은 50자 이하로 입력하세요.";
-    if (!/^[\w.\-]+@[\w.\-]+\.\w+$/.test(email)) return "유효한 이메일 주소를 입력하세요.";
+    // 이메일: 입력 및 길이(최대 50자 제한)
+    const emailId = form.emailId?.trim() || "";
+    if (!emailId) return "이메일을 입력하세요.";
+    if (emailId.length > 30) return "이메일 아이디는 30자 이하로 입력하세요.";
+
+    let emailDomain = form.emailDomain;
+    let customDomain = form.customDomain?.trim() || "";
+    if (emailDomain === "custom") {
+        if (!customDomain) return "이메일 도메인을 입력하세요.";
+        emailDomain = customDomain;
+    }
+    const email = `${emailId}@${emailDomain}`;
+    if (email.length > 50) return "이메일은 50자 이하로 입력하세요.";
+    // 이메일 정규식: 일반적 사용 범위에 맞춤
+    if (!/^[\w.\-+]+@[\w.\-]+\.\w+$/.test(email)) return "유효한 이메일 주소를 입력하세요.";
 
     // 통과!
     return null;
@@ -64,8 +72,6 @@ export default function SignupPage() {
     const [codeSent, setCodeSent] = useState(false);
     const navigate = useNavigate();
     const { showAlert } = useAlert();
-    const [emailCode, setEmailCode] = useState('');
-    const [serverCode, setServerCode] = useState('');
     const [isUserIdChecked, setIsUserIdChecked] = useState(false);
     const [isNicknameChecked, setIsNicknameChecked] = useState(false);
     const [isEmailVerified, setIsEmailVerified] = useState(false);
@@ -79,7 +85,17 @@ export default function SignupPage() {
         customDomain: ''
     });
     const [error, setError] = useState(null);
+    const [verifyError, setVerifyError] = useState('');
     const isPasswordMatch = form.password && form.passwordCheck && form.password === form.passwordCheck;
+
+    const [resendCooldown, setResendCooldown] = useState(0);
+    // 쿨타임 카운트다운
+    useEffect(() => {
+        if (resendCooldown > 0) {
+            const timer = setTimeout(() => setResendCooldown(resendCooldown - 1), 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [resendCooldown]);
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -113,10 +129,20 @@ export default function SignupPage() {
                 ? `${form.emailId}@${form.customDomain}`
                 : `${form.emailId}@${form.emailDomain}`;
 
+        // 이메일 포맷 검증
+        if (!/^[\w.+-]+@([\w-]+\.)+[a-zA-Z]{2,10}$/.test(email)) {
+            await showAlert({
+                title: '유효한 이메일 주소를 입력하세요.',
+                icon: 'warning',
+            });
+            return;
+        }
+
         try {
-            const code = await sendVerificationCodeApi(email);
-            setServerCode(code); // 개발용 확인
+            await sendVerificationCodeApi(email);
             setCodeSent(true);
+            setResendCooldown(60); // 60초 쿨타임
+            setForm(f => ({ ...f, duplicateCode: '' })); // 발송 후 인증코드 입력값 초기화
 
             await showAlert({
                 title: '인증번호를 전송했습니다.',
@@ -131,7 +157,12 @@ export default function SignupPage() {
     };
 
     const handleVerifyEmailCode = async () => {
-        await verifyEmailCode(form, showAlert, setIsEmailVerified);
+        try {
+            await verifyEmailCode(form, showAlert, setIsEmailVerified);
+            setVerifyError('');
+        } catch (err) {
+            setVerifyError('인증번호가 올바르지 않거나 만료되었습니다.');
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -172,6 +203,58 @@ export default function SignupPage() {
             console.log(err);
             setError(err.response?.data?.message || '회원가입 실패');
         }
+    };
+
+    // 인증 입력창/버튼 부분 분리
+    const renderVerificationArea = () => {
+        // 인증 성공시 입력 불가
+        if (isEmailVerified) {
+            return (
+                <div style={{ color: '#22c55e', fontSize: '0.98rem', marginTop: 4 }}>
+                    인증 성공!
+                </div>
+            );
+        }
+        // 인증번호 입력창 + 버튼
+        return (
+            <div className="inline-duplicate-wrapper">
+                <input
+                    type="text"
+                    name="duplicateCode"
+                    placeholder="인증번호 입력"
+                    value={form.duplicateCode || ''}
+                    onChange={handleChange}
+                    required
+                    disabled={!codeSent}
+                    style={{ flex: 1 }}
+                />
+                {/* 인증번호 입력값이 있으면 "인증 확인" 버튼으로 전환 */}
+                {(form.duplicateCode && codeSent) ? (
+                    <button
+                        type="button"
+                        className="duplicate-check-button"
+                        onClick={handleVerifyEmailCode}
+                    >
+                        인증 확인
+                    </button>
+                ) : (
+                    <button
+                        type="button"
+                        className="duplicate-send-button"
+                        onClick={sendVerificationCode}
+                        disabled={resendCooldown > 0}
+                        style={resendCooldown > 0 ? { background: "#eee", color: "#888", cursor: "not-allowed" } : {}}
+                    >
+                        {codeSent
+                            ? (resendCooldown > 0
+                                ? `재발송 (${resendCooldown}s)`
+                                : '재발송'
+                            )
+                            : '번호 발송'}
+                    </button>
+                )}
+            </div>
+        );
     };
 
     return (
@@ -293,48 +376,13 @@ export default function SignupPage() {
                             </select>
                         </div>
                     </label>
+                    {/* 인증번호 영역 */}
                     <div className="inline-field">
                         <label>인증번호</label>
-                        <div className="inline-duplicate-wrapper">
-                            <input
-                                type="text"
-                                name="duplicateCode"
-                                value={form.duplicateCode || ''}
-                                onChange={handleChange}
-                                required
-                                disabled={!codeSent || isEmailVerified} // 인증 성공시 입력 막기
-                            />
-
-                            {!codeSent ? (
-                                <button
-                                    type="button"
-                                    className="duplicate-send-button"
-                                    onClick={sendVerificationCode}
-                                    disabled={isEmailVerified} // 인증됐으면 발송불가
-                                >
-                                    번호 발송
-                                </button>
-                            ) : (
-                                <button
-                                    type="button"
-                                    className="duplicate-check-button"
-                                    onClick={handleVerifyEmailCode}
-                                    disabled={isEmailVerified} // 인증됐으면 확인불가
-                                >
-                                    인증 확인
-                                </button>
-                            )}
-                        </div>
-                        {/* 인증 결과 안내 */}
-                        {isEmailVerified && (
-                            <div style={{ color: '#22c55e', fontSize: '0.98rem', marginTop: 4 }}>
-                                인증 성공!
-                            </div>
-                        )}
-                        {codeSent && !isEmailVerified && form.duplicateCode && (
+                        {renderVerificationArea()}
+                        {verifyError && (
                             <div style={{ color: '#e53e3e', fontSize: '0.97rem', marginTop: 4 }}>
-                                {/* 서버에서 실패 응답시만 노출, 예시 */}
-                                인증번호가 올바르지 않거나 만료되었습니다.
+                                {verifyError}
                             </div>
                         )}
                     </div>

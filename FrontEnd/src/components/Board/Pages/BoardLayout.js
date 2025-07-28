@@ -4,6 +4,7 @@ import './BoardLayout.css';
 const BoardLayout = () => {
 
     const location = useLocation();
+    const path = location.pathname;
     const currentCategory = location.state?.category || null;
 
     return (
@@ -22,25 +23,37 @@ const BoardLayout = () => {
         <nav className="boardLayout-tab-bar">
             <NavLink
                 to="/board/all"
-                className={({ isActive }) => isActive ? 'active' : ''}
+                // className={({ isActive }) => isActive ? 'active' : ''}
+                className={() =>
+                    path.startsWith('/board/all') ? 'active' : ''
+                }
             >
             전체게시판
             </NavLink>
             <NavLink
                 to="/board/notice"
-                className={({ isActive }) => isActive ? 'active' : ''}
+                // className={({ isActive }) => isActive ? 'active' : ''}
+                className={() =>
+                    path.startsWith('/board/notice') ? 'active' : ''
+                }
             >
             공지사항
             </NavLink>
             <NavLink
                 to="/board/chat"
-                className={({ isActive }) => isActive ? 'active' : ''}
+                // className={({ isActive }) => isActive ? 'active' : ''}
+                className={() =>
+                    path.startsWith('/board/chat') ? 'active' : ''
+                }
             >
             속닥속닥
             </NavLink>
             <NavLink
                 to="/board/review"
-                className={({ isActive }) => isActive ? 'active' : ''}
+                // className={({ isActive }) => isActive ? 'active' : ''}
+                className={() =>
+                    path.startsWith('/board/review') ? 'active' : ''
+                }
             >
             입양후기
             </NavLink>

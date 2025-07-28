@@ -13,7 +13,7 @@ import { fetchPostById, updatePost, uploadImage } from '../../../api/BoardApi';
 const ReviewEdit = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    
+
     const loginData = JSON.parse(localStorage.getItem("user"));
     const isAdmin = loginData?.userId?.includes("admin") ? true : false;
     const currentUser = loginData?.nickname;
@@ -48,13 +48,43 @@ const ReviewEdit = () => {
         loadPost();
     }, [id]);
 
-    if(!post){
+    if (!post) {
         return <div>게시글이 없습니다.</div>
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        
+
+        if (!category) {
+            Swal.fire({
+                icon: 'warning',
+                title: '카테고리를 선택해주세요',
+                confirmButtonColor: '#6c5ce7',
+            });
+            return;
+        }
+
+        if (!title) {
+            Swal.fire({
+                icon: 'warning',
+                title: '제목을 입력해주세요',
+                confirmButtonColor: '#6c5ce7',
+            });
+            return;
+        }
+
+        const content = editorRef.current?.getInstance().getHTML();
+        const plainText = content?.replace(/<[^>]*>/g, '').trim();
+
+        if (!plainText) {
+            Swal.fire({
+                icon: 'warning',
+                title: '내용을 입력해주세요',
+                confirmButtonColor: '#6c5ce7',
+            });
+            return;
+        }
+
         const updatedContent = editorRef.current.getInstance().getHTML();
 
         const updatedPost = {
@@ -75,7 +105,7 @@ const ReviewEdit = () => {
             confirmButtonText: '확인',
             cancelButtonText: '취소',
         }).then(async (result) => {
-            if(result.isConfirmed){
+            if (result.isConfirmed) {
                 try {
                     await updatePost(id, updatedPost);
                     Swal.fire({
@@ -107,7 +137,7 @@ const ReviewEdit = () => {
             confirmButtonText: '확인',
             cancelButtonText: '취소',
         }).then((result) => {
-            if(result.isConfirmed){
+            if (result.isConfirmed) {
                 navigate(`/board/review/detail/${id}`)
             }
         })
@@ -118,16 +148,15 @@ const ReviewEdit = () => {
             <h2>게시글 수정하기</h2>
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label style={{marginRight:10, fontWeight: 'bold'}}>카테고리</label>
-                    <select 
-                        style={{marginBottom: 16, padding: 5}} 
-                        value={category} 
+                    <label style={{ marginRight: 10, fontWeight: 'bold' }}>카테고리</label>
+                    <select
+                        style={{ marginBottom: 16, padding: 5 }}
+                        value={category}
                         onChange={(e) => setCategory(e.target.value)}
-                        required
-                        >
+                    >
                         {isAdmin && <option value='NOTICE'>{categoryLabels['NOTICE']}</option>} {/* 관리자만 공지사항 글쓰기 가능 */}
                         <option value='CHAT'>{categoryLabels['CHAT']}</option>
-                        <option value='REVIEW'>{categoryLabels['REVIEW']}</option>                  
+                        <option value='REVIEW'>{categoryLabels['REVIEW']}</option>
                     </select>
                 </div>
                 <div>
@@ -137,13 +166,12 @@ const ReviewEdit = () => {
                         type="text"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        required
                         style={{ width: '100%', padding: '10px', marginBottom: '16px' }}
                     />
                 </div>
                 <div>
                     <label>내용</label><br />
-                    <Editor 
+                    <Editor
                         ref={editorRef}
                         previewStyle="vertical"
                         height="500px"
@@ -152,7 +180,7 @@ const ReviewEdit = () => {
                         hideModeSwitch={true}
                         placeholder="내용을 입력하세요."
                         plugins={[color]}
-                        initialValue={post?.content||''}
+                        initialValue={post?.content || ''}
                         hooks={{
                             addImageBlobHook: async (blob, callback) => {
                                 try {

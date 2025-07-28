@@ -37,7 +37,8 @@
 }
 
 .board-post-nav-item:hover {
-    color: #007acc; /* 호버 시 제목 색상 변경 */
+    color: #007acc;
+    /* 호버 시 제목 색상 변경 */
 }
 
 .board-detail-button-group {
@@ -90,6 +91,19 @@
     /* background-color: #f8f6ff;  */
 }
 
+.board-detail-info {
+    white-space: nowrap;      /* 줄바꿈 안함 */
+    width: auto;              /* 필요한 경우 고정 너비도 가능 */
+    text-align: right;
+}
+
+.board-detail-title-container p {
+    word-break: break-all;
+    white-space: normal;
+    overflow-wrap: break-word;
+    width: calc(30px * 25);
+}
+
 .board-detail-table-container {
     background-color: '#fafbfc';
     border: '1px solid #ededed';
@@ -110,7 +124,7 @@
 .board-detail-table-container td:nth-child(1),
 .board-detail-table-container td:nth-child(3),
 .board-detail-table-container td:nth-child(5),
-.board-detail-table-container td:nth-child(7){
+.board-detail-table-container td:nth-child(7) {
     background-color: #ccc;
     width: 8%;
     padding: 9px;
@@ -120,7 +134,7 @@
 /* 작성자, 조회,추천 */
 .board-detail-table-container td:nth-child(2),
 .board-detail-table-container td:nth-child(6),
-.board-detail-table-container td:nth-child(8){
+.board-detail-table-container td:nth-child(8) {
     background-color: #fff;
     width: 10%;
     padding: 9px;
@@ -128,7 +142,7 @@
 }
 
 /* 작성일 */
-.board-detail-table-container td:nth-child(4){
+.board-detail-table-container td:nth-child(4) {
     background-color: #fff;
     width: auto;
     padding: 9px;

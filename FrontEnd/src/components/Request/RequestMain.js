@@ -6,8 +6,7 @@ import { useEffect, useRef, useState } from 'react'
 import Swal from 'sweetalert2'
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 
-// const API_BASE_URL = "http://localhost:8888";
-const API_BASE_URL = "http://192.168.3.24:8888";
+import { BASE_URL } from '../../api/BaseUrl'
 
 export const RequestMain = () => {
     const navigate = useNavigate();
@@ -22,7 +21,7 @@ export const RequestMain = () => {
     useEffect(()=>{
         const requestApi = async () => {
             try {
-                const response = await (await fetch(`${API_BASE_URL}/request`))
+                const response = await (await fetch(`${BASE_URL}/request`))
                 const list = await response.json()
                 setCard(list)
             } catch (error) {

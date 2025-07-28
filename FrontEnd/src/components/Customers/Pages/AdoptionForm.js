@@ -5,10 +5,9 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { useAlert } from '../Context/AlertContext';
 
+import { BASE_URL } from '../../../api/BaseUrl';
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-// const API_BASE_URL = "http://localhost:8888";
-const API_BASE_URL = "http://192.168.3.24:8888";
 const initialForm = {
     applicantName: '',
     address: '',
@@ -51,7 +50,7 @@ function AdoptionApplicationForm({ animalInfo, animalImgUrl, onClose }) {
         }
 
         // 2. 외부 url이면 프록시 경유 fetch 후 base64 변환
-        const proxied = `${API_BASE_URL}/api/proxy-image?url=${encodeURIComponent(animalImgUrl)}`;
+        const proxied = `${BASE_URL}/api/proxy-image?url=${encodeURIComponent(animalImgUrl)}`;
         fetch(proxied)
             .then(res => res.blob())
             .then(blob => {
@@ -278,9 +277,9 @@ function AdoptionApplicationForm({ animalInfo, animalImgUrl, onClose }) {
                                             <img
                                                 src={
                                                     !form.animalImgUrl
-                                                        ? `${API_BASE_URL}/api/placeholder/80/100`
+                                                        ? `${BASE_URL}/api/placeholder/80/100`
                                                         : form.animalImgUrl.startsWith('http')
-                                                            ? `${API_BASE_URL}/api/proxy-image?url=${encodeURIComponent(form.animalImgUrl)}`
+                                                            ? `${BASE_URL}/api/proxy-image?url=${encodeURIComponent(form.animalImgUrl)}`
                                                             : form.animalImgUrl
                                                 }
                                                 crossOrigin="anonymous"
@@ -467,7 +466,7 @@ function AdoptionApplicationForm({ animalInfo, animalImgUrl, onClose }) {
                                                 <img
                                                     src={
                                                         form.animalImgUrl.startsWith('http')
-                                                            ? `${API_BASE_URL}/api/proxy-image?url=${encodeURIComponent(form.animalImgUrl)}`
+                                                            ? `${BASE_URL}/api/proxy-image?url=${encodeURIComponent(form.animalImgUrl)}`
                                                             : form.animalImgUrl // 이미 base64면 바로 출력
                                                     }
                                                     alt="입양 동물"

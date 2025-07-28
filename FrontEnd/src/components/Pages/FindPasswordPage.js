@@ -7,8 +7,7 @@ import MainLogo from '../../assets/MainLogo.png';
 import Loading from "../Common/Loading";
 import Error from "../Common/Error";
 
-// const API_BASE_URL = "http://localhost:8888";
-const API_BASE_URL = "http://192.168.3.24:8888";
+import { BASE_URL } from '../../api/BaseUrl';
 
 export default function FindPasswordPage() {
     const [userId, setUserId] = useState('');
@@ -26,7 +25,7 @@ export default function FindPasswordPage() {
         setInfo('');
         setLoading(true);
         try {
-            const res = await fetch(`${API_BASE_URL}/api/auth/reset-password-request`, {
+            const res = await fetch(`${BASE_URL}/api/auth/reset-password-request`, {
                 method: 'POST',
                 headers: {
                     'Content-Type':'application/json'

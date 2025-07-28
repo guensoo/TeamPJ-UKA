@@ -7,6 +7,7 @@ import { fetchPostById, deletePost, toggleLikes, toggleReport, restorePost } fro
 import { createComment, createReply, fetchCommentsByBoard, fetchRepliesByComment, updateComment, deleteComment } from '../../../api/BoardCommentApi';
 import CommentList from '../Comment/CommentList';
 import { ViewCount } from '../utils/ViewCount';
+import TitleLength from '../utils/TitleLength';
 
 const ReviewDetail = () => {
     const { id } = useParams();
@@ -57,7 +58,11 @@ const ReviewDetail = () => {
                 const data = await fetchPostById(id,currentUser);
                 setPost(data);
                 setIsLiked(data.likedByCurrentUser);
-                setIsReported(data.reportedByCurrentUser)
+                setIsReported(data.reportedByCurrentUser);
+
+                setCommentInput('');
+                setReplyInput({});
+                setReplyTargetId(null);
             } catch (error) {
                 console.error('게시글 불러오기 실패', error);
                 Swal.fire({
@@ -379,21 +384,19 @@ const ReviewDetail = () => {
         <div style={{ minWidth:'1075px' }}>
             {/* 헤더 */}
             <div className='board-detail-title-container'>
-                <p style={{marginTop: 20}}>[ {categoryLabels[post.category]} ]</p>  
-                <div style={{textAlign: 'right', marginTop:15}}>
+                <p style={{marginTop: 20}}>[ {categoryLabels[post.category]} ]</p>
+                <div className="board-detail-info">
                     <span style={{color: '#ccc'}}>
-                        조회수 {post.view} | 추천수 {post.likes} | 신고수 {post.report}
+                        작성자: {post.author} |
+                        조회수: {post.view} | 
+                        추천수: {post.likes} | 
+                        신고수: {post.report} |
+                        등록일: {post.updatedAt && post.updatedAt !== post.createdAt ? `${new Date(post.updatedAt).toLocaleString()} (수정됨)` : new Date(post.createdAt).toLocaleString()}
                     </span><br/>
                 </div>         
             </div>
             <div className='board-detail-title-container'>
                 <p style={{fontSize: 30}}>{post.title}</p>
-                <div style={{textAlign: 'right', marginTop: 15}}>
-                    <span style={{color: '#ccc'}}>작성자 : {post.author}</span><br/>
-                    <span style={{color: '#ccc'}}>
-                        {post.updatedAt && post.updatedAt !== post.createdAt ? `수정됨 ${new Date(post.updatedAt).toLocaleString()}` : new Date(post.createdAt).toLocaleString()}
-                    </span>
-                </div>  
             </div>
             <hr/>
 
@@ -438,7 +441,7 @@ const ReviewDetail = () => {
                 {(isAdmin || (post.author === currentUser)) && (
                     <>
                         <button className="board-detail-button"
-                            onClick={() => navigate(`/board/all/edit/${post.id}`, { state: post })}
+                            onClick={() => navigate(`/board/review/edit/${post.id}`, { state: post })}
                         > ✏️ 수정
                         </button>
                         <button className="board-detail-button"
@@ -482,6 +485,7 @@ const ReviewDetail = () => {
                     setEditReplyText={setEditReplyText}
                 />
             </div>
+            <hr/>
             {/* 최상위 댓글 입력폼 추가 */}
             <div style={{ marginTop: 12 }}>
                 <form onSubmit={handleCommentSubmit} style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
@@ -512,13 +516,13 @@ const ReviewDetail = () => {
                         onClick={() => handleNavigate(prev)}
                     >
                         <span className="board-post-nav-label">◀️ 이전글</span>
-                        <span className="board-post-nav-title">{prev.title}</span>
+                        <span className="board-post-nav-title">{TitleLength(prev.title)}</span>
                     </div>
                 )}
                 {next && (
                     <div className="board-post-nav-item" onClick={() => handleNavigate(next)}>
                         <span className="board-post-nav-label">▶️ 다음글</span>
-                        <span className="board-post-nav-title">{next.title}</span>
+                        <span className="board-post-nav-title">{TitleLength(next.title)}</span>
                     </div>
                 )}
             </div>

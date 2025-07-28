@@ -9,8 +9,7 @@ import  {animal as animalData}  from "../DetailPage/DetailBodyData.js";
 import SearchIcon from '@mui/icons-material/Search';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
-// const API_BASE_URL = "http://localhost:8888";
-const API_BASE_URL = "http://192.168.3.24:8888";
+import { BASE_URL } from '../../api/BaseUrl.js';
 
 export const RequestWrite = () => {
 
@@ -142,7 +141,7 @@ export const RequestWrite = () => {
 
             
             try {
-                const uploadImg = await fetch(`${API_BASE_URL}/request/image`,{
+                const uploadImg = await fetch(`${BASE_URL}/request/image`,{
                 method:"POST",
                 body:imageForm
                 })
@@ -181,7 +180,7 @@ export const RequestWrite = () => {
             }
 
             try {
-                const response = await fetch(`${API_BASE_URL}/request`,option)
+                const response = await fetch(`${BASE_URL}/request`,option)
 
                 const list = await response.json()
 

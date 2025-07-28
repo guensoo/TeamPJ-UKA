@@ -1,5 +1,4 @@
-// const API_BASE_URL = "http://localhost:8888";
-const API_BASE_URL = "http://192.168.3.24:8888";
+import { BASE_URL } from "../../api/BaseUrl";
 
 // ✅ 아이디 중복 확인
 export const checkUserIdDuplicate = async (userId, showAlert, setIsUserIdChecked) => {
@@ -27,7 +26,7 @@ export const checkUserIdDuplicate = async (userId, showAlert, setIsUserIdChecked
     }
 
     try {
-        const res = await fetch(`${API_BASE_URL}/api/users/check-id?userId=${userId}`);
+        const res = await fetch(`${BASE_URL}/api/users/check-id?userId=${userId}`);
         const exists = await res.json();
 
         await showAlert({
@@ -71,7 +70,7 @@ export const checkNicknameDuplicate = async (nickname, showAlert, setIsNicknameC
     }
 
     try {
-        const res = await fetch(`${API_BASE_URL}/api/users/check-nickname?nickname=${nickname}`);
+        const res = await fetch(`${BASE_URL}/api/users/check-nickname?nickname=${nickname}`);
         const exists = await res.json();
 
         await showAlert({
@@ -94,7 +93,7 @@ export const verifyEmailCode = async (form, showAlert, setIsEmailVerified) => {
     const email = getEmail(form);
 
     try {
-        const res = await fetch(`${API_BASE_URL}/api/users/verify-code`, {
+        const res = await fetch(`${BASE_URL}/api/users/verify-code`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -128,7 +127,7 @@ export const getEmail = (form) => {
 
 // ✅ 이메일 인증번호 전송 API
 export const sendVerificationCodeApi = async (email) => {
-    const res = await fetch(`${API_BASE_URL}/api/users/send-verification`, {
+    const res = await fetch(`${BASE_URL}/api/users/send-verification`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),

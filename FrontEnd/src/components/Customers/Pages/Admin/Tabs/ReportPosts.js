@@ -2,8 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-// const API_BASE_URL = "http://localhost:8888";
-const API_BASE_URL = "http://192.168.3.24:8888";
+import { BASE_URL } from '../../../../../api/BaseUrl';
 
 const CATEGORY_LABELS = {
     CHAT: '속닥속닥',
@@ -18,7 +17,7 @@ const ReportedPosts = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        axios.get(`${API_BASE_URL}/admin/report`)
+        axios.get(`${BASE_URL}/admin/report`)
             .then(res => {
                 setReportedPosts(res.data);
                 setLoading(false);

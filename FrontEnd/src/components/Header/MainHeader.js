@@ -49,7 +49,7 @@ const MainHeaders = () => {
                     {user ? (
                         <>
                             {/* /profile */}
-                            <Link to="/" onClick={handleProfile} className="profile-button">
+                            <Link onClick={handleProfile} className="profile-button">
                                 마이페이지
                             </Link>
                             <button onClick={handleLogout} className="logout-button">
