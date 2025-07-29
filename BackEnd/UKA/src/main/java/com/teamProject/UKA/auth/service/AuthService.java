@@ -43,7 +43,6 @@ public class AuthService {
 	}
 
 	public User signup(SignupRequest req) {
-		System.out.println("req : " + req);
 	    String hash = pwEncoder.encode(req.getPassword());
 	    User u = new User();
 	    u.setUserId(req.getUserId());

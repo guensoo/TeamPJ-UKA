@@ -27,6 +27,11 @@ public class AnimalService {
     @Transactional
     public void saveAllAnimals(List<AnimalDTO> dtos) {
         if (dtos == null || dtos.isEmpty()) return;
+        for (AnimalDTO dto : dtos) {
+            if (dto.getDesertionNo() == null || dto.getDesertionNo().trim().isEmpty()) {
+                System.out.println("❗ desertionNo 없는 데이터 발견: " + dto);
+            }
+        }
         List<AnimalEntity> entities = dtos.stream().map(AnimalEntity::fromDTO).collect(Collectors.toList());
         animalRepository.saveAll(entities);
     }

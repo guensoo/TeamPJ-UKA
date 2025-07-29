@@ -13,6 +13,8 @@ const AllBoardDetail = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    const fromPage = location.state?.fromPage || 1;
+
     const loginData = JSON.parse(localStorage.getItem("user"));
     const isAdmin = loginData?.userId?.includes("admin") ? true : false;
     // const currentUser = isAdmin ? "admin" : loginData?.nickname;
@@ -462,7 +464,7 @@ const AllBoardDetail = () => {
                     </>
                 )}
                 <button className="board-detail-button"
-                    onClick={() => navigate('/board/all')}
+                    onClick={() => navigate(`/board/all?page=${fromPage}`)}
                 > ← 목록으로
                 </button>
             </div>
@@ -496,7 +498,7 @@ const AllBoardDetail = () => {
                     setEditReplyText={setEditReplyText}
                 />
             </div>
-            <hr/>
+            
             {/* 최상위 댓글 입력폼 추가 */}
             <div style={{ marginTop: 12 }}>
                 <form onSubmit={handleCommentSubmit} style={{ display: 'flex', gap: 8, marginBottom: 20 }}>

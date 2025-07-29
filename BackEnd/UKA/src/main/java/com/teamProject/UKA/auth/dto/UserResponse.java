@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserResponse {
 	private long seq;
-	private String UserId;
+	private String userId;
 	private String nickname;
 	private String email;
 	private String password; // 숨길거면 주석

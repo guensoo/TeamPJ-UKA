@@ -32,7 +32,8 @@ public class RequestController {
 	
 	@Autowired final private RequestService service;
 	
-	private String ip = "192.168.3.24";
+	private String ip = "http://teamproject-uka.s3-website.ap-northeast-2.amazonaws.com/";
+//	private String ip = "192.168.3/";
 //	private String ip = "localhost";
 	
 	//C - 찾고 있어요 '단건' 작성.

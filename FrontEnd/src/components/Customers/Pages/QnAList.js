@@ -4,6 +4,7 @@ import './QnAList.css';
 import { useAlert } from '../Context/AlertContext';
 import { fetchQnaList } from '../../../api/CustomerApiData';
 import isAdminCheck from '../../Common/isAdminCheck';
+import TitleLength from '../../Board/utils/TitleLength';
 
 const ITEMS_PER_PAGE = 10;
 const PAGE_BUTTON_LIMIT = 5;
@@ -208,7 +209,9 @@ const QnAList = () => {
                                         onClick={() => handleTitleClick(qna)}
                                     >
                                         {qna.isSecret && <span style={{ marginRight: 5, color: '#b19cd9' }}>🔒</span>}
-                                        {qna.title}
+                                        <span className="title-text">
+                                            {TitleLength(qna.title, 40)}
+                                        </span>
                                     </td>
                                     <td>{qna.author}</td>
                                     <td style={{ color: qna.isAnswered ? '#00aaff' : '#ff7676' }}>

@@ -70,6 +70,7 @@ export async function verifyEmailCode(email, code) {
 }
 
 export async function login({ userId, password }) {
+  console.log("로그인 시  userId:", userId, "password:", password)
     const res = await fetch(`${BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: { 

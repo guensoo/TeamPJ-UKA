@@ -14,6 +14,8 @@ const NoticeDetail = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    const fromPage = location.state?.fromPage || 1;
+
     const loginData = JSON.parse(localStorage.getItem("user"));
     const isAdmin = loginData?.userId?.includes("admin") ? true : false;
     const currentUser = loginData?.nickname;
@@ -55,7 +57,7 @@ const NoticeDetail = () => {
         const getPostsById = async () => {
             try {
                 await ViewCount(id); //조회수 증가
-                const data = await fetchPostById(id,currentUser);
+                const data = await fetchPostById(id, currentUser);
                 setPost(data);
                 setIsLiked(data.likedByCurrentUser);
                 setIsReported(data.reportedByCurrentUser);
@@ -74,22 +76,22 @@ const NoticeDetail = () => {
             }
         }
         getPostsById();
-    },[id, navigate])
+    }, [id, navigate])
 
     // 신고수 검사 및 일반유저 차단 처리
     useEffect(() => {
         if (post && post.report >= 5 && !isAdmin) {
-        Swal.fire({
-            icon: 'warning',
-            title: '열람 불가',
-            text: '신고가 5회 이상 접수되어 열람할 수 없습니다.',
-            confirmButtonText: '목록으로 이동',
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-        }).then(() => {
-            navigate('/board/all');
-        });
-        setBlocked(true);
+            Swal.fire({
+                icon: 'warning',
+                title: '열람 불가',
+                text: '신고가 5회 이상 접수되어 열람할 수 없습니다.',
+                confirmButtonText: '목록으로 이동',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+            }).then(() => {
+                navigate('/board/all');
+            });
+            setBlocked(true);
         }
     }, [post, isAdmin, navigate]);
 
@@ -129,15 +131,15 @@ const NoticeDetail = () => {
 
     // 검색결과 이전글/다음글 세팅
     useEffect(() => {
-        if(!post) return;
+        if (!post) return;
 
-        if(!filteredList || filteredList.length === 0){
+        if (!filteredList || filteredList.length === 0) {
             setPrev(null);
             setNext(null);
             return;
         }
 
-        const sortedList = [...filteredList].sort((a,b) => {
+        const sortedList = [...filteredList].sort((a, b) => {
             const dateA = a.updatedAt ? new Date(a.updatedAt) : new Date(a.createdAt);
             const dateB = b.updatedAt ? new Date(b.updatedAt) : new Date(b.createdAt);
             return dateB - dateA;
@@ -147,7 +149,7 @@ const NoticeDetail = () => {
         setPrev(sortedList[idx - 1] || null);
         setNext(sortedList[idx + 1] || null);
 
-    },[post, filteredList])
+    }, [post, filteredList])
 
     //답글 조회(재귀)
     const fetchAllReplies = async (parentId) => {
@@ -189,7 +191,7 @@ const NoticeDetail = () => {
     const handleCommentSubmit = async (e) => {
         e.preventDefault();
 
-        if(currentUser === undefined) return Swal.fire("로그인 필요","로그인 후 이용해주세요.","error");
+        if (currentUser === undefined) return Swal.fire("로그인 필요", "로그인 후 이용해주세요.", "error");
 
         if (!commentInput.trim()) return;
 
@@ -204,14 +206,14 @@ const NoticeDetail = () => {
         } catch (error) {
             console.error('댓글 작성 실패', error);
             Swal.fire('오류', '댓글 작성에 실패했습니다.', 'error');
-    }
+        }
     };
 
     //대댓글 작성
     const handleReplySubmit = async (e, parentId) => {
         e.preventDefault();
 
-        if(currentUser === undefined) return Swal.fire("로그인 필요","로그인 후 이용해주세요.","error");
+        if (currentUser === undefined) return Swal.fire("로그인 필요", "로그인 후 이용해주세요.", "error");
         // const input = replyInput[parentId]?.trim();
         const input = e.target.elements[0].value.trim();
 
@@ -237,16 +239,16 @@ const NoticeDetail = () => {
     }
 
     // 댓글 수정
-    const saveEditComment = async (editCommentId,editCommentText) => {
-        if(!editCommentText || editCommentText.trim() === '') return;
+    const saveEditComment = async (editCommentId, editCommentText) => {
+        if (!editCommentText || editCommentText.trim() === '') return;
 
         try {
             await updateComment(editCommentId, editCommentText.trim());
             await getAllComments(); // 수정 후 전체 댓글 목록 조회
             setEditCommentId(null);
-            setEditCommentText('');    
+            setEditCommentText('');
         } catch (error) {
-            console.error("댓글 수정 실패",error);
+            console.error("댓글 수정 실패", error);
             Swal.fire('오류', '댓글 수정에 실패했습니다.', 'error');
         }
     };
@@ -262,7 +264,7 @@ const NoticeDetail = () => {
         } catch (error) {
             console.error('답글 수정 실패', error);
             Swal.fire('오류', '답글 수정에 실패했습니다.', 'error');
-        }  
+        }
     };
 
     const EditComment = (comment) => {
@@ -288,7 +290,7 @@ const NoticeDetail = () => {
             cancelButtonText: '취소',
         });
 
-        if(confirm.isConfirmed){
+        if (confirm.isConfirmed) {
             try {
                 await deleteComment(id);
                 await getAllComments();
@@ -298,7 +300,7 @@ const NoticeDetail = () => {
                 Swal.fire('오류', '댓글 삭제에 실패했습니다.', 'error');
             }
         }
-        
+
     };
 
     //대댓글 삭제
@@ -323,7 +325,7 @@ const NoticeDetail = () => {
                 console.error('답글 삭제 실패', error);
                 Swal.fire('오류', '답글 삭제에 실패했습니다.', 'error');
             }
-    }
+        }
     };
 
     if (!post) {
@@ -332,7 +334,7 @@ const NoticeDetail = () => {
 
     //추천 버튼
     const handleLikesButton = async () => {
-        if(currentUser === undefined) return Swal.fire("로그인 필요","로그인 후 이용해주세요.","error");
+        if (currentUser === undefined) return Swal.fire("로그인 필요", "로그인 후 이용해주세요.", "error");
         try {
             const updatedPost = await toggleLikes(post.id, currentUser);
             setPost(updatedPost);
@@ -344,7 +346,7 @@ const NoticeDetail = () => {
 
     //신고 버튼
     const handleReportButton = async () => {
-        if(currentUser === undefined) return Swal.fire("로그인 필요","로그인 후 이용해주세요.","error");
+        if (currentUser === undefined) return Swal.fire("로그인 필요", "로그인 후 이용해주세요.", "error");
         try {
             const updatedPost = await toggleReport(post.id, currentUser);
             setPost(updatedPost);
@@ -381,24 +383,24 @@ const NoticeDetail = () => {
     }
 
     return (
-        <div style={{ minWidth:'1075px' }}>
+        <div style={{ minWidth: '1075px' }}>
             {/* 헤더 */}
             <div className='board-detail-title-container'>
-                <p style={{marginTop: 20}}>[ {categoryLabels[post.category]} ]</p>
+                <p style={{ marginTop: 20 }}>[ {categoryLabels[post.category]} ]</p>
                 <div className="board-detail-info">
-                    <span style={{color: '#ccc'}}>
+                    <span style={{ color: '#ccc' }}>
                         작성자: {post.author} |
-                        조회수: {post.view} | 
-                        추천수: {post.likes} | 
+                        조회수: {post.view} |
+                        추천수: {post.likes} |
                         신고수: {post.report} |
                         등록일: {post.updatedAt && post.updatedAt !== post.createdAt ? `${new Date(post.updatedAt).toLocaleString()} (수정됨)` : new Date(post.createdAt).toLocaleString()}
-                    </span><br/>
-                </div>         
+                    </span><br />
+                </div>
             </div>
             <div className='board-detail-title-container'>
-                <p style={{fontSize: 30}}>{post.title}</p>
+                <p style={{ fontSize: 30 }}>{post.title}</p>
             </div>
-            <hr/>
+            <hr />
 
             {/* 본문 */}
             <div className="board-detail-content" dangerouslySetInnerHTML={{ __html: post.content }}>
@@ -426,13 +428,13 @@ const NoticeDetail = () => {
                         > 🗑 삭제
                         </button>
                     </>
-                )}               
+                )}
                 <button className="board-detail-button"
-                    onClick={() => navigate('/board/notice')}       
+                    onClick={() => navigate(`/board/notice?page=${fromPage}`)}
                 > ← 목록으로
                 </button>
             </div>
-                
+
             {/* 댓글 */}
             <strong>댓글({comments.length})</strong>
             <div style={{ marginTop: 12 }}>
@@ -462,25 +464,25 @@ const NoticeDetail = () => {
                     setEditReplyText={setEditReplyText}
                 />
             </div>
-            <hr/>
+            <hr />
             {/* 최상위 댓글 입력폼 추가 */}
             <div style={{ marginTop: 12 }}>
                 <form onSubmit={handleCommentSubmit} style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
                     <input
-                    type="text"
-                    placeholder="댓글을 입력하세요"
-                    value={commentInput}
-                    onChange={e => setCommentInput(e.target.value)}
-                    style={{
-                        flex: 1,
-                        border: '1px solid #ccc',
-                        borderRadius: 7,
-                        fontSize: 14,
-                        padding: '6px 12px',
-                    }}
+                        type="text"
+                        placeholder="댓글을 입력하세요"
+                        value={commentInput}
+                        onChange={e => setCommentInput(e.target.value)}
+                        style={{
+                            flex: 1,
+                            border: '1px solid #ccc',
+                            borderRadius: 7,
+                            fontSize: 14,
+                            padding: '6px 12px',
+                        }}
                     />
                     <button type="submit" className="board-detail-submit-button">
-                    등록
+                        등록
                     </button>
                 </form>
             </div>
@@ -488,8 +490,8 @@ const NoticeDetail = () => {
             {/* 이전/다음글 */}
             <div className="board-post-navigation">
                 {prev && (
-                    <div 
-                        className="board-post-nav-item" 
+                    <div
+                        className="board-post-nav-item"
                         onClick={() => handleNavigate(prev)}
                     >
                         <span className="board-post-nav-label">◀️ 이전글</span>

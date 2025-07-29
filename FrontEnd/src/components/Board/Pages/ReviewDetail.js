@@ -14,6 +14,8 @@ const ReviewDetail = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    const fromPage = location.state?.fromPage || 1;
+
     const loginData = JSON.parse(localStorage.getItem("user"));
     const isAdmin = loginData?.userId?.includes("admin") ? true : false;
     const currentUser = loginData?.nickname;
@@ -451,7 +453,7 @@ const ReviewDetail = () => {
                     </>
                 )}               
                 <button className="board-detail-button"
-                    onClick={() => navigate('/board/review')}       
+                    onClick={() => navigate(`/board/review?page=${fromPage}`)}       
                 > ← 목록으로
                 </button>
             </div>
