@@ -2,13 +2,17 @@ package com.teamProject.UKA.board.model;
 
 import java.time.LocalDateTime;
 
+import com.teamProject.UKA.auth.model.User;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,8 +41,12 @@ public class Board {
 	@Column(name = "brd_author", nullable = false)
 	private String author;
 	
-	@Column(name = "brd_content", nullable = false, columnDefinition = "TEXT")
+	@Column(name = "brd_content", nullable = false, columnDefinition = "LONGTEXT")
 	private String content;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
+	private User user;
 	
 	@Builder.Default
 	@Column(name = "brd_view")
@@ -56,21 +64,15 @@ public class Board {
     @Column(name = "brd_report")
     private int report = 0;
 	
+	@Builder.Default
+	@Column(name = "brd_is_edited")
+	private Boolean edited = false;
+	
 	@Column(name = "brd_created_at", updatable = false)
 	private LocalDateTime createdAt;
-	
-	@Column(name = "brd_updated_at")
-	private LocalDateTime updatedAt;
 	
 	@PrePersist
 	protected void onCreate() {
 	    this.createdAt = LocalDateTime.now();
-	    this.updatedAt = LocalDateTime.now();
 	}
-	
-	@PreUpdate
-	protected void onUpdate() {
-	    this.updatedAt = LocalDateTime.now();
-	}
-	
 }

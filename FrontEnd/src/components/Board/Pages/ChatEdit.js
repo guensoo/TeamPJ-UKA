@@ -7,8 +7,8 @@ import '@toast-ui/editor/toastui-editor.css'
 import color from '@toast-ui/editor-plugin-color-syntax'
 import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
-import { useAdmin } from '../../../api/AdminContext';
 import { fetchPostById, updatePost, uploadImage } from '../../../api/BoardApi';
+import imageCompression from 'browser-image-compression';
 
 const ChatEdit = () => {
     const { id } = useParams();
@@ -16,7 +16,6 @@ const ChatEdit = () => {
 
     const loginData = JSON.parse(localStorage.getItem("user"));
     const isAdmin = loginData?.userId?.includes("admin") ? true : false;
-    const currentUser = loginData?.nickname;
 
     const titleInputRef = useRef(null);
     const editorRef = useRef(null);
@@ -75,8 +74,9 @@ const ChatEdit = () => {
 
         const content = editorRef.current?.getInstance().getHTML();
         const plainText = content?.replace(/<[^>]*>/g, '').trim();
+        const hasImage = /<img\s+[^>]*src=/.test(content || '');
 
-        if (!plainText) {
+        if (!plainText && !hasImage) {
             Swal.fire({
                 icon: 'warning',
                 title: '내용을 입력해주세요',
@@ -184,7 +184,14 @@ const ChatEdit = () => {
                         hooks={{
                             addImageBlobHook: async (blob, callback) => {
                                 try {
-                                    const imageUrl = await uploadImage(blob);
+                                    const options = {
+                                        maxSizeMB: 0.5,              // 최대 1MB
+                                        maxWidthOrHeight: 400,     // 최대 가로나 세로 800px
+                                        useWebWorker: true,
+                                    };
+                                    const compressedBlob = await imageCompression(blob, options);
+
+                                    const imageUrl = await uploadImage(compressedBlob);
                                     console.log('업로드된 이미지 URL:', imageUrl);
                                     callback(imageUrl, 'image');
                                 } catch (error) {

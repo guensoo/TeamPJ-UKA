@@ -87,6 +87,8 @@ export async function login({ userId, password }) {
         throw new Error(body.message || '로그인 실패');
     }
 
+    console.log("log : ", body.user);
+
     localStorage.setItem('token', body.token);
     localStorage.setItem('user', JSON.stringify(body.user));
     

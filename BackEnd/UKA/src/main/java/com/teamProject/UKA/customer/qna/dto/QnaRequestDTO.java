@@ -16,4 +16,5 @@ public class QnaRequestDTO {
     private Integer qnaReportCount;     // 신고수
     private Integer qnaLikeCount;       // 추천수
     private Integer qnaViews;
+    private String userId;
 }

@@ -162,6 +162,7 @@ export const deleteQnaAnswer = async (qnaId) => {
 
 // QnA 댓글 등록
 export const createQnaComment = async (qnaId, data) => {
+    console.log('createQnaComment 호출:', qnaId, data); // 디버깅용 로그
     try {
         const res = await axios.post(`${BASE_URL}/customer/qna/${qnaId}/comments`, data);
         return res.data;

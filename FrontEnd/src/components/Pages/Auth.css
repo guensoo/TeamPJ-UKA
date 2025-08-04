@@ -220,3 +220,14 @@
   transform: none !important;
   box-shadow: none !important;
 }
+
+@media (max-width: 768px) {
+    .auth-form {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .auth-input {
+        width: 100%;
+    }
+}

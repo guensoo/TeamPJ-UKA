@@ -1,0 +1,475 @@
+/* MyInfo.css */
+
+/* 컨테이너 및 레이아웃 */
+.myinfo-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* 섹션 헤더 */
+.myinfo-section-header {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.myinfo-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    color: #1a1a1a;
+}
+
+.myinfo-subtitle {
+    font-size: 16px;
+    color: #666;
+    margin: 0;
+}
+
+/* 정보 카드 */
+.myinfo-info-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.myinfo-info-card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f0f0f0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.myinfo-info-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.myinfo-card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.myinfo-card-icon {
+    font-size: 24px;
+    margin-right: 12px;
+}
+
+.myinfo-card-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    color: #333;
+}
+
+.myinfo-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.myinfo-card-value {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+    color: #1a1a1a;
+}
+
+.myinfo-card-status {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+}
+
+.myinfo-card-status.verified {
+    color: #10b981;
+    font-weight: 500;
+}
+
+/* 액션 버튼 */
+.myinfo-action-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.myinfo-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 48px;
+}
+
+.myinfo-action-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.myinfo-action-btn:active {
+    transform: translateY(0);
+}
+
+.myinfo-action-btn.primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.myinfo-action-btn.primary:hover {
+    background: #2563eb;
+}
+
+.myinfo-action-btn.secondary {
+    background: #f8fafc;
+    color: #374151;
+    border: 1px solid #e2e8f0;
+}
+
+.myinfo-action-btn.secondary:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+.myinfo-action-btn.danger {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.myinfo-action-btn.danger:hover {
+    background: #fee2e2;
+    border-color: #fca5a5;
+}
+
+.myinfo-btn-icon {
+    font-size: 16px;
+}
+
+/* 모달 스타일 */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal {
+    background: white;
+    border-radius: 16px;
+    max-width: 480px;
+    width: 100%;
+    max-height: 90vh;
+    overflow: auto;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px) scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 24px 0 24px;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: 24px;
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+    color: #1a1a1a;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #666;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-btn:hover {
+    background-color: #f1f5f9;
+    color: #374151;
+}
+
+.modal-content {
+    padding: 0 24px 24px 24px;
+}
+
+/* 입력 필드 스타일 */
+.input-group {
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+    order: 1;
+}
+
+.input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #d1d5db;
+    border-radius: 10px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    background-color: #fafafa;
+    order: 2;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    background-color: white;
+}
+
+.input.error {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    background-color: #fef9f9;
+}
+
+.input:disabled {
+    background-color: #f9fafb;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.input-helper {
+    font-size: 13px;
+    color: #666;
+    text-align: right;
+    margin-top: 6px;
+    font-weight: 500;
+    order: 3;
+}
+
+.error-text {
+    font-size: 13px;
+    color: #ef4444;
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 500;
+    order: 3;
+}
+
+.error-text::before {
+    content: "⚠";
+    font-size: 12px;
+}
+
+/* 비밀번호 도움말 */
+.password-helper {
+    margin-bottom: 24px;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.helper-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    margin: 6px 0;
+    color: #374151;
+    font-weight: 500;
+}
+
+.check-icon {
+    color: #10b981;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.uncheck-icon {
+    color: #d1d5db;
+    font-size: 14px;
+}
+
+/* 모달 버튼 */
+.modal-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 8px;
+}
+
+.modal-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 90px;
+    font-family: inherit;
+}
+
+.modal-btn:hover {
+    transform: translateY(-1px);
+}
+
+.modal-btn:active {
+    transform: translateY(0);
+}
+
+.modal-btn.cancel {
+    background: #f8fafc;
+    color: #374151;
+    border: 2px solid #e2e8f0;
+}
+
+.modal-btn.cancel:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+.modal-btn.save {
+    background: #3b82f6;
+    color: white;
+}
+
+.modal-btn.save:hover {
+    background: #2563eb;
+}
+
+.modal-btn.save.disabled {
+    background: #e5e7eb;
+    color: #9ca3af;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.modal-btn.save.disabled:hover {
+    background: #e5e7eb;
+    transform: none;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .myinfo-container {
+        padding: 16px;
+    }
+    
+    .myinfo-info-cards {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .myinfo-action-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .myinfo-action-btn {
+        justify-content: center;
+    }
+    
+    .modal {
+        margin: 16px;
+        max-width: calc(100vw - 32px);
+    }
+    
+    .modal-content {
+        padding: 0 24px 24px 24px;
+    }
+    
+    .modal-header {
+        padding: 24px 24px 0 24px;
+    }
+    
+    .modal-buttons {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .modal-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .myinfo-title {
+        font-size: 24px;
+    }
+    
+    .myinfo-subtitle {
+        font-size: 14px;
+    }
+    
+    .myinfo-info-card {
+        padding: 20px;
+    }
+    
+    .myinfo-card-title {
+        font-size: 16px;
+    }
+    
+    .myinfo-action-btn {
+        font-size: 14px;
+        padding: 10px 20px;
+    }
+}

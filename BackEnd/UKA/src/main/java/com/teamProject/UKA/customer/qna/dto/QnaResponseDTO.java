@@ -37,7 +37,8 @@ public class QnaResponseDTO {
         dto.setQnaNo(entity.getQnaNo());
         dto.setQnaTitle(entity.getQnaTitle());
         dto.setQnaContent(entity.getQnaContent());
-        dto.setQnaWriter(entity.getQnaWriter());
+//        dto.setQnaWriter(entity.getQnaWriter());
+        dto.setQnaWriter(entity.getUser() != null ? entity.getUser().getNickname() : null);
         dto.setQnaIsSecret(entity.getQnaIsSecret());
         dto.setQnaPassword(entity.getQnaPassword());
         dto.setQnaIsReported(entity.getQnaIsReported());
@@ -51,7 +52,6 @@ public class QnaResponseDTO {
         dto.setQnaViews(entity.getQnaViews());
         return dto;
     }
-    
 
     // 댓글까지 포함하는 버전 (서비스에서 사용)
     public static QnaResponseDTO fromEntity(QnaEntity entity, List<QnaCommentResponseDTO> comments) {

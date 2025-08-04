@@ -32,7 +32,7 @@ public class RequestController {
 	
 	@Autowired final private RequestService service;
 	
-	private String ip = "http://teamproject-uka.s3-website.ap-northeast-2.amazonaws.com/";
+	private String ip = "teamproject-uka.s3-website.ap-northeast-2.amazonaws.com";
 //	private String ip = "192.168.3/";
 //	private String ip = "localhost";
 	
@@ -49,21 +49,21 @@ public class RequestController {
 	public ResponseEntity<?> uploadFile(@RequestParam("file")MultipartFile file, @RequestParam("userId") String userId){
 		String imageUrl = "";
 		
-		File directory = new File("C:/my-app/upload/");
+		File directory = new File("/home/ubuntu/my-app/upload/");
 		if (!directory.exists()) {
 		    directory.mkdirs(); // 폴더 자동 생성
 		}
 		//파일 저장 위치 및 파일 이름
-		//파일 저장 위치 : C:/my-app/upload/~
+		//파일 저장 위치 : /home/ubuntu/my-app/upload/~
 		//파일 이름 : userId + UUID + .jpg
 		String uniqueFileName = UUID.randomUUID().toString() + ".jpg";
 		
-		String filePath = "C:/my-app/upload/" + userId +uniqueFileName;
+		String filePath = "/home/ubuntu/my-app/upload/" + userId + "_" +uniqueFileName;
 		
 		try {
 			file.transferTo(new File(filePath));
 			//요청하면 보여줄 url
-			imageUrl = "http://"+ip+":8888/request/img/"+userId+uniqueFileName;
+			imageUrl = "http://"+ip+"/request/img/"+userId+'_'+uniqueFileName;
 		} catch (Exception e) {
 		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "파일 업로드 실패"));

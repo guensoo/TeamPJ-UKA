@@ -71,7 +71,10 @@ public class CommentService {
     public Comment updateComment(String commentId, String newContent) {
         Comment comment = commentRepository.findById(commentId)
             .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
+        
         comment.setContent(newContent);
+        comment.setIsEdited(true);
+        
         return commentRepository.save(comment);
     }
     

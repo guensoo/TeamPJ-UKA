@@ -1,5 +1,5 @@
-/* 로딩화면 */
-.RMloading{
+/* ====== PC (기본) ====== */
+.RMloading {
     min-width: 1070px;
     border-radius: 10px;
     border: 1px solid #cceeff;
@@ -9,51 +9,198 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    min-width: 1070px;
-}.RMloading div{
+}
+
+.RMloading div {
     margin-top: 20px;
 }
 
-
-/* ================================== */
-
-/* 메인컨테이너 */
 .RMcontainer {
     border-radius: 10px;
     min-width: 1070px;
-
     display: flex;
     flex-direction: column;
 }
 
-/* 본문 위쪽 */
-.RMtop{
+.RMtop {
     border: 1px solid #cceeff;
     border-radius: 10px;
-
     display: flex;
     flex-direction: column;
     justify-content: center;
     margin-top: 20px;
-    /* padding:20px; */
 }
 
-.RMone{
-    padding : 0 20px;
+.RMone {
+    padding: 0 20px;
 }
 
-.RMhr{
+.RMhr {
     display: flex;
     border-bottom: 1px solid #cceeff;
-    flex:1;
-    margin:20px 0;
-  
+    flex: 1;
+    margin: 20px 0;
 }
 
-.RMbottom{
+.RMbottom {
     border: 1px solid #cceeff;
-    
     border-radius: 10px;
     width: 100px;
     height: 1px;
+}
+
+/* ====== MOBILE (768px 이하) ====== */
+@media (max-width: 768px) {
+
+    body,
+    #root,
+    .App {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        background: #f9fbfc !important;
+    }
+
+    /* 작성하기 버튼 */
+    .DBButton,
+    .MuiButton-root {
+        width: 94vw !important;
+        max-width: 340px !important;
+        min-width: 0 !important;
+        margin: 12px auto 8px auto !important;
+        padding: 12px 0 !important;
+        font-size: 1rem !important;
+        border-radius: 8px !important;
+        display: block !important;
+        box-sizing: border-box !important;
+    }
+
+    .DBButton svg,
+    .MuiButton-root svg {
+        font-size: 1.1em !important;
+        vertical-align: middle !important;
+    }
+
+    /* 최상위 컨테이너들 */
+    .RMcontainer,
+    .RMtop,
+    .RMone {
+        width: calc(100vw - 24px) !important;
+        /* 헤더 padding과 동일하게 */
+        max-width: 100vw !important;
+        min-width: 0 !important;
+        margin: 0 auto 8px auto !important;
+        padding: 0 !important;
+        border-radius: 8px !important;
+        box-sizing: border-box !important;
+    }
+
+    .RMhr {
+        width: 94vw !important;
+        max-width: 340px !important;
+        min-width: 0 !important;
+        height: 1px !important;
+        margin: 2px 0 10px 0 !important;
+        border: none !important;
+        background: #d6f3fa !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 카드 */
+    .RequestCard {
+        width: 94vw !important;
+        max-width: 340px !important;
+        min-width: 0 !important;
+        margin: 0 auto 12px auto !important;
+        border-radius: 12px !important;
+        box-sizing: border-box !important;
+        box-shadow: 0 2px 8px #0002 !important;
+        overflow: hidden !important;
+        background: #fff !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    .RequestCard-media {
+        width: 100% !important;
+        min-width: 0 !important;
+        padding: 6px 0 3px 0 !important;
+        background: #cceeff !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        border-radius: 12px 12px 0 0 !important;
+        box-sizing: border-box !important;
+        height: auto !important;
+    }
+
+    .RequestCard-img,
+    .RequestCard-media img {
+        width: 86vw !important;
+        max-width: 270px !important;
+        height: 30vw !important;
+        max-height: 120px !important;
+        border-radius: 8px !important;
+        object-fit: cover !important;
+        margin: 0 auto !important;
+        background: #fafcff;
+        display: block !important;
+    }
+
+    .RequestCard-content {
+        width: 100% !important;
+        min-width: 0 !important;
+        padding: 10px 4px 8px 4px !important;
+        border-radius: 0 0 12px 12px !important;
+        background: #fff !important;
+        box-sizing: border-box !important;
+    }
+
+    .RequestCard-content .MuiCardContent-root,
+    .RequestCard-content .MuiBox-root,
+    .RequestCard-content>div,
+    .RequestCard-content>* {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100vw !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    .RequestCard-content .MuiTypography-root {
+        font-size: 15px !important;
+        padding: 4px 0 !important;
+        margin: 2px 0 !important;
+        word-break: keep-all !important;
+    }
+
+    .RequestCard-actions {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 10px !important;
+        justify-content: space-between !important;
+        margin-top: 12px !important;
+    }
+
+    .RequestCard-actions button,
+    .RequestCard-actions .MuiButton-root {
+        flex: 1 1 0 !important;
+        width: 48% !important;
+        min-width: 0 !important;
+        font-size: 15px !important;
+        padding: 10px 0 !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .RequestCard-actions button+button {
+        margin-left: 4px !important;
+    }
 }

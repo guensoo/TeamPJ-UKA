@@ -4,7 +4,12 @@ import { BASE_URL } from "./BaseUrl";
 // 댓글 작성
 export const createComment = async (boardId, comment) => {
     try {
-        const res = await axios.post(`${BASE_URL}/comment/${boardId}`, comment);
+        const token = localStorage.getItem('token');
+        const res = await axios.post(
+            `${BASE_URL}/comment/${boardId}`,
+            comment,
+            token ? { headers: { Authorization: `Bearer ${token}` } } : undefined
+        );
         return res.data;
     } catch (error) {
         console.error(`댓글 등록 실패(boardId: ${boardId}):`, error);
@@ -26,7 +31,11 @@ export const createReply = async (parentCommentId, comment) => {
 // 게시글별 댓글 조회
 export const fetchCommentsByBoard = async (boardId) => {
     try {
-        const res = await axios.get(`${BASE_URL}/comment/${boardId}`);
+        const token = localStorage.getItem('token'); // 또는 저장소에 맞게
+        const res = await axios.get(
+            `${BASE_URL}/comment/${boardId}`,
+            token ? { headers: { Authorization: `Bearer ${token}` } } : undefined
+        );
         return res.data;
     } catch (error) {
         console.error(`게시글 댓글 조회 실패(boardId: ${boardId}):`, error);

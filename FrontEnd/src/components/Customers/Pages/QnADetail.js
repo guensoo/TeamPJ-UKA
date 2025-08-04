@@ -92,8 +92,6 @@ const QnADetail = () => {
 
             // ✅ 답변 입력창 초기값
             setAnswerInput(mappedDetail.answer || '');
-
-            console.log('QNA DETAIL API RAW:', rawDetail);
         } catch (err) {
             await error('QnA 데이터를 불러오지 못했습니다.');
             navigate('/customer/qna');

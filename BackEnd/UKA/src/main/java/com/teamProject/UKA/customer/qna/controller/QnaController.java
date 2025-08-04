@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.teamProject.UKA.auth.model.User;
+import com.teamProject.UKA.auth.repository.UserRepository;
 import com.teamProject.UKA.customer.qna.dto.QnaRequestDTO;
 import com.teamProject.UKA.customer.qna.dto.QnaResponseDTO;
 import com.teamProject.UKA.customer.qna.entity.QnaEntity;
@@ -30,11 +32,17 @@ import lombok.RequiredArgsConstructor;
 public class QnaController {
 
     private final QnaService qnaService;
+    private final UserRepository userRepository;
 
     // 게시글 등록
     @PostMapping
     public ResponseEntity<QnaResponseDTO> createQna(@RequestBody QnaRequestDTO dto) {
-        return ResponseEntity.ok(qnaService.createQna(dto));
+        // userId로 User 엔티티 조회
+        User user = userRepository.findByUserId(dto.getUserId())
+            .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
+
+        // 3. Qna 등록 서비스 호출 (User 넘김)
+        return ResponseEntity.ok(qnaService.createQna(dto, user));
     }
 
     // 전체 게시글 목록 조회

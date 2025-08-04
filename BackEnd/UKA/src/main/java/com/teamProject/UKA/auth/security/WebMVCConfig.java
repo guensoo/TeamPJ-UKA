@@ -12,15 +12,19 @@ public class WebMVCConfig  implements WebMvcConfigurer{
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry
 		.addResourceHandler("/request/img/**")
-		.addResourceLocations("file:///C:/my-app/upload/");
+		.addResourceLocations("file:/home/ubuntu/my-app/upload/");
 
 
 	    registry.addResourceHandler("/uploads/**")
-	            .addResourceLocations("file:///C:/my-app/customer/");
+	            .addResourceLocations("file:/home/ubuntu/my-app/customer/");
+	    
+//	    registry
+//        .addResourceHandler("/images/**")
+//        .addResourceLocations("file:///C:/my-app/board/");
 	    
 	    registry
-        .addResourceHandler("/images/**")
-        .addResourceLocations("file:///C:/my-app/board/");
+	    .addResourceHandler("/images/**")
+        .addResourceLocations("file:/home/ubuntu/my-app/board/");
 	}
 	
 	@Override

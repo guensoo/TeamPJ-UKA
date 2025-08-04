@@ -1,5 +1,7 @@
 package com.teamProject.UKA.board.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -25,4 +27,14 @@ public interface BoardRepository extends JpaRepository<Board, String>{
 	@Modifying
 	@Query("UPDATE Board b SET b.report = :report WHERE b.id = :id")
 	void updateReport(@Param("id") String id, @Param("report") int report);
+	
+	@Query(
+	    value = "SELECT brd_id as id, brd_title as title " +
+	            "FROM board_main WHERE user_id = :userId " +
+	            "UNION ALL " +
+	            "SELECT CAST(qna_no AS CHAR) as id, qna_title as title " +
+	            "FROM qna WHERE user_id = :userId",
+	    nativeQuery = true
+	)
+	List<Object[]> findAllMyPosts(@Param("userId") String userId);
 }

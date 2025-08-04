@@ -37,4 +37,9 @@ public class User {
 	  
 	@Builder.Default
 	private LocalDateTime createdAt = LocalDateTime.now();
+	
+    @Builder.Default
+    private boolean isActive = true; // 활성 상태 (탈퇴시 false)
+
+    private LocalDateTime deletedAt; // 탈퇴 시각(탈퇴 전엔 null)
 }

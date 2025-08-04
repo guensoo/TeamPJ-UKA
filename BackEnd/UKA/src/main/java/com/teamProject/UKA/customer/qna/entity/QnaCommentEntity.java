@@ -2,6 +2,8 @@ package com.teamProject.UKA.customer.qna.entity;
 
 import java.time.LocalDateTime;
 
+import com.teamProject.UKA.auth.model.User;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +24,10 @@ public class QnaCommentEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "qna_id", nullable = false)
     private QnaEntity qna;  // FK 관계
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(name = "qna_comment_no")
     private Integer qnaCommentNo;  // QnA 내 댓글 순번

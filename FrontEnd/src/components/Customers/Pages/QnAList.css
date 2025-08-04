@@ -267,3 +267,159 @@
     cursor: pointer;
     height: 36px;
 }
+
+@media (max-width: 768px) {
+
+    /* 1. 전체 컨테이너 */
+    .customer-container {
+        min-width: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
+        padding: 8px 0 0 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 2. 제목 */
+    .customer-title {
+        font-size: 22px !important;
+        margin-bottom: 14px !important;
+        padding-left: 4px !important;
+    }
+
+    /* 3. 검색, 컨트롤 */
+    .customer-controls,
+    .customer-search,
+    .customer-qna-search {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+        margin-bottom: 10px !important;
+        padding: 0 4px !important;
+    }
+
+    /* 4. 테이블 컨테이너(가로스크롤) */
+    .customer-table-container {
+        width: 100% !important;
+        box-sizing: border-box !important;
+        overflow-x: auto !important;
+    }
+
+    /* 5. 테이블 자체 */
+    .customer-table {
+        width: 100% !important;
+        min-width: 320px !important;
+        font-size: 13px !important;
+        table-layout: fixed !important;
+    }
+
+    /* 6. th/td 공통 스타일 */
+    .customer-table th,
+    .customer-table td {
+        font-size: 13px !important;
+        padding: 8px 4px !important;
+        border: none !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        box-sizing: border-box !important;
+        /* 기본적으로 줄바꿈 막음 */
+        white-space: nowrap !important;
+    }
+
+    /* 7. 번호(첫번째) 칼럼 작게 */
+    .customer-table th:nth-child(1),
+    .customer-table td:nth-child(1) {
+        min-width: 30px !important;
+        max-width: 36px !important;
+        width: 30px !important;
+        text-align: center !important;
+    }
+
+    /* 8. 제목(두번째) 칼럼 넓게 + 줄바꿈 허용 */
+    .customer-table th:nth-child(2),
+    .customer-table td:nth-child(2) {
+        min-width: 150px !important;
+        max-width: 400px !important;
+        width: auto !important;
+        /* 아래 두 줄이 줄바꿈 및 강제 끊기 */
+        white-space: normal !important;
+        word-break: break-all !important;
+        /* text-overflow: ellipsis; 필요시 활성화 */
+        text-align: left !important;
+    }
+
+    /* 9. 작성자 칼럼(세번째) */
+    .customer-table th:nth-child(3),
+    .customer-table td:nth-child(3) {
+        min-width: 60px !important;
+        max-width: 100px !important;
+        width: 70px !important;
+        text-align: center !important;
+    }
+
+    /* 10. 4~7 컬럼 숨김 (답변/상태/작성일 등) */
+    .customer-table th:nth-child(4),
+    .customer-table th:nth-child(5),
+    .customer-table th:nth-child(6),
+    .customer-table th:nth-child(7),
+    .customer-table td:nth-child(4),
+    .customer-table td:nth-child(5),
+    .customer-table td:nth-child(6),
+    .customer-table td:nth-child(7) {
+        display: none !important;
+    }
+
+    /* 11. 제목 셀 스타일 */
+    .customer-table td.title-cell {
+        padding-left: 6px !important;
+        font-size: 13px !important;
+        white-space: normal !important;
+        /* 줄바꿈 허용 */
+        word-break: break-all !important;
+        text-align: left !important;
+    }
+
+    /* 12. 줄바꿈 + 말줄임 원하는 경우(내부 div) */
+    .customer-table td.title-cell .customer-cell-text {
+        max-width: 99vw !important;
+        overflow: hidden !important;
+        white-space: normal !important;
+        /* 줄바꿈 허용 */
+        word-break: break-all !important;
+        /* text-overflow: ellipsis !important; */
+        display: block !important;
+    }
+
+    /* ===== 리스트형 카드 ===== */
+    .customer-list {
+        flex-direction: column !important;
+        gap: 8px !important;
+        padding: 2px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .customer-item {
+        width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 0 8px 0 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 1px 6px #eee !important;
+    }
+
+    /* ===== 페이징 ===== */
+    .pagination,
+    .customer-pagination {
+        gap: 3px !important;
+        font-size: 12px !important;
+        margin: 8px 0 !important;
+    }
+
+    .pagination button,
+    .customer-pagination button {
+        width: 22px !important;
+        height: 22px !important;
+        font-size: 13px !important;
+        padding: 3px 0 !important;
+    }
+}

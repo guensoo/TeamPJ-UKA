@@ -17,11 +17,6 @@ const MainHeaders = () => {
         navigate('/login');
     };
 
-    const handleProfile = () => {
-        alert("추후 개발 예정!");
-        return;
-    }
-
     function isAdminUser(user) {
         if (!user) return false;
         // userId 또는 username에 "admin" 또는 "관리자"가 포함된 경우
@@ -43,13 +38,13 @@ const MainHeaders = () => {
                     {user && (
                         isAdminUser(user)
                             ? <p><strong style={{ color: "red" }}>관리자</strong> 계정으로 접속하였습니다.</p>
-                            : <p>{user.userId} 회원님 반갑습니다.</p>
+                            : <p>{user.nickname} 회원님 반갑습니다.</p>
                     )}
-                {/* 여기 위 까지 관리자 테스트 */}
+                    {/* 여기 위 까지 관리자 테스트 */}
                     {user ? (
                         <>
                             {/* /profile */}
-                            <Link onClick={handleProfile} className="profile-button">
+                            <Link to="/mypage" className="profile-button">
                                 마이페이지
                             </Link>
                             <button onClick={handleLogout} className="logout-button">
@@ -67,10 +62,10 @@ const MainHeaders = () => {
                         </>
                     )}
                 </div>
-                
+
                 <nav className="header-nav-links">
-                    <Link to="/about" style={{marginRight : 25}}>입양하고싶어요</Link>
-                    <Link to="/request" style={{marginRight : 10}}>찾고있어요</Link>
+                    <Link to="/about" style={{ marginRight: 25 }}>입양하고싶어요</Link>
+                    <Link to="/request" style={{ marginRight: 10 }}>찾고있어요</Link>
                     <DropDownMenu
                         title="게시판"
                         to="/board/all"

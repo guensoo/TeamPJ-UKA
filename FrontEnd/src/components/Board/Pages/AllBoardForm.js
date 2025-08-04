@@ -7,8 +7,8 @@ import color from '@toast-ui/editor-plugin-color-syntax'
 import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import Swal from 'sweetalert2';
-import { useAdmin } from '../../../api/AdminContext';
 import { createPost, uploadImage } from '../../../api/BoardApi';
+import imageCompression from 'browser-image-compression';
 
 const AllBoardForm = () => {
     const [title, setTitle] = useState('');
@@ -21,12 +21,13 @@ const AllBoardForm = () => {
     const loginData = JSON.parse(localStorage.getItem("user"));
     const isAdmin = loginData?.userId?.includes("admin") ? true : false;
     const currentUser = loginData?.nickname;
+    const userId = loginData?.userId;
 
     //등록 버튼
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if(!category){
+        if (!category) {
             Swal.fire({
                 icon: 'warning',
                 title: '카테고리를 선택해주세요',
@@ -35,7 +36,7 @@ const AllBoardForm = () => {
             return;
         }
 
-        if(!title){
+        if (!title) {
             Swal.fire({
                 icon: 'warning',
                 title: '제목을 입력해주세요',
@@ -46,8 +47,9 @@ const AllBoardForm = () => {
 
         const content = editorRef.current?.getInstance().getHTML();
         const plainText = content?.replace(/<[^>]*>/g, '').trim();
+        const hasImage = /<img\s+[^>]*src=/.test(content || '');
 
-        if(!plainText){
+        if (!plainText && !hasImage) {
             Swal.fire({
                 icon: 'warning',
                 title: '내용을 입력해주세요',
@@ -60,7 +62,8 @@ const AllBoardForm = () => {
             category: category,  // 반드시 Category enum 이름과 일치해야 함
             title: title,
             author: currentUser,
-            content: content
+            content: content,
+            userId: userId,
         }
 
         Swal.fire({
@@ -74,7 +77,7 @@ const AllBoardForm = () => {
             cancelButtonText: '취소',
         }).then(async (result) => {
             try {
-                if(result.isConfirmed){
+                if (result.isConfirmed) {
                     await createPost(newPost)
                     Swal.fire({
                         title: '등록 완료',
@@ -111,7 +114,7 @@ const AllBoardForm = () => {
             confirmButtonText: '확인',
             cancelButtonText: '취소',
         }).then((result) => {
-            if(result.isConfirmed){
+            if (result.isConfirmed) {
                 navigate('/board/all')
             }
         })
@@ -122,12 +125,12 @@ const AllBoardForm = () => {
             <h2>게시글 글쓰기</h2>
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label style={{marginRight:10, fontWeight: 'bold'}}>카테고리</label>
-                    <select 
-                        style={{marginBottom: 16, padding: 5}} 
-                        value={category} 
+                    <label style={{ marginRight: 10, fontWeight: 'bold' }}>카테고리</label>
+                    <select
+                        style={{ marginBottom: 16, padding: 5 }}
+                        value={category}
                         onChange={(e) => setCategory(e.target.value)}
-                        >
+                    >
                         <option value='' disabled hidden>선택</option>
                         {isAdmin && <option value='NOTICE'>공지사항</option>} {/* 관리자만 공지사항 글쓰기 가능 */}
                         <option value='CHAT'>속닥속닥</option>
@@ -135,7 +138,7 @@ const AllBoardForm = () => {
                     </select>
                 </div>
                 <div>
-                    <label style={{marginRight:10, fontWeight: 'bold'}}>제목</label>
+                    <label style={{ marginRight: 10, fontWeight: 'bold' }}>제목</label>
                     <input
                         ref={titleInputRef}
                         type="text"
@@ -143,15 +146,15 @@ const AllBoardForm = () => {
                         onChange={(e) => setTitle(e.target.value)}
                         style={{ width: '50%', padding: '10px', marginBottom: '16px' }}
                         onKeyDown={(e) => {
-                            if(e.key === 'Enter'){
+                            if (e.key === 'Enter') {
                                 e.preventDefault();
                             }
                         }}
                     />
                 </div>
                 <div>
-                    <label style={{fontWeight: 'bold'}}>내용</label><br />
-                    <Editor 
+                    <label style={{ fontWeight: 'bold' }}>내용</label><br />
+                    <Editor
                         ref={editorRef}
                         previewStyle="vertical"
                         height="500px"
@@ -163,7 +166,14 @@ const AllBoardForm = () => {
                         hooks={{
                             addImageBlobHook: async (blob, callback) => {
                                 try {
-                                    const imageUrl = await uploadImage(blob);
+                                    const options = {
+                                        maxSizeMB: 0.5,              // 최대 1MB
+                                        maxWidthOrHeight: 400,     // 최대 가로나 세로 800px
+                                        useWebWorker: true,
+                                    };
+                                    const compressedBlob = await imageCompression(blob, options);
+
+                                    const imageUrl = await uploadImage(compressedBlob);
                                     console.log('업로드된 이미지 URL:', imageUrl);
                                     callback(imageUrl, 'image');
                                 } catch (error) {

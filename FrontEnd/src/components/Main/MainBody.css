@@ -11,11 +11,36 @@
     color: #000000;
 }
 
-/* 왼쪽 패널, 오른쪽 패널 간격 */
 .dashboard-main {
     display: flex;
     flex: 1;
     gap: 20px;
+}
+
+/* ------ 모바일 대응 ------ */
+@media (max-width: 768px) {
+    .dashboard-container {
+        min-width: 0 !important;
+        width: 100% !important;
+        margin-top: 8px !important;
+        padding: 0 4px !important;
+    }
+
+    .dashboard-main {
+        flex-direction: column !important;
+        gap: 8px !important;
+        width: 100% !important;
+    }
+
+    .dog-runner {
+        width: 90px !important;
+        margin-bottom: 8px !important;
+    }
+
+    .main-content {
+        padding: 10px !important;
+        font-size: 0.95rem !important;
+    }
 }
 
 .dog-runner {

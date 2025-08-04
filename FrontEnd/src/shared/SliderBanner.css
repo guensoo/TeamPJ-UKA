@@ -5,7 +5,7 @@
     margin-top: 16px;
     border: 1px solid #cceeff;
     padding: 10px;
-    
+
 }
 
 /* 슬라이더 컨테이너 */
@@ -66,6 +66,7 @@
     overflow-wrap: break-word;
     word-break: break-word;
 }
+
 .slide-info p {
     margin-top: 8px;
 }
@@ -91,22 +92,84 @@
 
 /* 데이터 없을 때 보여줄 영역 */
 .slider-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;            /* 부모 컨테이너 전체를 채우도록 */
-  color: #666;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    /* 부모 컨테이너 전체를 채우도록 */
+    color: #666;
 }
 
 .slider-empty-image {
-  width: 300px;             /* 적당한 크기로 조절 */
-  height: 100px;
-  margin-bottom: 8px;
-  opacity: 0.5;
+    width: 300px;
+    /* 적당한 크기로 조절 */
+    height: 100px;
+    margin-bottom: 8px;
+    opacity: 0.5;
 }
 
 .slider-empty-text {
-  font-size: 14px;
-  text-align: center;
+    font-size: 14px;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .main-slider-container {
+        position: relative !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        height: 100% !important;
+    }
+
+    .main-slider-button {
+        position: absolute !important;
+        top: 50% !important;
+        width: 34px !important;
+        height: 34px !important;
+        font-size: 1.3rem !important;
+        background: rgba(0, 0, 0, 0.4) !important;
+        border-radius: 50% !important;
+        z-index: 20 !important;
+        transform: translateY(-50%) !important;
+    }
+
+    .main-slider-button.prev {
+        left: 10px !important;
+        right: auto !important;
+    }
+
+    .main-slider-button.next {
+        right: 10px !important;
+        left: auto !important;
+    }
+
+    .slide-info,
+    .slide-info p {
+        display: none !important;
+    }
+
+
+    .slide-image-wrapper {
+        width: 90px !important;
+        height: 90px !important;
+        margin: 0 auto 8px auto !important;
+        overflow: hidden !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        background: none !important;
+    }
+
+    .slide-image {
+        width: 100% !important;
+        height: 100% !important;
+        border-radius: 50% !important;
+        object-fit: cover !important;
+        display: block !important;
+        margin: 0 !important;
+        box-shadow: 0 2px 8px #0001 !important;
+    }
 }

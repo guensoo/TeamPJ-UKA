@@ -4,6 +4,7 @@ import './BoardList.css';
 import Swal from 'sweetalert2';
 import { fetchAllPosts } from '../../../api/BoardApi';
 import TitleLength from '../utils/TitleLength';
+import { formatDate } from '../utils/FormatDate';
 
 const AllBoard = () => {
     const [posts, setPosts] = useState([]);
@@ -42,6 +43,7 @@ const AllBoard = () => {
         const getAllPosts = async () => {
             try {
                 const data = await fetchAllPosts();
+                console.log("불러온 posts 데이터:", data);  // <- 추가!
                 setPosts(data);
             } catch (err) {
                 console.error('게시글 불러오기 실패', err);
@@ -60,8 +62,8 @@ const AllBoard = () => {
             if (sortOption === 'likes') return order * (b.likes - a.likes);
             if (sortOption === 'comment') return order * (b.comment - a.comment);
             if (sortOption === 'latest') {
-                const dateA = a.updatedAt ? new Date(a.updatedAt) : new Date(a.createdAt);
-                const dateB = b.updatedAt ? new Date(b.updatedAt) : new Date(b.createdAt);
+                const dateA = new Date(a.createdAt);
+                const dateB = new Date(b.createdAt);
                 return order * (dateB - dateA);
             }
             return 0;
@@ -70,8 +72,8 @@ const AllBoard = () => {
 
     const noticedPosts = [...posts.filter(p => p.category === "NOTICE")]
         .sort((a, b) => {
-            const dateA = a.updatedAt ? new Date(a.updatedAt) : new Date(a.createdAt);
-            const dateB = b.updatedAt ? new Date(b.updatedAt) : new Date(b.createdAt);
+            const dateA = new Date(a.createdAt);
+            const dateB = new Date(b.createdAt);
             return dateB - dateA;
         });
 
@@ -115,7 +117,7 @@ const AllBoard = () => {
                 return post.title.toLowerCase().includes(keyword.toLowerCase())
             }
             else if (searchOption === 'author') {
-                return post.author.toLowerCase().includes(keyword.toLowerCase())
+                return post.nickname.toLowerCase().includes(keyword.toLowerCase())
             }
             return false;
         });
@@ -158,6 +160,7 @@ const AllBoard = () => {
                 fromPage: currentPage,
             }
         });
+        window.scroll(0, 0);
     };
 
     //글쓰기 버튼
@@ -174,16 +177,6 @@ const AllBoard = () => {
             regex.test(part) ? <b key={index}>{part}</b> : <span key={index}>{part}</span>
         );
     }
-
-    // 날짜 포맷 함수
-    const formatDate = (date) => {
-        const d = new Date(date);
-        const year = String(d.getFullYear()).slice(2);
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-
-        return `${year}.${month}.${day}`;
-    };
 
     return (
         <div className="board-container">
@@ -247,7 +240,7 @@ const AllBoard = () => {
                                     setSortOption('latest');
                                     setSortAsc(true);
                                 }
-                            }}> 등록일 {sortOption === 'latest' ? (!sortAsc ? '∨' : '∧') : '∨'}
+                            }}> 작성일 {sortOption === 'latest' ? (!sortAsc ? '∨' : '∧') : '∨'}
                             </button>
                         </th>
                     </tr>
@@ -269,8 +262,8 @@ const AllBoard = () => {
                             <td className='notice-cell'>
                                 <div className='board-cell-text'>
                                     {searchOption === 'author'
-                                        ? highlightKeyword(post.author, isSearching ? confirmKeyword : '')
-                                        : post.author
+                                        ? highlightKeyword(post.nickname, isSearching ? confirmKeyword : '')
+                                        : post.nickname
                                     }
                                 </div>
                             </td>
@@ -285,7 +278,7 @@ const AllBoard = () => {
                             </td>
                             <td className='notice-cell'>
                                 <div className='board-cell-text' style={{ marginLeft: 15 }}>
-                                    {post.updatedAt ? formatDate(post.updatedAt) : formatDate(post.createdAt)}
+                                    {formatDate(post.createdAt)}
                                 </div>
                             </td>
                         </tr>
@@ -311,8 +304,8 @@ const AllBoard = () => {
                                 <td>
                                     <div className='board-cell-text'>
                                         {searchOption === 'author'
-                                            ? highlightKeyword(post.author, isSearching ? confirmKeyword : '')
-                                            : post.author
+                                            ? highlightKeyword(post.nickname, isSearching ? confirmKeyword : '')
+                                            : post.nickname
                                         }
                                     </div>
                                 </td>
@@ -327,7 +320,7 @@ const AllBoard = () => {
                                 </td>
                                 <td>
                                     <div className='board-cell-text' style={{ marginLeft: 15 }}>
-                                        {post.updatedAt ? formatDate(post.updatedAt) : formatDate(post.createdAt)}
+                                        {formatDate(post.createdAt)}
                                     </div>
                                 </td>
                             </tr>

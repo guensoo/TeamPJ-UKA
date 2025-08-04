@@ -33,7 +33,6 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public LoginResponse login(@RequestBody @Valid LoginRequest req) {
-		System.out.println("req ::: 너들어왔니 "+req);
 		return authService.login(req);
 	}
 

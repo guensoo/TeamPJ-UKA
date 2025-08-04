@@ -16,6 +16,8 @@ const AdoptionInquiry = () => {
     const { showAlert } = useAlert();
     const [slideImages, setSlideImages] = useState([]);
 
+    const isMobile = window.innerWidth <= 768;
+
     // 썸네일
     const [thumbnails, setThumbnails] = useState([]);
     const [thumbnailDraft, setThumbnailDraft] = useState([]);
@@ -524,8 +526,8 @@ const AdoptionInquiry = () => {
                         <div
                             className="customer-slider-container"
                             style={{
-                                width: 700,
-                                height: 700,
+                                width: isMobile ? '95vw' : 700,
+                                height: isMobile ? 'calc(95vw * 1.1)' : 700, // 세로는 약간 크게 (비율 조정)
                                 margin: "0 auto",
                                 position: "relative",
                                 borderRadius: 16,

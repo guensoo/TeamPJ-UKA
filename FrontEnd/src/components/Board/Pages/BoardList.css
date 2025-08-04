@@ -9,7 +9,7 @@
     font-size: 32px;
     font-weight: bold;
     margin-bottom: 20px;
-} 
+}
 
 .board-controls {
     display: flex;
@@ -83,7 +83,8 @@
     border-collapse: collapse;
     margin-bottom: 20px;
 }
-.board-table th { 
+
+.board-table th {
     background-color: #f3f3f3;
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ccc;
@@ -92,12 +93,14 @@
     /* border: 1px solid red; */
     margin-right: 5px;
 }
+
 .board-table td {
     border-top: 1px solid #ddd;
     padding: 10px;
     /* border: 1px solid red; */
     text-align: center;
 }
+
 .board-table td .board-cell-text {
     /* display: inline-block; */
     /* border: 1px solid green; */
@@ -121,17 +124,17 @@
     width: auto;
 }
 
-/* 작성자 */ 
+/* 작성자 */
 .board-table td:nth-child(3) {
     width: 100px;
 }
 
-.board-table th:nth-child(3){
+.board-table th:nth-child(3) {
     text-align: left;
 }
 
 /* 조회 */
-.board-table td:nth-child(4) { 
+.board-table td:nth-child(4) {
     width: 60px;
 }
 
@@ -197,7 +200,7 @@
     cursor: pointer;
 }
 
-.board-table td.notice-title:hover{
+.board-table td.notice-title:hover {
     text-decoration: underline;
 }
 
@@ -216,7 +219,7 @@
     cursor: pointer;
 }
 
-.board-table td.title-cell:hover{
+.board-table td.title-cell:hover {
     text-decoration: underline;
 }
 
@@ -240,7 +243,7 @@
     cursor: pointer;
     display: flex;
     justify-content: center;
-    align-items: center;    
+    align-items: center;
     text-align: center;
 }
 
@@ -256,4 +259,196 @@
     background-color: #eee;
     color: #999;
     cursor: not-allowed;
+}
+
+.board-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 32px;
+}
+
+.board-item {
+    width: 300px;
+    margin: 16px;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 1px 8px #eee;
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+
+    /* 게시판 컨테이너 */
+    .board-container {
+        min-width: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+        padding: 8px 0 0 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .board-title {
+        font-size: 22px !important;
+        margin-bottom: 14px !important;
+        padding-left: 4px !important;
+    }
+
+    /* 검색, 컨트롤 */
+    .board-controls {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+        margin-bottom: 10px !important;
+        padding: 0 4px !important;
+    }
+
+    .board-controls select {
+        font-size: 14px !important;
+        padding: 6px 2px !important;
+        min-width: 60px !important;
+    }
+
+    .board-search {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 4px !important;
+        margin: 0 !important;
+        padding: 0 4px !important;
+    }
+
+    .board-search input,
+    .board-search select {
+        width: 100% !important;
+        min-width: 0 !important;
+        font-size: 15px !important;
+    }
+
+    .search-btn {
+        width: 100% !important;
+        font-size: 15px !important;
+        padding: 8px 0 !important;
+        margin: 2px 0 !important;
+    }
+
+    .board-options {
+        width: 100% !important;
+        font-size: 15px !important;
+        min-width: 0 !important;
+        margin: 2px 0 !important;
+    }
+
+    .board-write-btn {
+        width: 100% !important;
+        margin: 8px 0 0 0 !important;
+        font-size: 15px !important;
+        padding: 10px 0 !important;
+    }
+
+    /* 테이블 전체 width 제한 및 고정 레이아웃 + 가로스크롤 */
+    .board-table {
+        width: 100% !important;
+        min-width: 320px !important;
+        font-size: 13px !important;
+        box-sizing: border-box !important;
+        table-layout: fixed !important;
+        /* ★ 필수 */
+    }
+
+    .board-table th,
+    .board-table td {
+        font-size: 13px !important;
+        padding: 7px 2px !important;
+        min-width: 40px !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+
+    /* 카테고리/작성자 넓이 */
+    .board-table th:nth-child(1),
+    .board-table td:nth-child(1) {
+        min-width: 54px !important;
+        max-width: 60px !important;
+        width: 54px !important;
+    }
+
+    .board-table th:nth-child(3),
+    .board-table td:nth-child(3) {
+        min-width: 54px !important;
+        max-width: 70px !important;
+        width: 54px !important;
+    }
+
+    /* 제목만 타이트하게 */
+    .board-table th:nth-child(2),
+    .board-table td:nth-child(2),
+    .board-table th.title-cell,
+    .board-table td.title-cell {
+        min-width: 70px !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    /* 내부 div(텍스트)까지 강제 ellipsis */
+    .board-table td.title-cell .board-cell-text {
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+        max-width: 100px !important;
+        width: 100% !important;
+        display: block !important;
+    }
+
+    /* ==== [중요] 4,5,6,7 컬럼 숨김 처리 ==== */
+    .board-table th:nth-child(4),
+    .board-table th:nth-child(5),
+    .board-table th:nth-child(6),
+    .board-table th:nth-child(7),
+    .board-table td:nth-child(4),
+    .board-table td:nth-child(5),
+    .board-table td:nth-child(6),
+    .board-table td:nth-child(7) {
+        display: none !important;
+    }
+
+    /* ======================================= */
+
+    .board-table td.title-cell,
+    .board-table td.notice-title,
+    .board-table td.notice-title-only {
+        padding-left: 6px !important;
+        font-size: 13px !important;
+    }
+
+    /* 리스트형 카드 */
+    .board-list {
+        flex-direction: column !important;
+        gap: 8px !important;
+        padding: 2px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .board-item {
+        width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 0 8px 0 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 1px 6px #eee !important;
+    }
+
+    /* 페이징 */
+    .board-pagination {
+        gap: 3px !important;
+        font-size: 12px !important;
+        margin: 8px 0 !important;
+    }
+
+    .board-pagination button {
+        width: 22px !important;
+        height: 22px !important;
+        font-size: 13px !important;
+        padding: 3px 0 !important;
+    }
 }

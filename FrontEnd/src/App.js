@@ -11,6 +11,8 @@ import FindPasswordPage from './components/Pages/FindPasswordPage';
 
 import ResetPasswordPage from './components/Pages/ResetPasswordPage';
 
+import MyPage from './components/Pages/MyPage';
+
 //게시판 관련
 import BoardLayout from './components/Board/Pages/BoardLayout';
 import AllBoard from './components/Board/Pages/AllBoard';
@@ -82,6 +84,8 @@ function App() {
                                     {/* 요청 */}
                                     <Route path="/request" element={<RequestMain />} />
                                     <Route path="/request/write" element={<RequestWrite />} />
+                                    {/* 마이페이지 */}
+                                    <Route path="/mypage" element={<MyPage />} />
 
                                     {/* 게시판 전체 */}
                                     <Route path="/board/*" element={<BoardLayout />}>

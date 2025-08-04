@@ -7,6 +7,7 @@ import { createComment, createReply, fetchCommentsByBoard, fetchRepliesByComment
 import CommentList from '../Comment/CommentList';
 import { ViewCount } from '../utils/ViewCount';
 import TitleLength from '../utils/TitleLength'
+import { formatDateTime } from '../utils/FormatDate';
 
 const AllBoardDetail = () => {
     const { id } = useParams();
@@ -49,8 +50,6 @@ const AllBoardDetail = () => {
     const [isLiked, setIsLiked] = useState(false);
     const [isReported, setIsReported] = useState(false);
     const [blocked, setBlocked] = useState(false);
-
-    const [isEdit, setIsEdit] = useState(false);
 
     //검색 필터링 리스트(useLocation)
     const filteredList = location.state?.filteredList || [];
@@ -147,8 +146,8 @@ const AllBoardDetail = () => {
         }
 
         const sortedList = [...targetList].sort((a, b) => {
-            const dateA = a.updatedAt ? new Date(a.updatedAt) : new Date(a.createdAt);
-            const dateB = b.updatedAt ? new Date(b.updatedAt) : new Date(b.createdAt);
+            const dateA = new Date(a.createdAt);
+            const dateB = new Date(b.createdAt);
             return dateB - dateA;
         });
         const idx = sortedList.findIndex(p => p.id === post.id);
@@ -358,12 +357,32 @@ const AllBoardDetail = () => {
     //신고 버튼
     const handleReportButton = async () => {
         if (currentUser === undefined) return Swal.fire("로그인 필요", "로그인 후 이용해주세요.", "error");
-        try {
-            const updatedPost = await toggleReport(post.id, currentUser);
-            setPost(updatedPost);
-            setIsReported(updatedPost.reportedByCurrentUser);
-        } catch (error) {
-            console.error('신고 처리 실패:', error);
+
+        const result = await Swal.fire({
+            title: "신고하시겠습니까?",
+            text: "신고 취소 불가, 신고 누적시 게시글 열람 불가",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "확인",
+            cancelButtonText: "취소",
+        });
+
+        if (isReported) {
+            return Swal.fire("이미 신고됨", "이미 신고한 게시글입니다.", "info");
+        }
+
+        if (result.isConfirmed) {
+            try {
+                const updatedPost = await toggleReport(post.id, currentUser);
+                setPost(updatedPost);
+                setIsReported(updatedPost.reportedByCurrentUser);
+                Swal.fire("신고 완료", "해당 게시글이 신고되었습니다.", "success");
+            } catch (error) {
+                console.error('신고 처리 실패:', error);
+                Swal.fire("오류", "신고 처리 중 문제가 발생했습니다.", "error");
+            }
         }
     };
 
@@ -400,11 +419,11 @@ const AllBoardDetail = () => {
                 <p style={{ marginTop: 20 }}>[ {categoryLabels[post.category]} ]</p>
                 <div className="board-detail-info">
                     <span style={{ color: '#ccc' }}>
-                        작성자: {post.author} |
+                        작성자: {post.nickname} |
                         조회수: {post.view} |
                         추천수: {post.likes} |
-                        신고수: {post.report} |
-                        등록일: {post.updatedAt && post.updatedAt !== post.createdAt ? `${new Date(post.updatedAt).toLocaleString()} (수정됨)` : new Date(post.createdAt).toLocaleString()}
+                        신고수: {post.report} |{' '}
+                        작성일: {formatDateTime(post.createdAt)} {post.isEdited && '(수정됨)'}
                     </span><br />
                 </div>
             </div>
@@ -498,7 +517,7 @@ const AllBoardDetail = () => {
                     setEditReplyText={setEditReplyText}
                 />
             </div>
-            
+
             {/* 최상위 댓글 입력폼 추가 */}
             <div style={{ marginTop: 12 }}>
                 <form onSubmit={handleCommentSubmit} style={{ display: 'flex', gap: 8, marginBottom: 20 }}>

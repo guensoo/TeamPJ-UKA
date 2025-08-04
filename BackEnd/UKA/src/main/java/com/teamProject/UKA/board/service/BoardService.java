@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.teamProject.UKA.auth.model.User;
+import com.teamProject.UKA.auth.repository.UserRepository;
 import com.teamProject.UKA.board.dto.BoardRequestDTO;
 import com.teamProject.UKA.board.dto.BoardResponseDTO;
 import com.teamProject.UKA.board.model.Board;
@@ -30,6 +32,7 @@ public class BoardService {
 	private final BoardRepository repository;
 	private final BoardLikesRepository boardLikesRepository;
 	private final BoardReportRepository boardReportRepository;
+	private final UserRepository userRepository;
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -46,10 +49,13 @@ public class BoardService {
 	//게시글 등록
 	@Transactional
 	public BoardResponseDTO createBoard(BoardRequestDTO requestDTO) {
-		System.out.println(1);
 		String newId = generateBoardId();
+		
+	    // 1. userId(로그인 ID)로 User 찾기
+	    User user = userRepository.findByUserId(requestDTO.getUserId())
+	        .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
 
-        Board board = requestDTO.toEntity(newId);
+        Board board = requestDTO.toEntity(newId, user);
         Board saved = repository.save(board);
 
         return new BoardResponseDTO(saved, false, false);
@@ -82,7 +88,8 @@ public class BoardService {
 		board.setTitle(requestDTO.getTitle());
 		board.setAuthor(requestDTO.getAuthor());
 		board.setContent(requestDTO.getContent());
-		board.setUpdatedAt(LocalDateTime.now());
+		
+		board.setEdited(true);
 		
 		return new BoardResponseDTO(board, false, false);
 	}

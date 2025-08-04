@@ -1,3 +1,5 @@
+import { formatDateTime } from "../utils/FormatDate";
+
 const CommentItem = ({
     comment,
     level,
@@ -25,21 +27,18 @@ const CommentItem = ({
     handleReplySubmit,
     renderCommentTree,
 }) => {
-    // console.log("author: ",comment.author)
-    // console.log("currentUser: ",currentUser)
-    // console.log("post.author:", post.author)
     return (
         <div style={{ marginLeft: level > 0 ? 20 : 0, marginBottom: 12 }}>
             <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                 <div style={{ fontSize: 15 }}>
                     <b>
                         {level > 0 && '↪ '}
-                        {comment.author}
-                        {comment.author === post.author && ' (작성자)'}
-                        {comment.author.includes('admin') && ' (관리자)'}
+                        {comment.nickname}
+                        {comment.nickname === post.nickname && ' (작성자)'}
+                        {comment.userId?.includes('admin') && ' (관리자)'}
                     </b>
                     <span style={{ marginLeft: 6, color: '#bbb', fontSize: 13 }}>
-                        {comment.updatedAt && comment.updatedAt !== comment.createdAt ? `수정됨 ${new Date(comment.updatedAt).toLocaleString()}` : new Date(comment.createdAt).toLocaleString()}
+                        {formatDateTime(comment.createdAt)} {comment.isEdited && '(수정됨)'}
                     </span>
                 </div>
                 {(isAdmin || comment.author === currentUser) && (

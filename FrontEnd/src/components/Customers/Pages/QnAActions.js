@@ -141,6 +141,7 @@ export async function handleCommentSubmit({
 
     try {
         await createQnaComment(qna.qnaNo, {
+            userId: user.userId,
             qnaId: qna.qnaId,
             qnaCommentWriter: isAdmin ? '관리자' : user.nickname,
             qnaCommentContent: commentInput

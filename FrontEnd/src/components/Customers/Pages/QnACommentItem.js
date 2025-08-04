@@ -14,6 +14,9 @@ const QnACommentItem = ({
     // 본인 여부
     const isOwner = user?.nickname === comment.qnaCommentWriter;
 
+    console.log("comment:", comment);
+    console.log("user:", user);
+
     return (
         <div
             style={{
@@ -25,7 +28,10 @@ const QnACommentItem = ({
         >
             {/* 작성자 + 날짜 + (수정/삭제/숨김) 버튼 한 줄 */}
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: 4 }}>
-                <b>{comment.qnaCommentWriter}</b>
+                <b>{comment.userId === user.userId
+                    ? user.nickname // 내 댓글(닉네임 바꿨으면 최신 닉네임)
+                    : comment.qnaCommentWriter // 남의 댓글(서버에서 받은 값)
+                }</b>
                 <span style={{ color: "#bbb", fontSize: 13, marginLeft: 8 }}>
                     {comment.qnaCommentCreatedAt?.slice(0, 10)}
                 </span>

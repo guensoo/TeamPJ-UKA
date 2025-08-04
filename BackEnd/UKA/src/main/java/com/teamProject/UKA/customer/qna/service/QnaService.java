@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.teamProject.UKA.auth.model.User;
 import com.teamProject.UKA.customer.qna.dto.QnaCommentResponseDTO;
 import com.teamProject.UKA.customer.qna.dto.QnaRequestDTO;
 import com.teamProject.UKA.customer.qna.dto.QnaResponseDTO;
@@ -31,14 +32,21 @@ public class QnaService {
 
 	// QnA 등록
 	@Transactional
-	public QnaResponseDTO createQna(QnaRequestDTO dto) {
+	public QnaResponseDTO createQna(QnaRequestDTO dto, User user) {
 		Long newId = generateQnaId(); // 날짜+일련번호 PK 생성 메서드
 		Long newNo = generateNextQnaNo();
-		QnaEntity qna = QnaEntity.builder().qnaId(newId) // PK 꼭 세팅
+		
+		QnaEntity qna = QnaEntity.builder()
+				.qnaId(newId) // PK 꼭 세팅
 				.qnaNo(newNo) // 사용자 번호도 세팅
-				.qnaTitle(dto.getQnaTitle()).qnaContent(dto.getQnaContent()).qnaWriter(dto.getQnaWriter())
-				.qnaIsSecret(dto.getQnaIsSecret()).qnaPassword(dto.getQnaPassword())
-				.qnaIsReported(dto.getQnaIsReported()).build();
+				.user(user)
+				.qnaTitle(dto.getQnaTitle())
+				.qnaContent(dto.getQnaContent())
+				.qnaWriter(user.getNickname())
+				.qnaIsSecret(dto.getQnaIsSecret())
+				.qnaPassword(dto.getQnaPassword())
+				.qnaIsReported(dto.getQnaIsReported())
+				.build();
 		QnaEntity saved = qnaRepository.save(qna);
 		return QnaResponseDTO.fromEntity(saved);
 	}

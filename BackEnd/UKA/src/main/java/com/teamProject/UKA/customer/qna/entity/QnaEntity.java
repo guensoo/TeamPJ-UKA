@@ -2,11 +2,14 @@ package com.teamProject.UKA.customer.qna.entity;
 
 import java.time.LocalDateTime;
 
+import com.teamProject.UKA.auth.model.User;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -30,6 +33,10 @@ public class QnaEntity {
 
     @Column(name = "qna_no", unique = true, nullable = false)
     private Long qnaNo; // 사용자에게 보여지는 번호
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(name = "qna_title", nullable = false, length = 255)
     private String qnaTitle;

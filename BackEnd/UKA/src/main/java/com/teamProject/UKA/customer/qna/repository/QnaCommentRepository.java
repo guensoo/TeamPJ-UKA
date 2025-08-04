@@ -15,4 +15,7 @@ public interface QnaCommentRepository extends JpaRepository<QnaCommentEntity, Lo
 
     // QnA글에 달린 모든 댓글 조회
     List<QnaCommentEntity> findByQna_QnaId(Long qnaId);
+    
+    @Query("SELECT qc FROM QnaCommentEntity qc WHERE qc.user.seq = :userId")
+    List<QnaCommentEntity> findAllByUserId(@Param("userId") String userId);
 }

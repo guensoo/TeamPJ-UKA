@@ -2,6 +2,8 @@ package com.teamProject.UKA.board.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -106,11 +108,20 @@ public class BoardController {
             return ResponseEntity.badRequest().body(Map.of("error", "파일이 비어있습니다."));
         }
         try {
-            String uploadDir = "C:\\my-app\\board"; // 경로 맞게 수정
+            String uploadDir = "/home/ubuntu/my-app/board"; // 경로 맞게 수정
+            Files.createDirectories(Paths.get(uploadDir));
+            
             String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
             String savedFilename = System.currentTimeMillis() + "_" + originalFilename;
+            
+            System.out.println("Upload Dir exists? " + Files.exists(Paths.get(uploadDir)));
+            System.out.println("Upload Dir is writable? " + Files.isWritable(Paths.get(uploadDir)));
             File destination = new File(uploadDir + File.separator + savedFilename);
+            System.out.println("Destination file path: " + destination.getAbsolutePath());
+            
             file.transferTo(destination);
+            System.out.println("File transfer success");
+            
             String imageUrl = "/images/" + savedFilename;
             return ResponseEntity.ok(Map.of("url", imageUrl));
         } catch (IOException e) {

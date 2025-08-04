@@ -7,4 +7,5 @@ public class QnaCommentRequestDTO {
     private Long qnaId;
     private String qnaCommentWriter;
     private String qnaCommentContent;
+    private String userId;
 }

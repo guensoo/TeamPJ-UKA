@@ -135,3 +135,189 @@
 .customer-chat-button:hover {
     background-color: #e0f7ff;
 }
+
+@media (max-width: 768px) {
+
+    /* ---------- 기존 입양 관련 ---------- */
+    .customer-adoption-inquiry {
+        min-width: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
+        padding: 0 8px !important;
+        box-sizing: border-box !important;
+    }
+
+    .customer-slide-thumbnails {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        padding: 4px 0 !important;
+        margin: 0 auto 8px auto !important;
+        box-sizing: border-box !important;
+        overflow-x: auto !important;
+    }
+
+    .customer-slide-thumbnails img {
+        height: 54px !important;
+        width: auto !important;
+        max-width: 110px !important;
+        border-radius: 5px !important;
+        margin-right: 8px !important;
+    }
+
+    .customer-adoption-buttons {
+        flex-direction: column !important;
+        gap: 4px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 4px 0 0 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .customer-adopt-button {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        padding: 8px 0 !important;
+        font-size: 15px !important;
+        border-radius: 6px !important;
+        margin: 0 0 4px 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .customer-slide-modal-content {
+        min-width: 0 !important;
+        max-width: 100% !important;
+        padding: 8px !important;
+        margin: 0 auto !important;
+        box-sizing: border-box !important;
+    }
+
+    .customer-slide {
+        max-width: 100% !important;
+        max-height: 46vh !important;
+        width: 100% !important;
+        height: auto !important;
+        border-radius: 6px !important;
+        margin: 0 auto !important;
+    }
+
+    .customer-adoption-inquiry>div[style*="maxWidth: '800px'"],
+    .customer-adoption-inquiry>div[style*='maxWidth:"800px"'],
+    .customer-adoption-inquiry>div[style*="maxWidth:800px"] {
+        min-width: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 95vh !important;
+        max-height: 95vh !important;
+        padding: 0 !important;
+        margin: 0 auto !important;
+        box-sizing: border-box !important;
+        border-radius: 10px !important;
+    }
+
+    .customer-adoption-inquiry>div[style*="maxWidth: '800px'"]>div,
+    .customer-adoption-inquiry>div[style*='maxWidth:"800px"']>div,
+    .customer-adoption-inquiry>div[style*="maxWidth:800px"]>div {
+        padding: 8px !important;
+    }
+
+    /* ---------- 고객센터 메인 레이아웃 ---------- */
+    .customer-header-container {
+        min-width: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+        border-radius: 10px 10px 0 0 !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        margin-top: 6px !important;
+        box-sizing: border-box !important;
+        gap: 6px !important;
+    }
+
+    .customer-header-left,
+    .customer-header-center,
+    .customer-header-right {
+        width: 100% !important;
+        min-width: 0 !important;
+        justify-content: center !important;
+        gap: 4px !important;
+    }
+
+    .customer-header-left {
+        text-align: center !important;
+        margin: 0 !important;
+    }
+
+    .customer-header-center {
+        justify-content: center !important;
+        align-items: center !important;
+        margin: 0 !important;
+    }
+
+    .customer-header-right {
+        justify-content: flex-end !important;
+        gap: 6px !important;
+        margin-bottom: 6px !important;
+    }
+
+    .customer-title {
+        font-size: 20px !important;
+    }
+
+    .customer-mini-tab-bar {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        border-radius: 0 0 10px 10px !important;
+        font-size: 15px !important;
+        gap: 2px !important;
+        padding: 6px 0 !important;
+        margin: 0 auto 0 auto !important;
+        box-sizing: border-box !important;
+    }
+
+    .customer-mini-tab-bar a {
+        font-size: 15px !important;
+        padding: 4px 6px !important;
+        margin: 0 2px !important;
+        min-width: 0 !important;
+    }
+
+    .customer-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .customer-search-input {
+        width: 100% !important;
+        min-width: 0 !important;
+        font-size: 14px !important;
+        padding: 7px 7px !important;
+        margin: 0 0 4px 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .customer-search-button {
+        width: 100% !important;
+        padding: 8px 0 !important;
+        font-size: 15px !important;
+        margin: 0 0 4px 0 !important;
+        border-radius: 6px !important;
+    }
+
+    .customer-chat-button {
+        width: 100% !important;
+        font-size: 15px !important;
+        padding: 8px 0 !important;
+        margin: 0 0 4px 0 !important;
+        border-radius: 6px !important;
+    }
+}

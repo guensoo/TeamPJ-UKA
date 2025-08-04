@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.teamProject.UKA.auth.model.User;
+import com.teamProject.UKA.auth.repository.UserRepository;
 import com.teamProject.UKA.customer.qna.dto.QnaCommentRequestDTO;
 import com.teamProject.UKA.customer.qna.dto.QnaCommentResponseDTO;
 import com.teamProject.UKA.customer.qna.entity.QnaCommentEntity;
@@ -21,6 +23,7 @@ public class QnaCommentService {
 
     private final QnaCommentRepository qnaCommentRepository;
     private final QnaRepository qnaRepository;
+    private final UserRepository userRepository;
 
     // 댓글 등록
     @Transactional
@@ -28,6 +31,9 @@ public class QnaCommentService {
         // 1. QnaEntity 조회
         QnaEntity qna = qnaRepository.findById(dto.getQnaId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 QnA 글이 존재하지 않습니다."));
+        
+        User user = userRepository.findByUserId(dto.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
 
         // 2. QnA 글 기준으로 마지막 댓글 번호 조회
         Integer lastNo = qnaCommentRepository.findMaxNoByQnaId(qna.getQnaId());
@@ -35,9 +41,10 @@ public class QnaCommentService {
 
         // 3. 댓글 생성
         QnaCommentEntity comment = QnaCommentEntity.builder()
-                .qna(qna)  // 💥 핵심
+                .qna(qna)
+                .user(user) // ⭐️ 꼭 연결!!
                 .qnaCommentNo(nextNo)
-                .qnaCommentWriter(dto.getQnaCommentWriter())
+                .qnaCommentWriter(user.getNickname()) // 닉네임도 User에서 추출
                 .qnaCommentContent(dto.getQnaCommentContent())
                 .build();
 

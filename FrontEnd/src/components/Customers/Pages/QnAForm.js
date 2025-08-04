@@ -61,12 +61,14 @@ const QnAForm = () => {
 
         if (!result || !result.isConfirmed) return;
 
+
         await createQna({
             qnaTitle: title,
             qnaContent: content,
             qnaIsSecret: isSecret ? 'Y' : 'N',
             qnaPassword: password,
-            qnaWriter: user?.nickname // 또는 user.name 등 로그인 정보 기반
+            // qnaWriter: user?.nickname // 또는 user.name 등 로그인 정보 기반
+            userId: user?.userId, // userId로 변경
         });
 
         await showAlert({

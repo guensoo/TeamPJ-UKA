@@ -4,6 +4,7 @@ import './BoardList.css';
 import Swal from 'sweetalert2';
 import { fetchAllPosts } from '../../../api/BoardApi';
 import TitleLength from '../utils/TitleLength';
+import { formatDate } from '../utils/FormatDate';
 
 const ChatList = () => {
     const [posts, setPosts] = useState([]);
@@ -60,8 +61,8 @@ const ChatList = () => {
             if (sortOption === 'likes') return order * (b.likes - a.likes);
             if (sortOption === 'comment') return order * (b.comment - a.comment);
             if (sortOption === 'latest') {
-                const dateA = a.updatedAt ? new Date(a.updatedAt) : new Date(a.createdAt);
-                const dateB = b.updatedAt ? new Date(b.updatedAt) : new Date(b.createdAt);
+                const dateA = new Date(a.createdAt);
+                const dateB = new Date(b.createdAt);
                 return order * (dateB - dateA);
             }
             return 0;
@@ -108,7 +109,7 @@ const ChatList = () => {
                 return post.title.toLowerCase().includes(keyword.toLowerCase())
             }
             else if (searchOption === 'author') {
-                return post.author.toLowerCase().includes(keyword.toLowerCase())
+                return post.nickname.toLowerCase().includes(keyword.toLowerCase())
             }
             return false;
         });
@@ -148,6 +149,7 @@ const ChatList = () => {
                 fromPage: currentPage,
             }
         });
+        window.scroll(0, 0);
     };
 
     //글쓰기 버튼
@@ -164,16 +166,6 @@ const ChatList = () => {
             regex.test(part) ? <b key={index}>{part}</b> : <span key={index}>{part}</span>
         );
     }
-
-    // 날짜 포맷 함수
-    const formatDate = (date) => {
-        const d = new Date(date);
-        const year = String(d.getFullYear()).slice(2);
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-
-        return `${year}.${month}.${day}`;
-    };
 
     return (
         <div className="board-container">
@@ -264,8 +256,8 @@ const ChatList = () => {
                                 <td>
                                     <div className='board-cell-text'>
                                         {searchOption === 'author'
-                                            ? highlightKeyword(post.author, isSearching ? confirmKeyword : '')
-                                            : post.author
+                                            ? highlightKeyword(post.nickname, isSearching ? confirmKeyword : '')
+                                            : post.nickname
                                         }
                                     </div>
                                 </td>
@@ -280,7 +272,7 @@ const ChatList = () => {
                                 </td>
                                 <td>
                                     <div className='board-cell-text' style={{ marginLeft: 15 }}>
-                                        {post.updatedAt ? formatDate(post.updatedAt) : formatDate(post.createdAt)}
+                                        {formatDate(post.createdAt)}
                                     </div>
                                 </td>
                             </tr>

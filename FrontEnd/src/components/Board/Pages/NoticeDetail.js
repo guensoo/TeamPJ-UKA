@@ -8,6 +8,7 @@ import { createComment, createReply, fetchCommentsByBoard, fetchRepliesByComment
 import CommentList from '../Comment/CommentList';
 import { ViewCount } from '../utils/ViewCount';
 import TitleLength from '../utils/TitleLength';
+import { formatDateTime } from '../utils/FormatDate';
 
 const NoticeDetail = () => {
     const { id } = useParams();
@@ -18,7 +19,7 @@ const NoticeDetail = () => {
 
     const loginData = JSON.parse(localStorage.getItem("user"));
     const isAdmin = loginData?.userId?.includes("admin") ? true : false;
-    const currentUser = loginData?.nickname;
+    const currentUser = loginData?.userId;
 
     const [post, setPost] = useState(null);
     const [prev, setPrev] = useState(null);
@@ -140,8 +141,8 @@ const NoticeDetail = () => {
         }
 
         const sortedList = [...filteredList].sort((a, b) => {
-            const dateA = a.updatedAt ? new Date(a.updatedAt) : new Date(a.createdAt);
-            const dateB = b.updatedAt ? new Date(b.updatedAt) : new Date(b.createdAt);
+            const dateA = new Date(a.createdAt);
+            const dateB = new Date(b.createdAt);
             return dateB - dateA;
         });
         const idx = sortedList.findIndex(p => p.id === post.id);
@@ -344,18 +345,6 @@ const NoticeDetail = () => {
         }
     };
 
-    //신고 버튼
-    const handleReportButton = async () => {
-        if (currentUser === undefined) return Swal.fire("로그인 필요", "로그인 후 이용해주세요.", "error");
-        try {
-            const updatedPost = await toggleReport(post.id, currentUser);
-            setPost(updatedPost);
-            setIsReported(updatedPost.reportedByCurrentUser);
-        } catch (error) {
-            console.error('신고 처리 실패:', error);
-        }
-    };
-
     //복원 버튼
     const handleRestore = async () => {
         const confirm = await Swal.fire({
@@ -389,11 +378,11 @@ const NoticeDetail = () => {
                 <p style={{ marginTop: 20 }}>[ {categoryLabels[post.category]} ]</p>
                 <div className="board-detail-info">
                     <span style={{ color: '#ccc' }}>
-                        작성자: {post.author} |
+                        작성자: {post.nickname} |
                         조회수: {post.view} |
                         추천수: {post.likes} |
-                        신고수: {post.report} |
-                        등록일: {post.updatedAt && post.updatedAt !== post.createdAt ? `${new Date(post.updatedAt).toLocaleString()} (수정됨)` : new Date(post.createdAt).toLocaleString()}
+                        신고수: {post.report} |{' '}
+                        작성일: {formatDateTime(post.createdAt)} {post.isEdited && '(수정됨)'}
                     </span><br />
                 </div>
             </div>
@@ -464,7 +453,7 @@ const NoticeDetail = () => {
                     setEditReplyText={setEditReplyText}
                 />
             </div>
-            <hr />
+            
             {/* 최상위 댓글 입력폼 추가 */}
             <div style={{ marginTop: 12 }}>
                 <form onSubmit={handleCommentSubmit} style={{ display: 'flex', gap: 8, marginBottom: 20 }}>

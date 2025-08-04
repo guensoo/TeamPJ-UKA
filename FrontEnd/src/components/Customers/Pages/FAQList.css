@@ -135,3 +135,102 @@
     border-radius: 3px;
     padding: 0 2px;
 }
+
+@media (max-width: 768px) {
+
+    /* FAQ 전체 컨테이너 좌우 padding 및 min-width 해제 */
+    .faq-container {
+        min-width: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 4px !important;
+        padding-right: 4px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* FAQ 각 아이템(질문+답변 한 덩이) */
+    .faq-item {
+        min-width: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 0 10px 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 질문 영역 */
+    .faq-question {
+        padding: 12px 8px !important;
+        font-size: 15px !important;
+        flex-direction: row !important;
+        gap: 8px !important;
+        text-align: left !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+    }
+
+    .faq-question-left {
+        gap: 8px !important;
+        display: flex !important;
+        align-items: center !important;
+        flex: 1 !important;
+    }
+
+    /* 답변 영역 */
+    .faq-answer {
+        padding: 8px 8px 12px 8px !important;
+        font-size: 13px !important;
+        flex-direction: row !important;
+        gap: 8px !important;
+        text-align: left !important;
+        align-items: flex-start !important;
+    }
+
+    /* 라벨(번호 Q/A) */
+    .faq-label {
+        font-size: 16px !important;
+        min-width: 20px !important;
+        font-weight: bold !important;
+    }
+
+    /* 텍스트 */
+    .faq-text {
+        font-size: 13px !important;
+        line-height: 1.5 !important;
+        word-break: break-word !important;
+        text-align: left !important;
+        margin-left: 0 !important;
+    }
+
+    /* 버튼 */
+    .faq-toggle-button {
+        font-size: 16px !important;
+        margin-top: 0 !important;
+        width: 24px !important;
+        min-width: 24px !important;
+        height: 24px !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .faq-admin-buttons {
+        gap: 6px !important;
+    }
+
+    .edit-btn,
+    .delete-btn {
+        font-size: 12px !important;
+        padding: 5px 10px 5px 8px !important;
+        min-width: 52px !important;
+    }
+
+    /* FAQ 테이블이 있는 경우 */
+    .faq-table {
+        overflow-x: auto !important;
+    }
+
+    .faq-table table {
+        min-width: 350px !important;
+    }
+}

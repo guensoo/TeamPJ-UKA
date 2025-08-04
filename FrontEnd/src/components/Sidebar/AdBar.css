@@ -56,11 +56,8 @@
     background: #1767c6;
 }
 
-@media (max-width: 1045px) {
+@media (max-width: 768px) {
     .left-ad-bar-stack {
-        display: none;
-    }
-    .container {
-        margin-left: 0;
+        display: none !important;
     }
 }

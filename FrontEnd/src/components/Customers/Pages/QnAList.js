@@ -15,10 +15,16 @@ const QnAList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const { showAlert } = useAlert();
     const isAdmin = isAdminCheck();
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-    const sortedQnAs = [...qnas].sort((a, b) => Number(b.id) - Number(a.id));
+    // 모바일 감지
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
-    // [1] QnA 전체 조회 - 최초 1회만
+    // QnA 전체 조회
     useEffect(() => {
         const getQnas = async () => {
             try {
@@ -50,6 +56,7 @@ const QnAList = () => {
     }, [showAlert]);
 
     // 페이징 처리
+    const sortedQnAs = [...qnas].sort((a, b) => Number(b.id) - Number(a.id));
     const totalItems = sortedQnAs.length;
     const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
     const indexOfLast = currentPage * ITEMS_PER_PAGE;
@@ -63,7 +70,7 @@ const QnAList = () => {
         return `${yyyy.slice(2)}.${mm}.${dd}`;
     };
 
-    // << < 1 2 3 4 5 > >>
+    // 페이지네이션 범위
     const getPageRange = () => {
         let start = Math.max(1, currentPage - Math.floor(PAGE_BUTTON_LIMIT / 2));
         let end = start + PAGE_BUTTON_LIMIT - 1;
@@ -74,29 +81,22 @@ const QnAList = () => {
         return Array.from({ length: end - start + 1 }, (_, i) => start + i);
     };
 
-    // 제목 클릭 시(비밀글 입력창 처리)
+    // 제목 클릭 시 처리
     const handleTitleClick = (qna) => {
-        // 어드민은 상관없음
         if (isAdmin) {
             navigate(`/customer/qna/${qna.id}`);
             return;
         }
-        // 🚫 신고된 글은 이동 금지 (비밀 여부와 상관없이)
         if (!isAdmin && qna.isReported) {
             showAlert && showAlert({
                 title: '🚫 관리자 검토중',
                 text: '신고가 누적된 글입니다.',
-                // imageUrl: process.env.PUBLIC_URL + '/img/badCat.jpg',   // ← 확장자 포함!
-                // imageWidth: 300,
-                // imageHeight: 300,
-                // imageAlt: '조져쓰',
-                icon: 'warning', // 주의: imageUrl이 있으면 icon은 무시됨!
+                icon: 'warning',
             });
             return;
         }
-        // 비밀글이면 비밀번호 확인, 아니면 이동
         if (qna.isSecret) {
-            handlePasswordConfirm(qna); // ✅ 팝업 바로 실행
+            handlePasswordConfirm(qna);
         } else {
             navigate(`/customer/qna/${qna.id}`);
         }
@@ -117,13 +117,9 @@ const QnAList = () => {
             confirmButtonText: '확인',
             cancelButtonText: '취소',
         });
-
-        // 1. 취소, X, 닫기, 아무것도 입력 안했을 때
         if (!result || result.isDismissed || result.isDenied || !result.isConfirmed) return;
-
         const password = result.value;
         if (!password) {
-            // 입력 안함
             await showAlert({
                 title: '⚠️ 비밀번호 입력 필요',
                 text: '비밀번호를 입력해주세요.',
@@ -135,9 +131,7 @@ const QnAList = () => {
             });
             return;
         }
-
         if (password !== qna.password) {
-            // 입력했는데 틀림
             await showAlert({
                 title: '❌ 비밀번호 오류',
                 text: '비밀번호가 틀렸습니다.',
@@ -149,8 +143,6 @@ const QnAList = () => {
             });
             return;
         }
-
-        // 맞으면 통과
         window.sessionStorage.setItem(`qna_access_${qna.id}`, 'true');
         navigate(`/customer/qna/${qna.id}`, { state: { password } });
     };
@@ -181,70 +173,70 @@ const QnAList = () => {
                             <th>번호</th>
                             <th>제목</th>
                             <th>작성자</th>
-                            <th>답변</th>
-                            <th>상태</th>
-                            <th>작성일</th>
+                            {!isMobile && <th>답변</th>}
+                            {!isMobile && <th>상태</th>}
+                            {!isMobile && <th>작성일</th>}
                         </tr>
                     </thead>
                     <tbody>
                         {currentQnAs.length === 0 ? (
                             <tr>
-                                <td colSpan={6} style={{ textAlign: 'center', padding: 50 }}>
+                                <td colSpan={isMobile ? 3 : 6} style={{ textAlign: 'center', padding: 50 }}>
                                     등록된 게시글이 없습니다.
                                 </td>
                             </tr>
                         ) : currentQnAs.map(qna => (
-                            <React.Fragment key={qna.id}>
-                                <tr>
-                                    <td>{qna.id}</td>
-                                    <td
-                                        className="title-cell"
-                                        style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            color: qna.isReported ? '#ff2e2e' : '#222', // 신고면 빨간색, 아니면 기본색
-                                            fontWeight: qna.isReported ? 'bold' : 'normal',
-                                            cursor: 'pointer',
-                                        }}
-                                        onClick={() => handleTitleClick(qna)}
-                                    >
-                                        {qna.isSecret && <span style={{ marginRight: 5, color: '#b19cd9' }}>🔒</span>}
-                                        <span className="title-text">
-                                            {TitleLength(qna.title, 40)}
-                                        </span>
-                                    </td>
-                                    <td>{qna.author}</td>
-                                    <td style={{ color: qna.isAnswered ? '#00aaff' : '#ff7676' }}>
-                                        {qna.isAnswered ? '답변' : '미답변'}
-                                    </td>
-                                    {/* 👉 여기가 상태 */}
-                                    <td
-                                        style={{
-                                            color: qna.isReported ? '#ff7676'
-                                                : qna.isSecret ? '#b19cd9'
-                                                    : '#0090dd',
-                                            fontWeight: 'bold',
-                                        }}
-                                    >
-                                        {qna.isSecret && qna.isReported
-                                            ? '비밀/신고됨'
-                                            : qna.isSecret
-                                                ? '비밀'
-                                                : qna.isReported
-                                                    ? '신고됨'
-                                                    : '공개'
-                                        }
-                                    </td>
-                                    <td>
-                                        {formatDate(qna.createdAt?.slice(0, 10))}
-                                    </td>
-                                </tr>
-                            </React.Fragment>
+                            <tr key={qna.id}>
+                                <td>{qna.id}</td>
+                                <td
+                                    className="title-cell"
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        color: qna.isReported ? '#ff2e2e' : '#222',
+                                        fontWeight: qna.isReported ? 'bold' : 'normal',
+                                        cursor: 'pointer',
+                                    }}
+                                    onClick={() => handleTitleClick(qna)}
+                                >
+                                    {qna.isSecret && <span style={{ marginRight: 5, color: '#b19cd9' }}>🔒</span>}
+                                    <span className="title-text">
+                                        {TitleLength(qna.title, 40)}
+                                    </span>
+                                </td>
+                                <td>{qna.author}</td>
+                                {!isMobile && (
+                                    <>
+                                        <td style={{ color: qna.isAnswered ? '#00aaff' : '#ff7676' }}>
+                                            {qna.isAnswered ? '답변' : '미답변'}
+                                        </td>
+                                        <td
+                                            style={{
+                                                color: qna.isReported ? '#ff7676'
+                                                    : qna.isSecret ? '#b19cd9'
+                                                        : '#0090dd',
+                                                fontWeight: 'bold',
+                                            }}
+                                        >
+                                            {qna.isSecret && qna.isReported
+                                                ? '비밀/신고됨'
+                                                : qna.isSecret
+                                                    ? '비밀'
+                                                    : qna.isReported
+                                                        ? '신고됨'
+                                                        : '공개'
+                                            }
+                                        </td>
+                                        <td>
+                                            {formatDate(qna.createdAt?.slice(0, 10))}
+                                        </td>
+                                    </>
+                                )}
+                            </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
-            {/* 페이징 */}
             <div className="pagination">
                 <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>&lt;&lt;</button>
                 <button onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))} disabled={currentPage === 1}>&lt;</button>

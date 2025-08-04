@@ -20,13 +20,14 @@
     z-index: 1011;
     min-width: 400px;
     max-width: 95vw;
-    max-height: 90vh; /* 적당한 높이 제한 */
+    max-height: 90vh;
     position: relative;
 }
+
 .customer-slide-modal img {
     max-width: 100%;
-    max-height: calc(90vh - 60px); /* 적당한 높이 제한 */
-    object-fit: contain; /* 또는 cover, 원하시는 방식에 따라 */
+    max-height: calc(90vh - 60px);
+    object-fit: contain;
     display: block;
     margin: 0 auto;
 }
@@ -67,18 +68,16 @@
     object-fit: cover;
 }
 
-/* .customer-slide-thumb:hover {
-  box-shadow: 0 0 0 2px #00aaff;
-  border: 2px solid #00aaff;
-} */
-
 /* 슬라이드 좌우 버튼 */
 .customer-slider-arrow-btn {
     transition: color 0.18s, background 0.18s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.13);
+    outline: none;
 }
 
 .customer-slider-arrow-btn:disabled {
     color: #ccc !important;
+    background: rgba(0, 0, 0, 0.09) !important;
     cursor: default !important;
 }
 
@@ -117,13 +116,74 @@
     cursor: default;
 }
 
-.customer-slider-arrow-btn {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.13);
-    outline: none;
-}
+/* === 모바일 대응 === */
+@media (max-width: 768px) {
 
-.customer-slider-arrow-btn:disabled {
-    color: #ccc !important;
-    background: rgba(0, 0, 0, 0.09) !important;
-    cursor: default !important;
+    /* 모달 내부 */
+    .customer-slide-modal-content {
+        padding: 12px !important;
+        border-radius: 8px !important;
+        min-width: 0 !important;
+        max-width: 92vw !important;
+        max-height: 85vh !important;
+        margin: 0 4px !important;
+        box-sizing: border-box !important;
+    }
+
+    .customer-slide-modal img {
+        max-height: calc(85vh - 100px) !important;
+    }
+
+    /* X 닫기 버튼 */
+    .customer-close-btn {
+        right: 8px !important;
+        top: 4px !important;
+        font-size: 20px !important;
+    }
+
+    /* 썸네일 */
+    .customer-slide-thumbnails {
+        gap: 3px !important;
+        margin-bottom: 12px !important;
+        margin-top: 6px !important;
+        min-width: 0 !important;
+        width: 100% !important;
+    }
+
+    .customer-slide-thumbnails img {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+
+    /* 슬라이드 좌우 버튼 */
+    .customer-slider-arrow-btn {
+        padding: 6px !important;
+        font-size: 16px !important;
+        min-width: 32px !important;
+        height: 32px !important;
+    }
+
+    /* 슬라이드 메인 이미지 */
+    .customer-slide {
+        border-radius: 6px !important;
+        max-width: 85% !important;
+        max-height: 50vh !important;
+        height: auto !important;
+        margin: 0 auto !important;
+        display: block !important;
+    }
+
+    /* 버튼들 */
+    .customer-adoption-buttons {
+        flex-direction: column !important;
+        gap: 6px !important;
+        margin-top: 8px !important;
+    }
+
+    .customer-adopt-button {
+        width: 100% !important;
+        font-size: 13px !important;
+        padding: 10px 0 !important;
+        border-radius: 5px !important;
+    }
 }
