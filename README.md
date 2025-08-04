@@ -59,15 +59,7 @@
 
 ## 🔗 배포 주소
 
-- **서비스 바로가기:** [https://your-project-url.com](https://your-project-url.com)
-
----
-
-## 📷 화면 미리보기
-
-| 메인화면 | 지도 | 게시판 | 상세보기 |
-|----------|------|--------|----------|
-| ![](https://via.placeholder.com/220x130?text=Main) | ![](https://via.placeholder.com/220x130?text=Map) | ![](https://via.placeholder.com/220x130?text=Board) | ![](https://via.placeholder.com/220x130?text=Detail) |
+- **서비스 바로가기:** [http://teamproject-uka.s3-website.ap-northeast-2.amazonaws.com/](http://teamproject-uka.s3-website.ap-northeast-2.amazonaws.com/)
 
 ---
 
