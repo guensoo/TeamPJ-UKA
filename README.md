@@ -1,6 +1,6 @@
 <!-- 로고나 메인 이미지 있으면 아래에 넣으세요! -->
 <p align="center">
-  <img src="https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=900&q=80" alt="유기동물 센터" width="240" />
+  <img src="FrontEnd/src/assets/MainLogo.png" alt="유기동물 센터" width="240" />
 </p>
 
 <h1 align="center">🐾 유기동물 센터 TeamProject 🐾</h1>
