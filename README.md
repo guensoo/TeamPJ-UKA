@@ -32,11 +32,12 @@
 
 ## 🛠️ 기술 스택
 
-| Frontend     | Backend       | Infra         | 기타      |
-| ------------ | ------------ | ------------- | --------- |
-| React        | Spring Boot  | AWS EC2, S3   | Notion    |
-| Material UI  | JPA          | RDS(MySQL)    | Figma     |
-| Axios        | JWT          | GitHub Actions| Slack     |
+## 🛠️ 기술 스택
+
+| Frontend               | Backend        | Infra           | 언어 & DB     |
+| ---------------------- | ------------- | --------------- | ------------- |
+| ![React](https://img.shields.io/badge/React-20232a?style=flat&logo=react&logoColor=61dafb) <br> HTML <br> CSS <br> JavaScript | ![Java](https://img.shields.io/badge/Java-007396?style=flat&logo=java&logoColor=white) <br> Spring Boot <br> JWT | ![AWS EC2](https://img.shields.io/badge/EC2-FF9900?style=flat&logo=amazon-aws&logoColor=white) <br> ![AWS S3](https://img.shields.io/badge/S3-569A31?style=flat&logo=amazon-aws&logoColor=white) <br> ![AWS RDS](https://img.shields.io/badge/RDS-527FFF?style=flat&logo=amazon-aws&logoColor=white) | ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=mysql&logoColor=white) <br> Java <br> JavaScript <br> HTML <br> CSS |
+
 
 ---
 
